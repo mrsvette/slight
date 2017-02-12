@@ -7,8 +7,8 @@ $settings = require __DIR__ . '/configs/main.php';
 // Create Slim app
 $app = new \Slim\App($settings);
 
-// Dependencies
-require __DIR__ . '/components/dependencies.php';
+// Container
+require __DIR__ . '/components/container.php';
 
 // Register routes
 require __DIR__ . '/controllers/routes.php';
