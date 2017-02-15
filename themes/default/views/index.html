@@ -1,38 +1,163 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8"/>
-        <title>Slim 3</title>
-        <link href='//fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
-        <style>
-            body {
-                margin: 50px 0 0 0;
-                padding: 0;
-                width: 100%;
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                text-align: center;
-                color: #aaa;
-                font-size: 18px;
-            }
+{% extends "layout.html" %}
+{% block pagetitle %}
+{{ App.name }}
+{% endblock %}
 
-            h1 {
-                color: #719e40;
-                letter-spacing: -3px;
-                font-family: 'Lato', sans-serif;
-                font-size: 100px;
-                font-weight: 200;
-                margin-bottom: 0;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Slim</h1>
-        <div>a microframework for PHP</div>
+{% block content %}
 
-        <?php if (isset($name)) : ?>
-            <h2>Hello <?= htmlspecialchars($name); ?>!</h2>
-        <?php else: ?>
-            <p>Try <a href="http://www.slimframework.com">SlimFramework</a>
-        <?php endif; ?>
-    </body>
-</html>
+<div class="offset"></div>
+
+<div class="full-portfolio">
+    <ul class="content-slider items">
+        <li class="item overlay"><a href="#" data-contenturl="portfolio-post.html"
+                                    data-callback="callPortfolioScripts();" data-contentcontainer=".pcw"><img
+                src="{{ 'images/art/p1.jpg' | asset_url  }}" alt=""/>
+            <div>
+                <h5>Wood Logo<span>Logo, Texture</span></h5>
+            </div>
+        </a></li>
+        <li class="item overlay"><a href="#" data-contenturl="portfolio-post2.html"
+                                    data-callback="callPortfolioScripts();" data-contentcontainer=".pcw"><img
+                src="{{ 'images/art/p2.jpg' | asset_url  }}" alt=""/>
+            <div>
+                <h5>Stationery Branding<span>Branding, Identity</span></h5>
+            </div>
+        </a></li>
+        <li class="item overlay"><a href="#" data-contenturl="portfolio-post3.html"
+                                    data-callback="callPortfolioScripts();" data-contentcontainer=".pcw"><img
+                src="{{ 'images/art/p3.jpg' | asset_url  }}" alt=""/>
+            <div>
+                <h5>Flyer Presentation<span>Flyer, Poster</span></h5>
+            </div>
+        </a></li>
+        <li class="item overlay"><a href="#" data-contenturl="portfolio-post4.html"
+                                    data-callback="callPortfolioScripts();" data-contentcontainer=".pcw"><img
+                src="{{ 'images/art/p4.jpg' | asset_url  }}" alt=""/>
+            <div>
+                <h5>Alpha iPhone App<span>UI, Mobile</span></h5>
+            </div>
+        </a></li>
+        <li class="item overlay"><a href="#" data-contenturl="portfolio-post5.html"
+                                    data-callback="callPortfolioScripts();" data-contentcontainer=".pcw"><img
+                src="{{ 'images/art/p5.jpg' | asset_url  }}" alt=""/>
+            <div>
+                <h5>MU Business Card<span>Business Card, Identity</span></h5>
+            </div>
+        </a></li>
+        <li class="item overlay"><a href="#" data-contenturl="portfolio-post5.html"
+                                    data-callback="callPortfolioScripts();" data-contentcontainer=".pcw"><img
+                src="{{ 'images/art/p11.jpg' | asset_url  }}" alt=""/>
+            <div>
+                <h5>Perspective App Screen<span>UI, Mobile</span></h5>
+            </div>
+        </a></li>
+        <li class="item overlay"><a href="#" data-contenturl="portfolio-post6.html"
+                                    data-callback="callPortfolioScripts();" data-contentcontainer=".pcw"><img
+                src="{{ 'images/art/p12.jpg' | asset_url  }}" alt=""/>
+            <div>
+                <h5>Business Card<span>Business Card, Identity</span></h5>
+            </div>
+        </a></li>
+        <li class="item overlay"><a href="#" data-contenturl="portfolio-post.html"
+                                    data-callback="callPortfolioScripts();" data-contentcontainer=".pcw"><img
+                src="{{ 'images/art/p13.jpg' | asset_url  }}" alt=""/>
+            <div>
+                <h5>Leather Logo<span>Logo, Branding</span></h5>
+            </div>
+        </a></li>
+        <li class="item overlay"><a href="#" data-contenturl="portfolio-post2.html"
+                                    data-callback="callPortfolioScripts();" data-contentcontainer=".pcw"><img
+                src="{{ 'images/art/p14.jpg' | asset_url  }}" alt=""/>
+            <div>
+                <h5>Perspective Tablet<span>UI, Mobile</span></h5>
+            </div>
+        </a></li>
+        <li class="item overlay"><a href="#" data-contenturl="portfolio-post3.html"
+                                    data-callback="callPortfolioScripts();" data-contentcontainer=".pcw"><img
+                src="{{ 'images/art/p15.jpg' | asset_url  }}" alt=""/>
+            <div>
+                <h5>Phortio iPhone App<span>UI, Mobile</span></h5>
+            </div>
+        </a></li>
+    </ul>
+    <!-- /.items -->
+</div>
+<!-- /.full-portfolio -->
+
+<div class="container inner">
+    <div class="row services">
+        <div class="span3">
+            <div class="icon-wrapper purple">
+                <div class="icon"><img src="{{ 'images/icon/icon-lamp.png' | asset_url }}" alt=""/></div>
+                <!-- /.icon -->
+            </div>
+            <!-- /.icon-wrapper -->
+            <h4>Creative Ideas</h4>
+            <p>Nulla vitae libero, a pharetra augue. Integer posuere a ante venenatis nulla. Nullam quis risus eget urna
+                mollis ornare.</p>
+        </div>
+        <!-- /.span3 -->
+        <div class="span3">
+            <div class="icon-wrapper red">
+                <div class="icon"><img src="{{ 'images/icon/icon-clock.png' | asset_url }}" alt=""/></div>
+                <!-- /.icon -->
+            </div>
+            <!-- /.icon-wrapper -->
+            <h4>Rapid Solutions</h4>
+            <p>Vestibulum id ligula porta euismod semper. Aenean lacinia bibendum nulla sed. Maecenas sed diam eget
+                risus.</p>
+        </div>
+        <!-- /.span3 -->
+        <div class="span3">
+            <div class="icon-wrapper blue">
+                <div class="icon"><img src="{{ 'images/icon/icon-tube2.png' | asset_url }}" alt=""/></div>
+                <!-- /.icon -->
+            </div>
+            <!-- /.icon-wrapper -->
+            <h4>Magic Touch</h4>
+            <p>Fusce dapibus commodo, tortor mauris condimentum nibh, ut fermentum massa justo. Sed posuere consectetur
+                est.</p>
+        </div>
+        <!-- /.span3 -->
+        <div class="span3">
+            <div class="icon-wrapper yellow">
+                <div class="icon"><img src="{{ 'images/icon/icon-ticket.png' | asset_url }}" alt=""/></div>
+                <!-- /.icon -->
+            </div>
+            <!-- /.icon-wrapper -->
+            <h4>Award Winning</h4>
+            <p>Aenean eu leo quam. Pellente ornare sem lacinia quam venenatis vestibulum sagittis. Nullam quis risus
+                eget urna.</p>
+        </div>
+        <!-- /.span3 -->
+    </div>
+    <!-- /.row -->
+</div>
+
+<div class="dark-wrapper">
+    <div class="container inner">
+        <div id="testimonials" class="tab-container">
+            <div class="panel-container">
+                <div id="tst1"> Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Nullam id dolor id
+                    nibh ultricies vehicula ut id elit. Praesent commodo cursus magna. <span class="author">Nikolas Brooten</span>
+                </div>
+                <div id="tst2"> Cras justo odio, dapibus ac facilisis in, egestas eget quam. Maecenas faucibus mollis
+                    interdum. Etiam porta sem malesuada magna mollis euismod. <span class="author">Coriss Ambady</span>
+                </div>
+                <div id="tst3"> Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Donec sed
+                    odio dui. Aenean lacinia bibendum nulla sed consectetur. <span
+                            class="author">Barclay Widerski</span></div>
+                <div id="tst4"> Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vivamus sagittis lacus vel
+                    augue laoreet rutrum faucibus dolor auctor gravida at eget metus. <span
+                            class="author">Elsie Spear</span></div>
+            </div>
+            <ul class="etabs">
+                <li class="tab"><a href="#tst1">1</a></li>
+                <li class="tab"><a href="#tst2">2</a></li>
+                <li class="tab"><a href="#tst3">3</a></li>
+                <li class="tab"><a href="#tst4">4</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
