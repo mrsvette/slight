@@ -1,15 +1,15 @@
-{% extends "layout.html" %}
+{% extends "partial/layout.html" %}
 {% block pagetitle %}
-{{ App.name }} - Tentang Kami
+Tentang Kami - {{ App.name }}
 {% endblock %}
 
 {% block content %}
 <div class="offset"></div>
 <div class="container inner">
-    <h3 class="section-title">About Our Company</h3>
+    <h3 class="section-title">Tentang Kami</h3>
     <div class="row">
         <div class="span3 rp10">
-            <figure class="media-wrapper"><img src="style/images/art/ceo.jpg" alt="" /></figure>
+            <figure class="media-wrapper"><img src="{{ 'images/art/ceo.jpg' | asset_url }}" alt="" /></figure>
         </div>
         <!-- /.span3 -->
         <div class="span9">
@@ -24,13 +24,13 @@
     <div class="divide50"></div>
     <div class="row">
         <div class="span4">
-            <h4 class="section-title">What We Do?</h4>
+            <h4 class="section-title">Apa yang kami kerjakan?</h4>
             <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Donec id elit non mi porta gravida at eget metus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. </p>
             <p>Aenean lacinia bibendum nulla sed consectetur. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus sed posuere. Praesent commodo cursus magna, vel scelerisque nisl.</p>
         </div>
         <!-- /.span4 -->
         <div class="span4">
-            <h4 class="section-title">What is Our Process?</h4>
+            <h4 class="section-title">Proses kerja kami?</h4>
             <p>Duis mollis, est non commodo luctus, nisi porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam.</p>
             <ol>
                 <li>Vivamus sagittis lacus vel augue laoreet rutrum.</li>
@@ -41,7 +41,7 @@
         </div>
         <!-- /.span4 -->
         <div class="span4">
-            <h4 class="section-title">Why Choose Us?</h4>
+            <h4 class="section-title">Mengapa memilih kami?</h4>
             <p>Vestibulum id ligula porta felis euismod semper. Cras mattis consectetur purus sit amet fermentum. Donec ullamcorper nulla non metus auctor fringilla.</p>
             <ul class="bullet">
                 <li>Donec ullamcorper nulla non metus auctor.</li>

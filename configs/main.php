@@ -21,5 +21,10 @@ return [
             'path' => __DIR__ . '/../runtime/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
+		// Admin module
+		'admin' => [
+			'name' => 'panel-admin',
+			'path' => realpath(dirname(__DIR__)) . '/modules/panel-admin'
+		],
     ],
 ];

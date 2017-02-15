@@ -25,15 +25,15 @@ $container['view'] = function ($c) {
 // Register Twig View module
 $container['module'] = function ($c) {
 	$settings = $c->get('settings');
-	$view_path = $settings['basePath'] . '/modules/admin/views';
+	$view_path = $settings['admin']['path'] . '/views';
 
     $view = new \Slim\Views\Twig( $view_path , [
-        'cache' => $settings['cache']['path']
+        'cache' => $settings['cache']['path'],
+        'auto_reload' => true,
     ]);
 
-    // Instantiate and add Slim specific extension
-    $basePath = rtrim(str_ireplace('index.php', '', $c['request']->getUri()->getBasePath()), '/');
-    $view->addExtension(new Slim\Views\TwigExtension($c['router'], $basePath));
+    addFilter($view->getEnvironment(), $c);
+    addGlobal($view->getEnvironment(), $c);
 
     return $view;
 };
@@ -56,8 +56,11 @@ function addFilter($env, $c)
     }
 
     if(!defined('THEME')){
-        $uri = $c['request']->getUri();
         define('THEME', $c->get('settings')['theme']['name']);
+    }
+
+    if(!defined('ADMIN_MODULE')){
+        define('ADMIN_MODULE', $c->get('settings')['admin']['name']);
     }
 
     $filters = [
@@ -69,6 +72,9 @@ function addFilter($env, $c)
         }),
         new \Twig_SimpleFilter('asset_url', function ($string) {
             return BASE_URL .'/themes/'. THEME .'/assets/'. $string;
+        }),
+        new \Twig_SimpleFilter('admin_asset_url', function ($string) {
+            return BASE_URL .'/modules/'. ADMIN_MODULE .'/assets/'. $string;
         }),
     ];
 
@@ -86,6 +92,7 @@ function addGlobal($env, $c)
         'name' => $setting['name'],
         'baseUrl' => (!defined('BASE_URL')) ? $uri->getScheme().'://'.$uri->getHost().$uri->getBasePath() : BASE_URL,
         'basePath' => $setting['basePath'],
+        'adminBasePath' => $setting['admin']['path'],
     ];
 
     $env->addGlobal('App', $globals);
