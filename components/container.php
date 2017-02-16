@@ -2,6 +2,10 @@
 // Fetch DI Container
 $container = $app->getContainer();
 
+// User identity
+require __DIR__ . '/identity.php';
+$user = new \Components\UserIdentity($app);
+
 // Register Twig View helper
 $container['view'] = function ($c) {
 	$settings = $c->get('settings');

@@ -1,11 +1,6 @@
 <?php
 // Routes
-$app->get('/panel-admin', function ($request, $response, $args) {
-	
-	return $this->module->render($response, 'index.html', [
-        'name' => $args['name']
-    ]);
-});
+require $settings['settings']['admin']['path'] . '/controllers/routes.php';
 
 $app->get('/[{name}]', function ($request, $response, $args) {
     // Sample log message

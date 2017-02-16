@@ -27,6 +27,7 @@
 
 </head>
 <body>
+{% block header %}
 <!-- top bar -->
 <header class="navbar navbar-fixed-top" role="banner">
     <div class="container-fluid">
@@ -69,10 +70,10 @@
         </ul>
     </div>
 </header>
-
-{% block content %}
-
 {% endblock %}
+
+{% block content %} {% endblock %}
+
 <!-- jQuery -->
 <script src="{{ 'js/jquery.min.js' | admin_asset_url }}"></script>
 <!-- easing -->
