@@ -26,7 +26,17 @@ $app->post('/panel-admin/login', function ($request, $response, $args) use ($use
     }
 
     if (isset($_POST['LoginForm'])){
-        var_dump($_POST['LoginForm']); exit;
+        $username = strtolower($_POST['LoginForm']['username']);
+        $model = \Model\AdminModel::model()->findByAttributes(['username'=>$username]);
+        if ($model instanceof \RedBeanPHP\OODBBean){
+            $has_password = \Model\AdminModel::hasPassword($_POST['LoginForm']['password'], $model->salt);
+            if ($model->password == $has_password){
+                var_dump(true); exit;
+            }
+
+        }
+
+
     }
 
     return $this->module->render($response, 'login.html', [
