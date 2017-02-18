@@ -31,16 +31,30 @@ $app->post('/panel-admin/login', function ($request, $response, $args) use ($use
         if ($model instanceof \RedBeanPHP\OODBBean){
             $has_password = \Model\AdminModel::hasPassword($_POST['LoginForm']['password'], $model->salt);
             if ($model->password == $has_password){
-                var_dump(true); exit;
+                $login = $user->login($model);
+                if ($login){
+                    return $response->withRedirect('/panel-admin');
+                }
+            } else {
+                $args['error']['message'] = 'Password yang Anda masukkan salah.';
             }
 
         }
-
-
+        $args['error']['message'] = 'User tidak ditemukan';
     }
 
     return $this->module->render($response, 'login.html', [
-        'name' => $args['name']
+        'result' => $args
     ]);
+});
+
+$app->get('/panel-admin/logout', function ($request, $response, $args) use ($user) {
+    if ($user->isGuest()){
+        return $response->withRedirect('/panel-admin/login');
+    }
+    $logout = $user->logout();
+    if ($logout){
+        return $response->withRedirect('/panel-admin/login');
+    }
 });
 ?>

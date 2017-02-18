@@ -9,6 +9,12 @@
 <div class="login_container">
     <form id="login_form" action="" method="post">
         <h1 class="login_heading">Login </h1>
+        {% if result.error %}
+        <div class="alert alert-danger">
+            {{ result.error.message }}
+        </div>
+        {% endif %}
+
         <div class="form-group">
             <label for="login_username">Username</label>
             <input type="text" name="LoginForm[username]" class="form-control input-lg" id="login_username">

@@ -33,8 +33,11 @@ class BaseModel extends \RedBeanPHP\SimpleModel
     
     public function setup()
     {
-        R::setup($this->connectionString, $this->username, $this->password, $this->frozen);
+        if (!R::testConnection())
+            R::setup($this->connectionString, $this->username, $this->password, $this->frozen);
+
         $this->is_connected = true;
+        return true;
     }
 
     public static function model($className=__CLASS__)
@@ -48,6 +51,15 @@ class BaseModel extends \RedBeanPHP\SimpleModel
         }
     }
 
+    /**
+     * Usage : $rb = \Model\AdminModel::model()->getRb();
+     * @return string
+     */
+    public function getRb()
+    {
+        return R::getVersion();
+    }
+
     public function findByAttributes($params)
     {
         $field = array();
@@ -58,6 +70,23 @@ class BaseModel extends \RedBeanPHP\SimpleModel
         $sql = implode(" AND ", $field);
 
         return R::findOne($this->tableName, $sql, $params);
+    }
+
+    public function findAllByAttributes($params)
+    {
+        $field = array();
+        foreach ($params as $attr => $val){
+            $field[] = $attr. '= :'. $attr;
+        }
+
+        $sql = implode(" AND ", $field);
+
+        return R::find($this->tableName, $sql, $params);
+    }
+
+    public function findByPk($id)
+    {
+        return R::findOne($this->tableName, ' id = ?', [$id]);
     }
 }
 
