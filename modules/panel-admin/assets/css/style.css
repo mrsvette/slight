@@ -285,7 +285,7 @@ a.list-group-item-danger:hover{background-color:#ab3326}
 @media (max-width:1200px){.form-horizontal label[class*=col-lg]{text-align:left;margin-bottom:4px}
 }
 .navbar{background:#293f44;border-bottom:1px solid #293f44;min-height:42px;height:42px}
-.navbar .navbar-brand{display:block;padding:0;margin-left:10px!important;height:41px}
+.navbar .navbar-brand{display:block;padding:0;margin-left:0px!important;height:41px}
 .navbar .navbar-brand img{width:180px;height:42px;display:block;background:url(../img/logo.png) 50% 50% no-repeat}
 .navbar .top_links{float:right;padding:0;margin:9px 0 0 25px}
 .navbar .top_links>li{float:left;list-style:none;position:relative}

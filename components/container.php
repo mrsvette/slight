@@ -68,6 +68,9 @@ function addFilter($env, $c)
         new \Twig_SimpleFilter('admin_asset_url', function ($string) use ($base_url, $admin_module) {
             return $base_url .'/modules/'. $admin_module .'/assets/'. $string;
         }),
+        new \Twig_SimpleFilter('alink', function ($string) use ($base_url, $admin_module) {
+            return $base_url .'/'. $admin_module. '/' .$string;
+        }),
     ];
 
     foreach ($filters as $i => $filter) {
