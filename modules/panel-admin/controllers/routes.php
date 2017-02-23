@@ -57,4 +57,21 @@ $app->get('/panel-admin/logout', function ($request, $response, $args) use ($use
         return $response->withRedirect('/panel-admin/login');
     }
 });
+
+/**
+ * Pages routing sections
+ */
+$app->get('/panel-admin/pages', function ($request, $response, $args) use ($user, $settings) {
+    if ($user->isGuest()){
+        return $response->withRedirect('/panel-admin/login');
+    }
+
+    require_once $settings['settings']['admin']['path']. '/components/tools.php';
+
+    $tools = new \PanelAdmin\Components\AdminTools($settings);
+
+    return $this->module->render($response, 'pages/view.html', [
+        'pages' => $tools->getPages()
+    ]);
+});
 ?>

@@ -60,30 +60,9 @@
         </ul>
     </div>
 </header>
-<!-- side navigation -->
-<nav id="side_nav">
-    <ul>
-        <li>
-            <a href="{{ '' | alink }}"><span class="ion-speedometer"></span> <span class="nav_title">Dashboard</span></a>
-        </li>
-        <li>
-            <a href="#">
-                <span class="ion-clipboard"></span>
-                <span class="nav_title">Pages</span>
-            </a>
-            <div class="sub_panel">
-                <div class="side_inner">
-                    <h4 class="panel_heading panel_heading_first">Landing Pages</h4>
-                    <ul>
-                        <li><a href="{{ 'landing-page' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span>Daftar Landing Page</a></li>
-                        <li><a href="{{ 'landing-page/create' | alink }}"><span class="side_icon ion-ios7-star-outline"></span> Tambah Baru</a></li>
-                    </ul>
-                </div>
-            </div>
-        </li>
-    </ul>
-</nav>
 {% endblock %}
+
+{% include 'partial/main_menu.html' %}
 
 {% block content %} {% endblock %}
 
@@ -101,12 +80,10 @@
 <!-- common functions -->
 <script src="{{ 'js/tisa_common.js' | admin_asset_url }}"></script>
 
-<!-- page specific plugins -->
-
 <!-- nvd3 charts -->
 <script src="{{ 'lib/d3/d3.min.js' | admin_asset_url }}"></script>
 <script src="{{ 'lib/novus-nvd3/nv.d3.min.js' | admin_asset_url }}"></script>
 
-
+{% block endbodyjs %}{% endblock %}
 </body>
 </html>

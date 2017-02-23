@@ -1,0 +1,23 @@
+<!-- side navigation -->
+<nav id="side_nav">
+    <ul>
+        <li>
+            <a href="{{ '' | alink }}"><span class="ion-speedometer"></span> <span class="nav_title">Dashboard</span></a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="ion-clipboard"></span>
+                <span class="nav_title">Pages</span>
+            </a>
+            <div class="sub_panel">
+                <div class="side_inner">
+                    <h4 class="panel_heading panel_heading_first">Landing Pages</h4>
+                    <ul>
+                        <li><a href="{{ 'pages' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span>Daftar Landing Page</a></li>
+                        <li><a href="{{ 'pages/create' | alink }}"><span class="side_icon ion-ios7-star-outline"></span> Tambah Baru</a></li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+    </ul>
+</nav>

@@ -1,5 +1,14 @@
 /* common functions */
+if (window.addEventListener){ // W3C standard
+	window.addEventListener('load', initApplication, false);
+}else if (window.attachEvent){ // Microsoft
+	window.attachEvent('onload', initApplication);
+}
 
+function initApplication() {
+	//dataTable
+	data_table.init();
+}
 	//* detect touch devices
 	function is_touch_device() {
 		return !!('ontouchstart' in window);
@@ -32,7 +41,7 @@
 		tisa_custom_color_picker.init();
 		// slidebar
 		tisa_slidebar.init();
-	})
+	});
 
 	// slide navigation
 	tisa_slide_navigation = {
@@ -318,3 +327,14 @@
 			}
 		}
 	}
+
+// top dropdown navigation (mobile nav)
+data_table = {
+	init: function() {
+		if( $('.dataTable').length ) {
+			$(function () {
+				$('.dataTable').dataTable();
+			})
+		}
+	}
+}
