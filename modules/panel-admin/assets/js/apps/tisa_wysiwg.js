@@ -1,7 +1,7 @@
 	
 	$(function() {
 		// wysiwg editor
-		tisa_wysiwg.full_toolbar();
+		//tisa_wysiwg.full_toolbar();
 		tisa_wysiwg.inline();
 	})
 	
@@ -14,7 +14,7 @@
 			}
 		},
 		inline: function() {
-			CKEDITOR.on( 'instanceCreated', function( event ) {
+			/*CKEDITOR.on( 'instanceCreated', function( event ) {
 				var editor = event.editor,
 					element = editor.element;
 				if ( element.is( 'h1', 'h2', 'h3' ) || element.getAttribute( 'id' ) == 'taglist' ) {
@@ -30,6 +30,6 @@
 						];
 					});
 				}
-			});
+			});*/
 		}
 	}

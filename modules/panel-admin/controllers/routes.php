@@ -74,4 +74,38 @@ $app->get('/panel-admin/pages', function ($request, $response, $args) use ($user
         'pages' => $tools->getPages()
     ]);
 });
+$app->get('/panel-admin/pages/update/[{name}]', function ($request, $response, $args) use ($user, $settings) {
+    if ($user->isGuest()){
+        return $response->withRedirect('/panel-admin/login');
+    }
+	
+    require_once $settings['settings']['admin']['path']. '/components/tools.php';
+
+    $tools = new \PanelAdmin\Components\AdminTools($settings);
+
+    return $this->module->render($response, 'pages/update.html', [
+        'data' => $tools->getPage($args['name'])
+    ]);
+});
+$app->post('/panel-admin/pages/update/[{name}]', function ($request, $response, $args) use ($user, $settings) {
+    if ($user->isGuest()){
+        return $response->withRedirect('/panel-admin/login');
+    }
+
+    if (isset($_POST['content']) && file_exists($_POST['path'])){
+		$update = file_put_contents($_POST['path'], $_POST['content']);
+		if ($update) {
+			$message = 'Your data is successfully updated.';
+		}
+    }
+
+    require_once $settings['settings']['admin']['path']. '/components/tools.php';
+
+    $tools = new \PanelAdmin\Components\AdminTools($settings);
+
+    return $this->module->render($response, 'pages/update.html', [
+        'data' => $tools->getPage($args['name']),
+		'message' => ($message) ? $message : null
+    ]);
+});
 ?>

@@ -1,4 +1,5 @@
 <!-- side navigation -->
+{% if not App.user.isGuest() %}
 <nav id="side_nav">
     <ul>
         <li>
@@ -19,5 +20,21 @@
                 </div>
             </div>
         </li>
+        <li>
+            <a href="#">
+                <span class="ion-monitor"></span>
+                <span class="nav_title">Tampilan</span>
+            </a>
+            <div class="sub_panel">
+                <div class="side_inner">
+                    <h4 class="panel_heading panel_heading_first">Tampilan</h4>
+                    <ul>
+                        <li><a href="{{ 'menus' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> Menu</a></li>
+                        <li><a href="{{ 'themes/create' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> Tema</a></li>
+                    </ul>
+                </div>
+            </div>
+        </li>
     </ul>
 </nav>
+{% endif %}

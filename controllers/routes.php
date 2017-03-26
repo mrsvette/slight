@@ -9,7 +9,7 @@ $app->get('/[{name}]', function ($request, $response, $args) {
 	if (empty($args['name']))
 		$args['name'] = 'index';
 
-    return $this->view->render($response, $args['name'] . '.html', [
+    return $this->view->render($response, $args['name'] . '.phtml', [
         'name' => $args['name']
     ]);
 });

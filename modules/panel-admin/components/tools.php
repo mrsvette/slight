@@ -15,8 +15,8 @@ class AdminTools
     public function getPages()
     {
         $pages = array();
-        foreach (glob($this->basePath.'/themes/'.$this->themeName.'/views/*.html') as $filename) {
-            $page = basename($filename, '.html');
+        foreach (glob($this->basePath.'/themes/'.$this->themeName.'/views/*.phtml') as $filename) {
+            $page = basename($filename, '.phtml');
             if ( $page == 'index' ){
                 $name = 'Home';
             } else {
@@ -27,4 +27,12 @@ class AdminTools
 
         return $pages;
     }
+
+	public function getPage($slug)
+	{
+		$path = $this->basePath.'/themes/'.$this->themeName.'/views/'.$slug.'.phtml';
+		if (!file_exists($path))
+			return false;
+		return [ 'page' => $slug, 'path' => $path, 'content' => file_get_contents($path) ];
+	}
 }
