@@ -35,4 +35,30 @@ class AdminTools
 			return false;
 		return [ 'page' => $slug, 'path' => $path, 'content' => file_get_contents($path) ];
 	}
+
+	public function createPage($data)
+	{
+		if (is_array(self::getPage($data['name'])))
+			return false;
+
+		// create the file
+		$slug = str_replace(" ", "-", strtolower($data['name']));
+		$fp = fopen($this->basePath.'/themes/'.$this->themeName.'/views/'.$slug.'.phtml', "wb");
+		fwrite($fp, $data['content']);
+		fclose($fp);
+
+		return true;
+	}
+
+	public function deletePage($slug)
+	{
+		$pages = self::getPage($slug);
+		if (!is_array($pages))
+			return false;
+
+		// delete the file
+		unlink($pages['path']);
+
+		return true;
+	}
 }

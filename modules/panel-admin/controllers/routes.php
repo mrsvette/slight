@@ -96,6 +96,10 @@ $app->post('/panel-admin/pages/update/[{name}]', function ($request, $response, 
 		$update = file_put_contents($_POST['path'], $_POST['content']);
 		if ($update) {
 			$message = 'Your data is successfully updated.';
+			$success = true;
+		} else {
+			$message = 'Failed to update the page.';
+			$success = false;
 		}
     }
 
@@ -105,7 +109,69 @@ $app->post('/panel-admin/pages/update/[{name}]', function ($request, $response, 
 
     return $this->module->render($response, 'pages/update.html', [
         'data' => $tools->getPage($args['name']),
-		'message' => ($message) ? $message : null
+		'message' => ($message) ? $message : null,
+		'success' => $success
     ]);
+});
+
+/*foreach (glob(__DIR__.'/*Controller.php') as $controller) {
+	$cname = basename($controller, '.php');
+	if (!empty($cname)) {
+		$name = explode("Controller", $cname);
+		require_once $controller;
+		$app->get('/panel-admin/'.strtolower($name[0]).'/[{name}]', 'PagesController::action');
+	}
+}*/
+
+$app->get('/panel-admin/pages/create', function ($request, $response, $args) use ($user) {
+    if ($user->isGuest()){
+        return $response->withRedirect('/panel-admin/login');
+    }
+
+    return $this->module->render($response, 'pages/create.html');
+});
+
+$app->post('/panel-admin/pages/create', function ($request, $response, $args) use ($user, $settings) {
+    if ($user->isGuest()){
+        return $response->withRedirect('/panel-admin/login');
+    }
+
+    require_once $settings['settings']['admin']['path']. '/components/tools.php';
+
+    $tools = new \PanelAdmin\Components\AdminTools($settings);
+    if (isset($_POST['content'])){
+		$create = $tools->createPage($_POST);
+		if ($create) {
+			$message = 'Your page is successfully created.';
+			$success = true;
+		} else {
+			$message = 'Failed to create new page.';
+			$success = false;
+		}
+    }
+
+    return $this->module->render($response, 'pages/create.html', [
+		'message' => ($message) ? $message : null,
+		'success' => $success
+    ]);
+});
+
+$app->post('/panel-admin/pages/delete/[{name}]', function ($request, $response, $args) use ($user, $settings) {
+    if ($user->isGuest()){
+        return $response->withRedirect('/panel-admin/login');
+    }
+
+	if (!isset($args['name'])) {
+		return false;
+	}
+
+    require_once $settings['settings']['admin']['path']. '/components/tools.php';
+
+    $tools = new \PanelAdmin\Components\AdminTools($settings);
+    $delete = $tools->deletePage($args['name']);
+	if ($delete) {
+		$message = 'Your page is successfully created.';
+		echo true;
+	}
 });
 ?>

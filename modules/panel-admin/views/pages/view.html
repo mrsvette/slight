@@ -33,6 +33,9 @@ Landing Pages - {{ App.name }}
                                             <a href="{{ 'pages/update' | alink }}/{{ page.slug }}">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
+                                            <a href="{{ 'pages/delete' | alink }}/{{ page.slug }}" onclick="return hapus(this);">
+                                                <i class="fa fa-trash-o"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                     {% else %}
@@ -60,4 +63,25 @@ Landing Pages - {{ App.name }}
 {% block endbodyjs %}
 <script src="{{ 'lib/DataTables/media/js/jquery.dataTables.min.js' | admin_asset_url }}"></script>
 <script src="{{ 'lib/DataTables/media/js/dataTables.bootstrap.js' | admin_asset_url }}"></script>
+<script type="text/javascript">
+function hapus(data) {
+	if (confirm('Are you sure to delete ?')) {
+		var $this =  $(data);
+		var url = $this.attr('href');
+		$.ajax({
+			//'beforeSend': function() { Loading.show(); },
+			//'complete': function() { Loading.hide(); },
+			'url': url,
+			'type':'post',
+			'dataType': 'json',
+			'success': function(data) {
+				if (data) {
+					$this.parent().parent().remove();
+				}
+			}
+		});
+	}
+	return false;
+}
+</script>
 {% endblock %}
