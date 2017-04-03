@@ -6,6 +6,9 @@ $container = $app->getContainer();
 require __DIR__ . '/identity.php';
 $user = new \Components\UserIdentity($app);
 
+// Controller
+require __DIR__ . '/controller.php';
+
 //trailling slash
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;

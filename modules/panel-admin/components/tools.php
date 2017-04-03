@@ -8,8 +8,8 @@ class AdminTools
 
     public function __construct($settings)
     {
-        $this->basePath = $settings['settings']['basePath'];
-        $this->themeName = $settings['settings']['theme']['name'];
+        $this->basePath = (is_object($settings))? $settings['basePath'] : $settings['settings']['basePath'];
+        $this->themeName = (is_object($settings))? $settings['theme']['name'] : $settings['settings']['theme']['name'];
     }
 
     public function getPages()
