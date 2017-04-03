@@ -3,3 +3,5 @@
 /runtime/*
 /.idea/*
 index.php
+/configs/*
+*.phtml

@@ -1,0 +1,40 @@
+<!-- side navigation -->
+{% if not App.user.isGuest() %}
+<nav id="side_nav">
+    <ul>
+        <li>
+            <a href="{{ '' | alink }}"><span class="ion-speedometer"></span> <span class="nav_title">Dashboard</span></a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="ion-clipboard"></span>
+                <span class="nav_title">Pages</span>
+            </a>
+            <div class="sub_panel">
+                <div class="side_inner">
+                    <h4 class="panel_heading panel_heading_first">Landing Pages</h4>
+                    <ul>
+                        <li><a href="{{ 'pages/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span>Daftar Landing Page</a></li>
+                        <li><a href="{{ 'pages/create' | alink }}"><span class="side_icon ion-ios7-star-outline"></span> Tambah Baru</a></li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+        <li>
+            <a href="#">
+                <span class="ion-monitor"></span>
+                <span class="nav_title">Tampilan</span>
+            </a>
+            <div class="sub_panel">
+                <div class="side_inner">
+                    <h4 class="panel_heading panel_heading_first">Tampilan</h4>
+                    <ul>
+                        <li><a href="{{ 'menus' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> Menu</a></li>
+                        <li><a href="{{ 'themes/create' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> Tema</a></li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+    </ul>
+</nav>
+{% endif %}
