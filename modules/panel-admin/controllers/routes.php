@@ -24,6 +24,9 @@ $app->group('/panel-admin', function () use ($user) {
     $this->group('/pages', function() use ($user) {
         new PanelAdmin\Controllers\PagesController($this, $user);
     });
+    $this->group('/themes', function() use ($user) {
+        new PanelAdmin\Controllers\ThemesController($this, $user);
+    });
 });
 
 ?>
