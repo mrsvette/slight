@@ -108,8 +108,25 @@ class AdminTools
 		return $items;
 	}
 
-	public function updateTheme($id)
+	public function getThemeConfig()
 	{
+		return \Components\Application::getThemeConfig();
+	}
+
+	public function updateTheme($id, $install = 1)
+	{
+		$theme_path = $this->basePath.'/data/'.$this->getThemeConfig().'.th';
+		if (!file_exists($theme_path)){
+			$file = fopen($theme_path, 'w');
+			fwrite($theme_path, json_encode(array()));
+			fclose($file);
+		}
+
+		if ((int)$install < 1){
+			if (count($this->getThemes()) < 2)
+				return false;
+		}
+
 		if (!file_exists($this->basePath.'/themes/'.$id.'/manifest.json'))
 			return false;
 
@@ -122,7 +139,7 @@ class AdminTools
 			$item = ['id'=>$item['id'], 'name'=>$item['name']];
 		}
 
-		$update = file_put_contents($this->basePath.'/data/theme.json', json_encode($item));
+		$update = file_put_contents($theme_path, json_encode($item));
 
 		return ($update)? true : false;
 	}

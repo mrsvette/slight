@@ -31,7 +31,8 @@ class ThemesController extends BaseController
 
         return $this->_container->module->render($response, 'themes/view.html', [
             'themes' => $tools->getThemes(),
-            'current_theme' => $this->_settings['theme']['name']
+            'current_theme' => $this->_settings['theme']['name'],
+            'removable' => (count($tools->getThemes()) > 1)? true : false
         ]);
     }
 
@@ -46,10 +47,7 @@ class ThemesController extends BaseController
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
         if (isset($_POST['id'])){
-            if ($_POST['install'])
-                $update = $tools->updateTheme($_POST['id']);
-            else
-                $update = $tools->updateTheme('default');
+            $update = $tools->updateTheme($_POST['id'], $_POST['install']);
             
             if ($update) {
                 $message = ($_POST['install'] > 0)? 'Your theme is successfully updated to '.$_POST['id'] : 'Succesfully uninstall '.$_POST['id'].' theme.';

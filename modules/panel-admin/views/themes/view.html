@@ -18,6 +18,7 @@ Themes - {{ App.name }}
                                 <div class="col-lg-4">
                                     <h4>{{ theme.name }}</h4>
                                     <img src="{{ theme.img_path | link }}" class="img-responsive"/>
+                                    {% if removable %}
                                     <p class="text-center">
                                     {% if theme.id == current_theme %}
                                         <a href="javascript:void(0);" install="0" id="{{ theme.id }}" class="btn btn-warning" onclick="install(this);">Uninstall Theme</a>
@@ -25,6 +26,7 @@ Themes - {{ App.name }}
                                         <a href="javascript:void(0);" install="1" id="{{ theme.id }}" class="btn btn-info btn-theme" onclick="install(this);">Install Theme</a>
                                     {% endif %}
                                     </p>
+                                    {% endif %}
                                 </div>
                             {% else %}
                                  No data founds
