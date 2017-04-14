@@ -22,15 +22,43 @@
         </li>
         <li>
             <a href="#">
-                <span class="ion-monitor"></span>
-                <span class="nav_title">Tampilan</span>
+                <span class="ion-compose"></span>
+                <span class="nav_title">Blog</span>
             </a>
             <div class="sub_panel">
                 <div class="side_inner">
-                    <h4 class="panel_heading panel_heading_first">Tampilan</h4>
+                    <h4 class="panel_heading panel_heading_first">Blog</h4>
                     <ul>
-                        <li><a href="{{ 'menus/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> Menu</a></li>
-                        <li><a href="{{ 'themes/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> Tema</a></li>
+                        <li><a href="{{ 'pages/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span>Daftar Landing Page</a></li>
+                        <li><a href="{{ 'pages/create' | alink }}"><span class="side_icon ion-ios7-star-outline"></span> Tambah Baru</a></li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+        <li>
+            <a href="#">
+                <span class="ion-monitor"></span>
+                <span class="nav_title">Appearance</span>
+            </a>
+            <div class="sub_panel">
+                <div class="side_inner">
+                    <h4 class="panel_heading panel_heading_first">Appearance</h4>
+                    <ul>
+                        <li><a href="{{ 'themes/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> Theme</a></li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+        <li>
+            <a href="#">
+                <span class="ion-settings"></span>
+                <span class="nav_title">Manage</span>
+            </a>
+            <div class="sub_panel">
+                <div class="side_inner">
+                    <h4 class="panel_heading panel_heading_first">Manage</h4>
+                    <ul>
+                        <li><a href="{{ 'users/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> User</a></li>
                     </ul>
                 </div>
             </div>
