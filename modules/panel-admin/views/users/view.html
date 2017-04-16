@@ -23,20 +23,24 @@ Manage Users - {{ App.name }}
                                         <th>id</th>
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
                                         <th>&nbsp;</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     {% for i, model in models %}
                                     <tr>
-                                        <td>{{ i + 1 }}</td>
+                                        <td><center>{{ i + 1 }}</center></td>
                                         <td>{{ model.username }}</td>
                                         <td>{{ model.email }}</td>
+                                        <td><center>{{ cmodel.getGroup(model.group_id) }}</center></td>
+                                        <td><center>{{ cmodel.getStatus(model.status) }}</center></td>
                                         <td>
-                                            <a href="{{ 'users/update' | alink }}/{{ i }}">
+                                            <a href="{{ 'users/update' | alink }}/{{ i }}" title="Update">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
-                                            <a href="{{ 'users/delete' | alink }}/{{ i }}" onclick="return hapus(this);">
+                                            <a href="{{ 'users/delete' | alink }}/{{ i }}" onclick="return hapus(this);" title="Delete">
                                                 <i class="fa fa-trash-o"></i>
                                             </a>
                                         </td>

@@ -30,7 +30,8 @@ class UsersController extends BaseController
         $models = \Model\AdminModel::model()->findAll();
 
         return $this->_container->module->render($response, 'users/view.html', [
-            'models' => $models
+            'models' => $models,
+            'cmodel' => new \Model\AdminModel(),
         ]);
     }
 
@@ -45,8 +46,8 @@ class UsersController extends BaseController
         if (isset($_POST['Admin'])){
             $model->username = $_POST['Admin']['username'];
             $model->salt = md5(uniqid());
-            //$model->password = $_POST['Admin']['password'];
-            $model->password = $model->hasPassword($_POST['Admin']['password'], $model->salt);
+            $model->password = $_POST['Admin']['password'];
+            //$model->password = $model->hasPassword($_POST['Admin']['password'], $model->salt);
             $model->username = $_POST['Admin']['username'];
             $model->email = $_POST['Admin']['email'];
             $model->group_id = $_POST['Admin']['group_id'];
@@ -54,10 +55,15 @@ class UsersController extends BaseController
             $model->created_at = date('Y-m-d H:i:s');
             $create = \Model\AdminModel::model()->save($model);
             if ($create) {
+                $bean = \Model\AdminModel::model()->findByAttributes(['username'=>$model->username]);
+                $bean->password = $model->hasPassword($model->password, $model->salt);
+                $update = \Model\AdminModel::model()->update($bean, false);
+
                 $message = 'Your data is successfully created.';
                 $success = true;
             } else {
                 $message = \Model\AdminModel::model()->getErrors(false);
+                $errors = \Model\AdminModel::model()->getErrors(true, true);
                 $success = false;
             }
         }
@@ -65,7 +71,8 @@ class UsersController extends BaseController
         return $this->_container->module->render($response, 'users/create.html', [
             'model' => $model,
             'message' => ($message) ? $message : null,
-            'success' => $success
+            'success' => $success,
+            'errors' => $errors
         ]);
     }
 

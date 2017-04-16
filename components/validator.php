@@ -24,8 +24,14 @@ class Validator
         $model = $this->_bean;
         $errors = [];
         foreach ($attributes as $i => $attribute){
-            if ($model->{$attribute} == null)
-                $errors[$attribute] = $attribute.' could not be empty.';
+            if ($model->{$attribute} == null) {
+                if (array_key_exists('on', $rule)) {
+                    if ($model->getScenario() == $rule['on']) {
+                        $errors[$attribute] = $attribute . ' could not be empty.';
+                    }
+                } else
+                    $errors[$attribute] = $attribute . ' could not be empty.';
+            }
         }
 
         return $errors;
@@ -37,7 +43,12 @@ class Validator
         $errors = [];
         foreach ($attributes as $i => $attribute){
             if (filter_var($model->{$attribute}, FILTER_VALIDATE_EMAIL) === false) {
-                $errors[$attribute] = $model->{$attribute}.' is not a valid email.';
+                if (array_key_exists('on', $rule)) {
+                    if ($model->getScenario() == $rule['on']) {
+                        $errors[$attribute] = $model->{$attribute}.' is not a valid email.';
+                    }
+                } else
+                    $errors[$attribute] = $model->{$attribute}.' is not a valid email.';
             }
         }
 
@@ -50,7 +61,12 @@ class Validator
         $errors = [];
         foreach ($attributes as $i => $attribute){
             if (!is_numeric($model->{$attribute})) {
-                $errors[$attribute] = $model->{$attribute}.' is not a number.';
+                if (array_key_exists('on', $rule)) {
+                    if ($model->getScenario() == $rule['on']) {
+                        $errors[$attribute] = $model->{$attribute}.' is not a number.';
+                    }
+                } else
+                    $errors[$attribute] = $model->{$attribute}.' is not a number.';
             } else {
                 if (array_key_exists('integerOnly', $rule) && $rule['integerOnly']) {
                     if (is_int($model->{$attribute}))
@@ -76,6 +92,30 @@ class Validator
                 if (strlen($model->{$attribute}) < $rule['min']) {
                     $errors[$attribute] = 'Minimum character for '.$model->{$attribute}.' is '.$rule['min'].'.';
                 }
+            }
+            if (array_key_exists('on', $rule)) {
+                if ($model->getScenario() != $rule['on']) {
+                    unset($errors[$attribute]);
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    public function unique($attributes, $rule)
+    {
+        $model = $this->_bean;
+        $errors = [];
+        foreach ($attributes as $i => $attribute){
+            $data = $model->findByAttributes([$attribute=>$model->{$attribute}]);
+            if ($data instanceof \RedBeanPHP\OODBBean){
+                $errors[$attribute] = $attribute.' '.$model->{$attribute}.' already exist.';
+            }
+        }
+        if (array_key_exists('on', $rule)) {
+            if ($model->getScenario() != $rule['on']) {
+                $errors = [];
             }
         }
 

@@ -123,12 +123,14 @@ class BaseModel extends \RedBeanPHP\SimpleModel
         return ($save > 0)? true : false;
     }
 
-    public function update($bean)
+    public function update($bean, $validate = true)
     {
-        $validate = $this->validate($bean);
-        if ( is_array($validate) ){
-            $this->_errors = $validate;
-            return false;
+        if ($validate) {
+            $validate = $this->validate($bean);
+            if (is_array($validate)) {
+                $this->_errors = $validate;
+                return false;
+            }
         }
 
         $update = R::store($bean);
@@ -163,18 +165,35 @@ class BaseModel extends \RedBeanPHP\SimpleModel
         return true;
     }
 
-    public function getErrors($in_array = true)
+    public function getErrors($in_array = true, $per_attribute = false)
     {
-        if ($in_array)
+        if ($in_array) {
+            if ($per_attribute){
+                $errs = [];
+                foreach ($this->_errors as $i => $error){
+                    foreach ($error as $j => $err_detail) {
+                        $errs[$j] = $err_detail;
+                    }
+                }
+                return $errs;
+            }
+
             return $this->_errors;
-        else {
+        } else {
             $msg = "<ul>Please check the following errors :";
             foreach ($this->_errors as $i => $error){
-                $msg .= "<li>".array_values($error)[0]."</li>";
+                foreach (array_values($error) as $j => $err_detail) {
+                    $msg .= "<li>" . $err_detail . "</li>";
+                }
             }
             $msg .= "</ul>";
             return $msg;
         }
+    }
+
+    public function getScenario()
+    {
+        return $this->_scenario;
     }
 }
 
