@@ -15,8 +15,48 @@ class AdminModel extends \Model\BaseModel
         return 'admin';
     }
 
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return [
+            ['username, email, group_id, status', 'required'],
+            ['username', 'length', 'min'=>3, 'max'=>32],
+            ['username, email', 'unique'],
+            ['password', 'required', 'on'=>'create'],
+            ['password', 'length', 'min'=>8, 'on'=>'create'],
+            ['email', 'email'],
+            ['group_id', 'numerical', 'integerOnly' => true],
+        ];
+    }
+
     public function hasPassword($password, $salt)
     {
         return md5($salt.$password);
+    }
+
+    public function getListGroup()
+    {
+        return [1=>'Administrator', 2=>'Staff'];
+    }
+
+    public function getGroup($group_id)
+    {
+        $groups = self::getListGroup();
+        return $groups[$group_id];
+    }
+
+    public function getListStatus()
+    {
+        return ['Not Active', 'Active'];
+    }
+
+    public function getStatus($status)
+    {
+        $items = self::getListStatus();
+        return $items[$status];
     }
 }

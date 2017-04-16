@@ -1075,3 +1075,4 @@ span.required{color:red}
 .button-column a,.table-action a{margin-right:5px;font-size:16px}
 .no-margin{margin:0}
 .no-padding{padding:0}
+input.error {border: 1px solid red;}
