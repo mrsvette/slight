@@ -19,7 +19,7 @@ class AdminTools
     public function getPages()
     {
         $pages = array();
-        foreach (glob($this->basePath.'/themes/'.$this->themeName.'/views/*.phtml') as $filename) {
+        foreach (glob($this->basePath.'/../themes/'.$this->themeName.'/views/*.phtml') as $filename) {
             $page = basename($filename, '.phtml');
             if ( $page == 'index' ){
                 $name = 'Home';
@@ -39,7 +39,7 @@ class AdminTools
 	 */
 	public function getPage($slug)
 	{
-		$path = $this->basePath.'/themes/'.$this->themeName.'/views/'.$slug.'.phtml';
+		$path = $this->basePath.'/../themes/'.$this->themeName.'/views/'.$slug.'.phtml';
 		if (!file_exists($path))
 			return false;
 		return [ 'page' => $slug, 'path' => $path, 'content' => file_get_contents($path) ];
@@ -57,7 +57,7 @@ class AdminTools
 
 		// create the file
 		$slug = str_replace(" ", "-", strtolower($data['name']));
-		$fp = fopen($this->basePath.'/themes/'.$this->themeName.'/views/'.$slug.'.phtml', "wb");
+		$fp = fopen($this->basePath.'/../themes/'.$this->themeName.'/views/'.$slug.'.phtml', "wb");
 		fwrite($fp, $data['content']);
 		fclose($fp);
 
@@ -88,17 +88,17 @@ class AdminTools
 	public function getThemes()
 	{
 		$items = array();
-		foreach (scandir($this->basePath.'/themes') as $dir) {
-			if ( !in_array($dir, ['.', '..']) && is_dir($this->basePath.'/themes/'.$dir) ){
-				if (file_exists($this->basePath.'/themes/'.$dir.'/manifest.json')){
-					$manifest = file_get_contents($this->basePath.'/themes/'.$dir.'/manifest.json');
+		foreach (scandir($this->basePath.'/../themes') as $dir) {
+			if ( !in_array($dir, ['.', '..']) && is_dir($this->basePath.'/../themes/'.$dir) ){
+				if (file_exists($this->basePath.'/../themes/'.$dir.'/manifest.json')){
+					$manifest = file_get_contents($this->basePath.'/../themes/'.$dir.'/manifest.json');
 					$item = json_decode($manifest, true);
 
 					if (!is_array($item)){
 						$item = ['id'=>$dir, 'name'=>ucfirst($dir), 'preview'=>'screenshot.png'];
 					}
 
-					$item ['path'] = $this->basePath.'/themes/'.$dir;
+					$item ['path'] = $this->basePath.'/../themes/'.$dir;
 					$item ['img_path'] = 'themes/'.$dir.'/'.$item['preview'];
 					$items[$dir] = $item;
 				}
@@ -127,10 +127,10 @@ class AdminTools
 				return false;
 		}
 
-		if (!file_exists($this->basePath.'/themes/'.$id.'/manifest.json'))
+		if (!file_exists($this->basePath.'/../themes/'.$id.'/manifest.json'))
 			return false;
 
-		$manifest = file_get_contents($this->basePath.'/themes/'.$id.'/manifest.json');
+		$manifest = file_get_contents($this->basePath.'/../themes/'.$id.'/manifest.json');
 		$item = json_decode($manifest, true);
 
 		if (!is_array($item)){
