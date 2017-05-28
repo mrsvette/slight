@@ -1,8 +1,8 @@
 /vendor/
 /assets/*
-/protected/runtime/*
+/runtime/*
 /.idea/*
 index.php
-/protected/configs/*
+/configs/*
 *.phtml
-/protected/data/
+/data/
