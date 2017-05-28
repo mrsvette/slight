@@ -95,7 +95,7 @@ function addFilter($env, $c)
             return $base_url .'/../themes/'. $theme .'/assets/'. $string;
         }),
         new \Twig_SimpleFilter('admin_asset_url', function ($string) use ($base_url, $admin_module) {
-            return $base_url .'/modules/'. $admin_module .'/assets/'. $string;
+            return $base_url .'/protected/modules/'. $admin_module .'/assets/'. $string;
         }),
         new \Twig_SimpleFilter('alink', function ($string) use ($base_url, $admin_module) {
             return $base_url .'/'. $admin_module. '/' .$string;
