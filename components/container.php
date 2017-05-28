@@ -78,9 +78,6 @@ function addFilter($env, $c)
 {
     $uri = $c['request']->getUri();
     $base_url = $uri->getScheme().'://'.$uri->getHost().$uri->getBasePath();
-    if (!empty($uri->getPort()))
-        $base_url .= ':'.$uri->getPort();
-
     $admin_module = $c->get('settings')['admin']['name'];
     $theme = $c->get('settings')['theme']['name'];
 
@@ -92,7 +89,7 @@ function addFilter($env, $c)
             return $base_url .'/'. $string;
         }),
         new \Twig_SimpleFilter('asset_url', function ($string) use ($base_url, $theme){
-            return $base_url .'/../themes/'. $theme .'/assets/'. $string;
+            return $base_url .'/themes/'. $theme .'/assets/'. $string;
         }),
         new \Twig_SimpleFilter('admin_asset_url', function ($string) use ($base_url, $admin_module) {
             return $base_url .'/modules/'. $admin_module .'/assets/'. $string;
@@ -112,13 +109,9 @@ function addGlobal($env, $c, $user = null)
 {
     $uri = $c['request']->getUri();
     $setting = $c->get('settings');
-    $base_url = $uri->getScheme().'://'.$uri->getHost().$uri->getBasePath();
-    if (!empty($uri->getPort()))
-        $base_url .= ':'.$uri->getPort();
-
     $globals = [
         'name' => $setting['name'],
-        'baseUrl' => (!defined('BASE_URL')) ? $base_url : BASE_URL,
+        'baseUrl' => (!defined('BASE_URL')) ? $uri->getScheme().'://'.$uri->getHost().$uri->getBasePath() : BASE_URL,
         'basePath' => $setting['basePath'],
         'adminBasePath' => $setting['admin']['path'],
         'user' => $user
