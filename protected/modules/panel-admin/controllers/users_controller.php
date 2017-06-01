@@ -23,6 +23,7 @@ class UsersController extends BaseController
         $app->map(['GET', 'POST'], '/group/create', [$this, 'group_create']);
         $app->map(['GET', 'POST'], '/group/update/[{id}]', [$this, 'group_update']);
         $app->map(['POST'], '/group/delete/[{id}]', [$this, 'group_delete']);
+        $app->map(['GET', 'POST'], '/group/priviledge/[{id}]', [$this, 'group_priviledge']);
     }
 
     public function view($request, $response, $args)
@@ -218,5 +219,52 @@ class UsersController extends BaseController
             $message = 'Your data is successfully deleted.';
             echo true;
         }
+    }
+
+    public function group_priviledge($request, $response, $args)
+    {
+        if ($this->_user->isGuest()){
+            return $response->withRedirect($this->_login_url);
+        }
+
+        $model = \Model\AdminGroupModel::model()->findByPk($args['id']);
+        $items = [];
+        foreach (glob($this->_settings['basePath'].'/modules/*/*controllers', GLOB_ONLYDIR|GLOB_NOSORT) as $controller) {
+            //$cname = basename($controller, '.php');
+            $end = end(explode('modules/', $controller));
+            $module = explode("/", $end);
+            if (is_dir($controller)){
+                foreach (glob($controller.'/*_controller.php') as $cname){
+                    if (is_file($cname)){
+                        $c_end = end(explode('controllers/', $cname));
+                        $file_name = $c_end;
+                        $ctrls = explode('_', $c_end);
+                    }
+                    array_push($items, [ 'path' => $cname, 'module' => $module[0], 'controller' => $ctrls[0]]);
+                }
+            }
+        }
+
+        if (isset($_POST['Priviledge'])){
+            /*$model->name = $_POST['AdminGroup']['name'];
+            $model->updated_at = date('Y-m-d H:i:s');
+            $update = \Model\AdminGroupModel::model()->update($model);
+            if ($update) {
+                $message = 'Your data is successfully updated.';
+                $success = true;
+            } else {
+                $message = \Model\AdminGroupModel::model()->getErrors(false);
+                $success = false;
+            }*/
+            var_dump($_POST['Priviledge']); exit;
+        }
+
+        return $this->_container->module->render($response, 'users/group_priviledge.html', [
+            'model' => $model,
+            'admin' => new \Model\AdminGroupModel(),
+            'items' => $items,
+            'message' => ($message) ? $message : null,
+            'success' => $success
+        ]);
     }
 }
