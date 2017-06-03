@@ -154,6 +154,7 @@ class UsersController extends BaseController
 
         if (isset($_POST['AdminGroup'])){
             $model->name = $_POST['AdminGroup']['name'];
+            $model->description = $_POST['AdminGroup']['description'];
             $model->created_at = date('Y-m-d H:i:s');
             $create = \Model\AdminGroupModel::model()->save($model);
             if ($create) {
@@ -184,6 +185,7 @@ class UsersController extends BaseController
 
         if (isset($_POST['AdminGroup'])){
             $model->name = $_POST['AdminGroup']['name'];
+            $model->description = $_POST['AdminGroup']['description'];
             $model->updated_at = date('Y-m-d H:i:s');
             $update = \Model\AdminGroupModel::model()->update($model);
             if ($update) {
@@ -246,7 +248,7 @@ class UsersController extends BaseController
         }
 
         if (isset($_POST['Priviledge'])){
-            /*$model->name = $_POST['AdminGroup']['name'];
+            $model->priviledge = json_encode($_POST['Priviledge']);
             $model->updated_at = date('Y-m-d H:i:s');
             $update = \Model\AdminGroupModel::model()->update($model);
             if ($update) {
@@ -255,14 +257,14 @@ class UsersController extends BaseController
             } else {
                 $message = \Model\AdminGroupModel::model()->getErrors(false);
                 $success = false;
-            }*/
-            var_dump($_POST['Priviledge']); exit;
+            }
         }
 
         return $this->_container->module->render($response, 'users/group_priviledge.html', [
             'model' => $model,
             'admin' => new \Model\AdminGroupModel(),
             'items' => $items,
+            'priviledge' => json_decode($model->priviledge, true),
             'message' => ($message) ? $message : null,
             'success' => $success
         ]);

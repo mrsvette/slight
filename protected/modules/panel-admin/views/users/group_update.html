@@ -22,6 +22,12 @@ Update Group User - {{ model.username }} - {{ App.name }}
 	                            	<input name="AdminGroup[name]" type="text" class="form-control" value="{{ model.name }}">
 								</div>
 							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">Description</label>
+								<div class="col-sm-6">
+									<textarea name="AdminGroup[description]" class="form-control">{{ model.description }}</textarea>
+								</div>
+							</div>
                         	<div class="form-group">
 								<label class="col-sm-2 control-label">&nbsp;</label>
 								<div class="col-sm-10">

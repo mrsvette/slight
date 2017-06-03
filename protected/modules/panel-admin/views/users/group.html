@@ -22,7 +22,7 @@ Manage Group Of Users - {{ App.name }}
                                     <tr>
                                         <th>id</th>
                                         <th>Name</th>
-                                        <th>Priviledge</th>
+                                        <th>Description</th>
                                         <th>&nbsp;</th>
                                     </tr>
                                     </thead>
@@ -31,7 +31,7 @@ Manage Group Of Users - {{ App.name }}
                                     <tr>
                                         <td>{{ i }}</td>
                                         <td>{{ model.name }}</td>
-                                        <td>{{ model.priviledge }}</td>
+                                        <td>{{ model.description | default('-') }}</td>
                                         <td>
                                             <a href="{{ 'users/group/update' | alink }}/{{ i }}" title="Update">
                                                 <i class="fa fa-pencil"></i>
