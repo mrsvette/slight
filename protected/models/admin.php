@@ -59,4 +59,15 @@ class AdminModel extends \Model\BaseModel
         $items = self::getListStatus();
         return $items[$status];
     }
+
+    public function getPriviledge($data)
+    {
+        $sql = 'SELECT g.priviledge 
+          FROM tbl_admin a 
+          LEFT JOIN tbl_admin_group g ON g.id = a.group_id 
+          WHERE a.id =:id';
+
+        $priv = R::getRow( $sql, [ 'id'=>$data['user_id'] ]);
+        return json_decode($priv['priviledge'], true);
+    }
 }

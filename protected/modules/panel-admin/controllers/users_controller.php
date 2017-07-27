@@ -26,10 +26,31 @@ class UsersController extends BaseController
         $app->map(['GET', 'POST'], '/group/priviledge/[{id}]', [$this, 'group_priviledge']);
     }
 
+    public function accessRules()
+    {
+        return [
+            ['allow',
+                'actions' => ['view', 'create', 'update', 'delete'],
+                'users'=> ['@'],
+            ],
+            ['allow',
+                'actions' => ['view'],
+                'expression' => \Model\AdminGroupModel::hasAccess($this->_user, 'panel-admin/users/create'),
+            ],
+            ['deny',
+                'users' => ['*'],
+            ],
+        ];
+    }
+
     public function view($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+        
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $models = \Model\AdminModel::model()->findAll();
