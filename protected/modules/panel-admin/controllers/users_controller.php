@@ -35,7 +35,7 @@ class UsersController extends BaseController
             ],
             ['allow',
                 'actions' => ['view'],
-                'expression' => \Model\AdminGroupModel::hasAccess($this->_user, 'panel-admin/users/create'),
+                'expression' => $this->hasAccess('panel-admin/users/create'),
             ],
             ['deny',
                 'users' => ['*'],
