@@ -55,4 +55,10 @@ class BaseController
             ->withHeader('Content-Type', 'text/html')
             ->write('You are not allowed to do this action!');
     }
+
+    protected function hasAccess($path)
+    {
+        $model = new \Model\AdminGroupModel();
+        return $model->hasAccess($this->_user, $path);
+    }
 }
