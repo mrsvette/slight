@@ -4,9 +4,8 @@ namespace PanelAdmin\Controllers;
 
 use Components\BaseController as BaseController;
 
-class PagesController extends BaseController
+class PostsController extends BaseController
 {
-    
     public function __construct($app, $user)
     {
         parent::__construct($app, $user);
@@ -30,7 +29,7 @@ class PagesController extends BaseController
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
         
-        return $this->_container->module->render($response, 'pages/view.html', [
+        return $this->_container->module->render($response, 'posts/view.html', [
             'pages' => $tools->getPages()
         ]);
     }
@@ -56,7 +55,7 @@ class PagesController extends BaseController
             }
         }
 
-        return $this->_container->module->render($response, 'pages/create.html', [
+        return $this->_container->module->render($response, 'posts/create.html', [
             'message' => ($message) ? $message : null,
             'success' => $success
         ]);
@@ -83,7 +82,7 @@ class PagesController extends BaseController
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
-        return $this->_container->module->render($response, 'pages/update.html', [
+        return $this->_container->module->render($response, 'posts/update.html', [
             'data' => $tools->getPage($args['name']),
             'message' => ($message) ? $message : null,
             'success' => $success

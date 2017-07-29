@@ -7,6 +7,7 @@ class BaseController
     protected $_container;
     protected $_settings;
     protected $_user;
+    protected $_login_url = '/panel-admin/default/login';
 
     public function __construct($app, $user)
     {
