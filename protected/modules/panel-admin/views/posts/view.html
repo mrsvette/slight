@@ -18,22 +18,24 @@ Blog Posts - {{ App.name }}
                                     <thead>
                                     <tr>
                                         <th>id</th>
-                                        <th>Page</th>
-                                        <th>Url</th>
+                                        <th>Title</th>
+                                        <th>Permalink</th>
+                                        <th>Status</th>
                                         <th>&nbsp;</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for i, page in pages %}
+                                    {% for i, post in posts %}
                                     <tr>
                                         <td>{{ i + 1 }}</td>
-                                        <td>{{ page.name }}</td>
-                                        <td><a href="{{ page.slug | link }}" target="_newtab">{{  page.slug | link }}</a></td>
+                                        <td>{{ post.title }}</td>
+                                        <td><a href="{{ post.slug | link }}" target="_newtab">{{  post.slug | link }}</a></td>
+                                        <td><center>{{ post.status }}</center></td>
                                         <td>
-                                            <a href="{{ 'pages/update' | alink }}/{{ page.slug }}">
+                                            <a href="{{ 'posts/update' | alink }}/{{ post.post_id }}">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
-                                            <a href="{{ 'pages/delete' | alink }}/{{ page.slug }}" onclick="return hapus(this);">
+                                            <a href="{{ 'posts/delete' | alink }}/{{ post.post_id }}" onclick="return hapus(this);">
                                                 <i class="fa fa-trash-o"></i>
                                             </a>
                                         </td>

@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block pagetitle %}
-Create New Page - {{ App.name }}
+Create New Blog Post - {{ App.name }}
 {% endblock %}
 
 {% block content %}
@@ -10,21 +10,79 @@ Create New Page - {{ App.name }}
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Create New Page</div>
+                        <div class="panel-heading">Create New Blog Post</div>
 						<div class="panel-body">
 						{% if message %}
 							<div class="alert {% if success %}alert-success{% else %}alert-warning{% endif %}">{{ message }}</div>
 						{% endif %}
 						<form method="post" name="page-create">
-							<div class="form-group">
-								<label>Page Slug</label>
-                            	<input type="text" name="name" class="form-control" placeholder="Use '-' to separate sentences. Ex : why-choose-us">
+							<ul class="nav nav-tabs nav-justified">
+								{% for language in languages %}
+								<li {% if language.is_default %}class="active"{% endif %}>
+									<a data-toggle="tab" href="#language-{{ language.code }}">
+										<i class="glyphicon glyphicon-file"></i> <strong>{{ language.language_name }}</strong>
+									</a>
+								</li>
+								{% endfor %}
+							</ul>
+							<div class="tab-content">
+								{% for language in languages %}
+								<div id="language-{{ language.code }}" class="tab-pane {% if language.is_default %}active{% endif %}">
+									<div class="form-group col-sm-6">
+										<label>Title</label>
+										<input type="text" name="PostContent[title][{{ language.id }}]" class="form-control" lang="{{ language.id }}" onchange="getSlug(this)">
+									</div>
+									<div class="form-group col-sm-6">
+										<label>Permalink</label>
+										<input type="text" name="PostContent[slug][{{ language.id }}]" class="form-control" id="slug-{{ language.id }}">
+									</div>
+									<div class="form-group col-sm-12">
+										<label>Content</label>
+										<textarea class="form-control editor" name="PostContent[content][{{ language.id }}]" style="min-height:200px;"></textarea>
+									</div>
+									<input type="hidden" name="PostContent[language][{{ language.id }}]" value="{{ language.id }}">
+									<div class="form-group col-sm-6">
+										<label>Meta Keywords</label>
+										<input type="text" name="PostContent[meta_keywords][{{ language.id }}]" class="form-control">
+									</div>
+									<div class="form-group col-sm-6">
+										<label>Meta Description</label>
+										<textarea name="PostContent[meta_description][{{ language.id }}]" class="form-control"></textarea>
+									</div>
+								</div>
+								{% endfor %}
 							</div>
-							<div class="form-group">
-								<label>Page Content</label>
-                            	<textarea id="page-content" class="form-control" name="content" style="min-height:200px;">{{ data.content  }}</textarea>
+							<input type="hidden" name="Post[post_type]" value="post">
+							<div class="form-group col-sm-6">
+								<label>Category</label>
+								<select name="Post[post_category][]" class="form-control multiple" multiple="true">
+									{% for category in categories %}
+									<option value="{{ category.id }}">{{ category.category_name }}</option>
+									{% endfor %}
+								</select>
 							</div>
-                        	<div class="form-group">
+							<div class="form-group col-sm-6">
+								<label>Tags</label>
+								<input type="text" name="Post[tags]" class="form-control" placeholder="Please separate with ','. Ex : domain, whois">
+							</div>
+							<div class="form-group col-sm-6">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="Post[allow_comment]" checked="checked">
+										<b>Allow Comment</b>
+									</label>
+								</div>
+							</div>
+							<div class="form-group col-sm-6">
+								<label>Status</label>
+								{% for status_code, status_name in status_list %}
+								<label class="radio-inline">
+									<input type="radio" name="Post[status]" id="optionsRadios1" value="{{ status_code }}" {% if status_code == 'draft' %}checked="checked"{% endif %}>
+									{{ status_name }}
+								</label>
+								{% endfor %}
+							</div>
+                        	<div class="form-group col-sm-12">
                                 <input type="submit" name="Submit" value="Create" class="btn btn-success btn-submit">
                             </div>
                         </form>
@@ -37,18 +95,26 @@ Create New Page - {{ App.name }}
 </div>
 {% endblock %}
 {% block endbodyjs %}
-<script src="{{ 'lib/editarea/edit_area_full.js' | admin_asset_url }}"></script>
+<script type="text/javascript" src="{{ 'lib/wysihtml5/wysihtml5.min.js' | admin_asset_url }}"></script>
+<script type="text/javascript" src="{{ 'lib//wysihtml5/toolbar.js' | admin_asset_url }}"></script>
+<link rel='stylesheet' type='text/css' href="{{ 'lib/wysihtml5/bootstrap-wysihtml5.css' | admin_asset_url }}">
 <script type="text/javascript">
 $(function(){
-	editAreaLoader.init({
-		id: "page-content"	// id of the textarea to transform		
-		,start_highlight: true	// if start with highlight
-		,allow_resize: "both"
-		,allow_toggle: true
-		,word_wrap: true
-		,language: "en"
-		,syntax: "html"	
+	$('.editor').wysihtml5({
 	});
 });
+function getSlug(data){
+	var lang = $(data).attr('lang');
+	$.ajax({
+		'beforeSend': function() {  },
+		'complete': function() {  },
+		'url': "{{ 'posts/get-slug' | alink }}",
+		'type':'post',
+		'data':{'title':$(data).val()},
+		'success': function(data) {
+			$('#slug-'+lang).attr('value',data);
+		}
+	});
+}
 </script>
 {% endblock %}
