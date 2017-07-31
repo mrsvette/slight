@@ -6,8 +6,7 @@ use Components\BaseController as BaseController;
 
 class PagesController extends BaseController
 {
-    protected $_login_url = '/panel-admin/default/login';
-
+    
     public function __construct($app, $user)
     {
         parent::__construct($app, $user);

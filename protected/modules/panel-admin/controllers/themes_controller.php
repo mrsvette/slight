@@ -6,7 +6,6 @@ use Components\BaseController as BaseController;
 
 class ThemesController extends BaseController
 {
-    protected $_login_url = '/panel-admin/default/login';
 
     public function __construct($app, $user)
     {

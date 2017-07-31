@@ -120,7 +120,12 @@ class BaseModel extends \RedBeanPHP\SimpleModel
 
         $save = R::store($dispense);
 
-        return ($save > 0)? true : false;
+        if ($save > 0) {
+            $bean->id = $save;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function update($bean, $validate = true)
@@ -147,10 +152,24 @@ class BaseModel extends \RedBeanPHP\SimpleModel
         return true;
     }
 
+    public function deleteAllByAttributes($params)
+    {
+        $field = array();
+        foreach ($params as $attr => $val){
+            $field[] = $attr. '= :'. $attr;
+        }
+
+        $sql = implode(" AND ", $field);
+
+        $models = R::find($this->tableName, $sql, $params);
+        $delete =  R::trashAll( $models );
+        return $delete;
+    }
+
     public function validate($bean)
     {
         if (is_array($this->rules())) {
-            require __DIR__ . '/../components/validator.php';
+            require_once __DIR__ . '/../components/validator.php';
             $validator = new \Components\Validator($bean);
             $errors = [];
             foreach ($this->rules() as $i => $rule){
