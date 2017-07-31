@@ -122,6 +122,7 @@ class PostsController extends BaseController
         $model = \Model\PostModel::model()->findByPk($args['id']);
         $post = new \Model\PostModel();
         $categories = \Model\PostCategoryModel::model()->findAll();
+        $post_detail = $post->getPostDetail($args['id']);
 
         if (isset($_POST['Post'])){
             $model->status = $_POST['Post']['status'];
@@ -136,10 +137,14 @@ class PostsController extends BaseController
                 $post_content = \Model\PostContentModel::model();
                 foreach ($_POST['PostContent']['title'] as $lang => $title) {
                     if (!empty($title) && !empty($_POST['PostContent']['content'][$lang])) {
-                        $model2 = new \Model\PostContentModel;
+                        $model2 = \Model\PostContentModel::model()->findByAttributes([ 'post_id'=>$model->id, 'language'=>$lang ]);
+                        if (!$model2 instanceof \RedBeanPHP\OODBBean) {
+                            $model2 = new \Model\PostContentModel;
+                            $model2->created_at = date("Y-m-d H:i:s");
+                        }
                         $model2->post_id = $model->id;
                         $model2->title = $title;
-                        if (!empty($_POST['PostContent']['slug'][$lang])){
+                        if (!empty($_POST['PostContent']['slug'][$lang]) && $_POST['PostContent']['slug'][$lang] != $model2->slug){
                             $cek_slug = $post_content->findByAttributes(['slug'=>$_POST['PostContent']['slug'][$lang]]);
                             if ($cek_slug instanceof \RedBeanPHP\OODBBean) {
                                 $model2->slug = $_POST['PostContent']['slug'][$lang].'2';
@@ -147,27 +152,45 @@ class PostsController extends BaseController
                                 $model2->slug = $_POST['PostContent']['slug'][$lang];
                             }
                         } else
-                            $model2->slug = $model->createSlug($title);
+                            $model2->slug = $post->createSlug($title);
 
                         $model2->language = $lang;
                         $model2->content = $_POST['PostContent']['content'][$lang];
                         $model2->meta_keywords = $_POST['PostContent']['meta_keywords'][$lang];
                         $model2->meta_description = $_POST['PostContent']['meta_description'][$lang];
                         $model2->updated_at = date("Y-m-d H:i:s");
-                        $create_content = $post_content->update($model2);
+                        if (!$model2 instanceof \RedBeanPHP\OODBBean)
+                            $store = $post_content->save($model2);
+                        else
+                            $store = $post_content->update($model2);
+                        if (!$store){
+                            var_dump($post_content->getErrors()); exit;
+                        }
                     }
                 }
                 $post_in_category = \Model\PostInCategoryModel::model();
                 if (!empty($_POST['Post']['post_category']) && is_array($_POST['Post']['post_category'])) {
                     foreach ($_POST['Post']['post_category'] as $ci => $category_id) {
-                        $model3 = new \Model\PostInCategoryModel();
-                        $model3->post_id = $model->id;
-                        $model3->category_id = $category_id;
-                        $model3->created_at = date("Y-m-d H:i:s");
-                        $post_in_category->save($model3);
+                        $model3 = \Model\PostInCategoryModel::model()->findByAttributes([ 'post_id'=>$model->id, 'category_id'=>$category_id ]);
+                        if (!$model3 instanceof \RedBeanPHP\OODBBean) {
+                            $model3 = new \Model\PostInCategoryModel();
+                            $model3->created_at = date("Y-m-d H:i:s");
+                            $model3->post_id = $model->id;
+                            $model3->category_id = $category_id;
+                            $post_in_category->save($model3);
+                        }
+                    }
+                    if (is_array($post_detail['category']) && count($post_detail['category'])>0){
+                        foreach ($post_detail['category'] as $ipc => $pc_id) {
+                            if (!in_array($pc_id, $_POST['Post']['post_category'])) {
+                                $dmodel = \Model\PostInCategoryModel::model()->findByAttributes([ 'post_id'=>$model->id, 'category_id'=>$pc_id ]);
+                                $del = \Model\PostInCategoryModel::model()->delete($dmodel);
+                            }
+                        }
                     }
                 }
 
+                $post_detail = $post->getPostDetail($model->id);
                 $message = 'Your post is successfully updated.';
                 $success = true;
             } else {
@@ -178,8 +201,9 @@ class PostsController extends BaseController
 
         return $this->_container->module->render($response, 'posts/update.html', [
             'languages' => $languages,
-            'status_list' => $model->getListStatus(),
+            'status_list' => $post->getListStatus(),
             'categories' => $categories,
+            'post' => $post_detail,
             'message' => ($message) ? $message : null,
             'success' => $success
         ]);

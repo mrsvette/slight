@@ -30,24 +30,24 @@ Update Blog Post - {{ App.name }}
 									<div id="language-{{ language.code }}" class="tab-pane {% if language.is_default %}active{% endif %}">
 										<div class="form-group col-sm-6">
 											<label>Title</label>
-											<input type="text" name="PostContent[title][{{ language.id }}]" class="form-control" lang="{{ language.id }}" onchange="getSlug(this)">
+											<input type="text" name="PostContent[title][{{ language.id }}]" class="form-control" value="{{ post.content[language.id].title}}" lang="{{ language.id }}" onchange="getSlug(this)">
 										</div>
 										<div class="form-group col-sm-6">
 											<label>Permalink</label>
-											<input type="text" name="PostContent[slug][{{ language.id }}]" class="form-control" id="slug-{{ language.id }}">
+											<input type="text" name="PostContent[slug][{{ language.id }}]" class="form-control" id="slug-{{ language.id }}" value="{{ post.content[language.id].slug}}">
 										</div>
 										<div class="form-group col-sm-12">
 											<label>Content</label>
-											<textarea class="form-control editor" name="PostContent[content][{{ language.id }}]" style="min-height:200px;"></textarea>
+											<textarea class="form-control editor" name="PostContent[content][{{ language.id }}]" style="min-height:200px;">{{ post.content[language.id].content }}</textarea>
 										</div>
 										<input type="hidden" name="PostContent[language][{{ language.id }}]" value="{{ language.id }}">
 										<div class="form-group col-sm-6">
 											<label>Meta Keywords</label>
-											<input type="text" name="PostContent[meta_keywords][{{ language.id }}]" class="form-control">
+											<input type="text" name="PostContent[meta_keywords][{{ language.id }}]" class="form-control" value="{{ post.content[language.id].meta_keywords }}">
 										</div>
 										<div class="form-group col-sm-6">
 											<label>Meta Description</label>
-											<textarea name="PostContent[meta_description][{{ language.id }}]" class="form-control"></textarea>
+											<textarea name="PostContent[meta_description][{{ language.id }}]" class="form-control">{{ post.content[language.id].meta_description }}</textarea>
 										</div>
 									</div>
 									{% endfor %}
@@ -57,18 +57,18 @@ Update Blog Post - {{ App.name }}
 									<label>Category</label>
 									<select name="Post[post_category][]" class="form-control multiple" multiple="true">
 										{% for category in categories %}
-										<option value="{{ category.id }}">{{ category.category_name }}</option>
+										<option value="{{ category.id }}" {% if category.id in post.category %}selected="selected"{% endif %}>{{ category.category_name }}</option>
 										{% endfor %}
 									</select>
 								</div>
 								<div class="form-group col-sm-6">
 									<label>Tags</label>
-									<input type="text" name="Post[tags]" class="form-control" placeholder="Please separate with ','. Ex : domain, whois">
+									<input type="text" name="Post[tags]" class="form-control" placeholder="Please separate with ','. Ex : domain, whois" value="{{ post.tags_string }}">
 								</div>
 								<div class="form-group col-sm-6">
 									<div class="checkbox">
 										<label>
-											<input type="checkbox" name="Post[allow_comment]" checked="checked">
+											<input type="checkbox" name="Post[allow_comment]" {% if post.allow_comment %}checked="checked"{% endif %}>
 											<b>Allow Comment</b>
 										</label>
 									</div>
@@ -77,7 +77,7 @@ Update Blog Post - {{ App.name }}
 									<label>Status</label>
 									{% for status_code, status_name in status_list %}
 									<label class="radio-inline">
-										<input type="radio" name="Post[status]" id="optionsRadios1" value="{{ status_code }}" {% if status_code == 'draft' %}checked="checked"{% endif %}>
+										<input type="radio" name="Post[status]" id="optionsRadios1" value="{{ status_code }}" {% if status_code == post.status %}checked="checked"{% endif %}>
 										{{ status_name }}
 									</label>
 									{% endfor %}
@@ -102,6 +102,12 @@ Update Blog Post - {{ App.name }}
 	$(function(){
 		$('.editor').wysihtml5({
 		});
+		var success_message = "{{ message }}";
+		if (success_message && success_message.length > 0) {
+			setTimeout(function () {
+				window.location.href = "{{ 'posts/update' | alink }}/{{ post.id }}";
+			}, 3000);
+		}
 	});
 	function getSlug(data){
 		var lang = $(data).attr('lang');

@@ -102,6 +102,12 @@ Create New Blog Post - {{ App.name }}
 $(function(){
 	$('.editor').wysihtml5({
 	});
+	var success_message = "{{ message }}";
+	if (success_message && success_message.length > 0) {
+		setTimeout(function () {
+			window.location.href = "{{ 'posts/create' | alink }}";
+		}, 3000);
+	}
 });
 function getSlug(data){
 	var lang = $(data).attr('lang');
