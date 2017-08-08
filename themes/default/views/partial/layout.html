@@ -21,12 +21,18 @@
 <div class="body-wrapper">
     <div id="header" class="navbar navbar-fixed-top">
         <div class="navbar-inner">
-            <div class="container"> <a class="btn responsive-menu pull-right" data-toggle="collapse" data-target=".nav-collapse"><i class='icon-menu-1'></i></a> <a class="brand" href="{{ '' | link }}"><img src="{{ 'images/logo.png' | asset_url  }}" alt="" /></a>
+            <div class="container">
+                <a class="btn responsive-menu pull-right" data-toggle="collapse" data-target=".nav-collapse">
+                    <i class='icon-menu-1'></i>
+                </a>
+                <a class="brand" href="{{ '' | link }}">
+                    <img src="{{ 'images/logo.png' | asset_url  }}" alt="" />
+                </a>
                 <div class="nav-collapse pull-right collapse">
                     <ul class="nav">
-                        <li><a href="{{ '' | link }}">Home</a></li>
-                        <li><a href="{{ 'tentang-kami' | link }}">Tentang Kami</a></li>
-                        <li class="dropdown"><a href="#" class="dropdown-toggle js-activated">Blog</a>
+                        <li><a href="{{ '' | link }}">Beranda</a></li>
+                        <li><a href="{{ 'tentang-kami' | link }}">Wawasan</a></li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle js-activated">Tutorial</a>
                             <ul class="dropdown-menu">
                                 <li><a href="blog.html">Blog with Sidebar</a></li>
                                 <li><a href="blog2.html">Blog without Sidebar</a></li>
@@ -34,8 +40,7 @@
                                 <li><a href="blog2-post.html">Post without Sidebar</a></li>
                             </ul>
                         </li>
-                        <li><a href="{{ 'layanan' | link }}">Layanan</a></li>
-                        <li><a href="{{ 'kontak-kami' | link }}">Kontak Kami</a></li>
+                        <li><a href="{{ 'layanan' | link }}">Review</a></li>
                     </ul>
                 </div>
                 <!-- .nav-collapse -->
