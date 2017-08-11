@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="robots" content="noindex">
     <link rel="shortcut icon" type="image/x-icon" href="{{ 'images/favicon.ico' | asset_url }}" />
     <link href="{{ 'css/bootstrap.css' | asset_url }}" rel="stylesheet">
     <link href="{{ 'css/settings.css' | asset_url }}" rel="stylesheet">
@@ -21,21 +22,23 @@
 <div class="body-wrapper">
     <div id="header" class="navbar navbar-fixed-top">
         <div class="navbar-inner">
-            <div class="container"> <a class="btn responsive-menu pull-right" data-toggle="collapse" data-target=".nav-collapse"><i class='icon-menu-1'></i></a> <a class="brand" href="{{ '' | link }}"><img src="{{ 'images/logo.png' | asset_url  }}" alt="" /></a>
+            <div class="container">
+                <a class="btn responsive-menu pull-right" data-toggle="collapse" data-target=".nav-collapse">
+                    <i class='icon-menu-1'></i>
+                </a>
+                <a class="brand" href="{{ '' | link }}">
+                    <img src="{{ 'images/logo.png' | asset_url  }}" alt="" />
+                </a>
                 <div class="nav-collapse pull-right collapse">
                     <ul class="nav">
-                        <li><a href="{{ '' | link }}">Home</a></li>
-                        <li><a href="{{ 'tentang-kami' | link }}">Tentang Kami</a></li>
-                        <li class="dropdown"><a href="#" class="dropdown-toggle js-activated">Blog</a>
+                        <li><a href="{{ '' | link }}">Beranda</a></li>
+                        <li><a href="{{ 'tentang-kami' | link }}">Wawasan</a></li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle js-activated">Tutorial</a>
                             <ul class="dropdown-menu">
-                                <li><a href="blog.html">Blog with Sidebar</a></li>
-                                <li><a href="blog2.html">Blog without Sidebar</a></li>
-                                <li><a href="blog-post.html">Post with Sidebar</a></li>
-                                <li><a href="blog2-post.html">Post without Sidebar</a></li>
+                                <li><a href="#">Blog with Sidebar</a></li>
                             </ul>
                         </li>
-                        <li><a href="{{ 'layanan' | link }}">Layanan</a></li>
-                        <li><a href="{{ 'kontak-kami' | link }}">Kontak Kami</a></li>
+                        <li><a href="{{ 'kontak-kami' | link }}">Kontak</a></li>
                     </ul>
                 </div>
                 <!-- .nav-collapse -->
@@ -50,40 +53,6 @@
 
     <footer class="black-wrapper">
         <div class="container inner">
-            <div class="row">
-                <section class="span4 widget">
-                    <h3 class="section-title widget-title">Popular Posts</h3>
-                    <ul class="post-list">
-                        <li>
-                            <h6><a href="blog-post.html">Vivamus sagittis lacus vel augue metus</a></h6>
-                            <em>3th Oct 2012</em> </li>
-                        <li>
-                            <h6><a href="blog-post.html">Scelerisque nisl consectetur et</a></h6>
-                            <em>28th Sep 2012</em> </li>
-                        <li>
-                            <h6><a href="blog-post.html">Pellentesque ornare sem lacinia quam</a></h6>
-                            <em>15th Aug 2012</em> </li>
-                    </ul>
-                    <!-- /.post-list -->
-                </section>
-                <!-- /.widget -->
-                <section class="span4 widget">
-                    <h3 class="section-title widget-title">Tags</h3>
-                    <div class="tagcloud"> <a href="#" style="font-size: 9pt;">blogroll</a> <a href="#" style="font-size: 19pt;">daily</a> <a href="#" style="font-size: 9pt;">dialog</a> <a href="#" style="font-size: 9pt;">gallery</a> <a href="#" style="font-size: 10pt;">journal</a> <a href="#" style="font-size: 9pt;">link</a> <a href="#" style="font-size: 12pt;">motion</a> <a href="#" style="font-size: 9pt;">music</a> <a href="#" style="font-size: 20pt;">photo</a> <a href="#" style="font-size: 13pt;">professional</a> <a href="#" style="font-size: 16pt;">quotation</a> <a href="#" style="font-size: 9pt;">show</a> <a href="#" style="font-size: 15pt;">sound</a> <a href="#" style="font-size: 9pt;">tv</a> <a href="#" style="font-size: 9pt;">video</a> <a href="#" style="font-size: 9pt;">gift</a> <a href="#" style="font-size: 19pt;">label</a> <a href="#" style="font-size: 9pt;">christmas</a> <a href="#" style="font-size: 9pt;">holiday</a> <a href="#" style="font-size: 10pt;">fun</a> <a href="#" style="font-size: 9pt;">recipes</a> <a href="#" style="font-size: 12pt;">concert</a> <a href="#" style="font-size: 9pt;">drinks</a> <a href="#" style="font-size: 20pt;">apps</a> <a href="#" style="font-size: 13pt;">iphone</a> <a href="#" style="font-size: 16pt;">ipad</a> <a href="#" style="font-size: 9pt;">develop</a> <a href="#" style="font-size: 15pt;">marketing</a> <a href="#" style="font-size: 9pt;">strategy</a> <a href="#" style="font-size: 13pt;">food</a> <a href="#" style="font-size: 12pt;">typography</a> <a href="#" style="font-size: 9pt;">mobile</a> <a href="#" style="font-size: 15pt;">envato</a> <a href="#" style="font-size: 9pt;">icon</a> <a href="#" style="font-size: 9pt;">coda</a> <a href="#" style="font-size: 20pt;">jquery</a> <a href="#" style="font-size: 9pt;">cms</a> </div>
-                </section>
-                <!-- /.widget -->
-                <section class="span4 widget">
-                    <h3 class="section-title widget-title">Kontak Kami</h3>
-                    <p>Fusce dapibus, tellus commodo, tortor mauris condimentum utellus fermentum, porta sem malesuada magna. Sed posuere consectetur est at lobortis. Morbi leo risus, porta ac consectetur.</p>
-                    <div class="divide10"></div>
-                    <i class="icon-location contact"></i> Jalan Magelang KM 9, Ds Karangasem, Pandowoharjo, Ngaglik Sleman, Daerah Istimewa Yogyakarta <br />
-                    <i class="icon-phone contact"></i>+62 123 456 78 90 <br />
-                    <i class="icon-mail contact"></i> <a href="first.last%40email.html">kontak@slighsite.com</a> </section>
-                <!-- /.widget -->
-            </div>
-            <!-- /.row -->
-
-            <hr />
             <p class="pull-left">© {{ now | date('Y') }} {{ App.name }}. All rights reserved.</p>
             <ul class="social pull-right">
                 <li><a href="#"><i class="icon-s-rss"></i></a></li>

@@ -40,17 +40,31 @@ iframe {
     background: #fefac7; /* Firefox */
     color: #555555;
 }
+@font-face {
+    font-family: 'proxima_novalight';
+    src: url("../fonts/proximanova-light-webfont.eot");
+    src: url("../fonts/proximanova-light-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/proximanova-light-webfont.woff2") format("woff2"), url("../fonts/proximanova-light-webfont.woff") format("woff");
+    font-weight: normal;
+    font-style: normal
+}
+@font-face {
+    font-family: 'proxima_novaregular';
+    src: url("../fonts/proximanova-regular-webfont.eot");
+    src: url("../fonts/proximanova-regular-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/proximanova-regular-webfont.woff2") format("woff2"), url("../fonts/proximanova-regular-webfont.woff") format("woff");
+    font-weight: normal;
+    font-style: normal
+}
 /*-----------------------------------------------------------------------------------*/
 /*	GENERAL
 /*-----------------------------------------------------------------------------------*/
 body {
     -webkit-font-smoothing: antialiased;
     -webkit-text-size-adjust: 100%;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'proxima_novaregular';
     overflow-x: hidden;
     background-color: #f9f9f9;
-    color: #6c6c6c;
-    font-size: 14px;
+    color: #4e5a62;
+    font-size: 16px;
 }
 .dark-wrapper {
     background-color: #f3f3f3
@@ -67,11 +81,11 @@ input,
 button,
 select,
 textarea {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'proxima_novalight';
     font-size: 14px;
 }
 a {
-    color: #1abb9c
+    color: #4e5a62
 }
 a:hover,
 a:focus {
@@ -84,9 +98,9 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: 'Roboto Slab', serif;
+    font-family: 'proxima_novaregular'
     margin-top: 0;
-    color: #4e4e4e;
+    color: #4e5a62;
     margin-bottom: 10px;
 }
 h1 {
@@ -122,7 +136,7 @@ h6 {
     font-size: 12px
 }
 .section-title {
-    font-family: 'Roboto Condensed', sans-serif;
+    font-family: 'proxima_novaregular';
     text-transform: uppercase;
     font-size: 19px;
     margin-bottom: 20px;
@@ -132,7 +146,7 @@ h6 {
     line-height: 26px;
 }
 .post-title a {
-    color: #4e4e4e
+    color: #4e5a62
 }
 .post-title a:hover {
     color: #1abb9c
@@ -176,7 +190,7 @@ ul.bullet li:before {
     line-height: 32px;
     color: #a8a8a8;
     font-weight: 400;
-    font-family: 'Roboto Slab', serif;
+    font-family: 'proxima_novaregular'
 }
 hr {
     border: 0;
@@ -185,7 +199,7 @@ hr {
 }
 .meta,
 .more {
-    font-family: 'Roboto Slab', serif;
+    font-family: 'proxima_novaregular'
     font-size: 12px;
     margin-bottom: 10px;
     color: #a8a8a8;
@@ -199,7 +213,7 @@ hr {
 }
 .meta a:hover,
 .more:hover {
-    color: #1abb9c
+    color: #0098da;
 }
 .meta.tags a:before {
     content: "#";
@@ -227,7 +241,7 @@ blockquote p {
     font-size: 18px;
     font-weight: 300;
     line-height: 30px;
-    font-family: 'Roboto Slab', serif;
+    font-family: 'proxima_novaregular'
 }
 blockquote small {
     line-height: 33px;
@@ -681,14 +695,14 @@ i.contact {
     line-height: 25px;
     font-weight: normal;
     letter-spacing: normal;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'proxima_novalight';
     margin: 0;
 }
 .widget .post-list li em {
     color: #6c6c6c;
     font-size: 12px;
     font-style: normal;
-    font-family: 'Roboto Slab', serif;
+    font-family: 'proxima_novaregular'
 }
 .tagcloud {
     line-height: 25px
@@ -746,8 +760,8 @@ i.contact {
     font-size: 16px;
     line-height: 1;
     font-weight: 900;
-    color: #4e4e4e;
-    font-family: 'Roboto Condensed', sans-serif;
+    color: #fefefe;
+    font-family: 'proxima_novaregular';
     text-shadow: none;
     padding: 12px 15px;
 }
@@ -790,7 +804,7 @@ i.contact {
     color: #d9d9d9;
     font-size: 15px;
     text-transform: uppercase;
-    font-family: 'Roboto Condensed', sans-serif;
+    font-family: 'proxima_novaregular';
     font-weight: 900;
 }
 #header .dropdown-menu li a:hover,
@@ -1042,7 +1056,7 @@ footer .social li {
     list-style: none;
 }
 .tp-caption.bold {
-    font-family: 'Roboto Slab', serif;
+    font-family: 'proxima_novaregular'
     font-size: 40px;
     line-height: 1;
     font-weight: 900;
@@ -1053,7 +1067,7 @@ footer .social li {
     line-height: 1;
     color: #a8a8a8;
     font-weight: 400;
-    font-family: 'Roboto Slab', serif;
+    font-family: 'proxima_novaregular'
 }
 .tp-caption a.btn {
     color: #fff
@@ -1369,8 +1383,8 @@ footer .social li {
 .format-chat ul li strong {
     font-weight: bold;
     text-transform: uppercase;
-    font-family: 'Roboto Condensed', sans-serif;
-    color: #4e4e4e;
+    font-family: 'proxima_novaregular';
+    color: #4e5a62;
 }
 .format-link .post-title a:after {
     display: inline-block;
@@ -1382,8 +1396,8 @@ footer .social li {
     padding-right: 2px;
     font-weight: bold;
     text-transform: uppercase;
-    font-family: 'Roboto Condensed', sans-serif;
-    color: #4e4e4e;
+    font-family: 'proxima_novaregular';
+    color: #4e5a62;
 }
 .item-details li a {
     color: #6c6c6c
@@ -1435,7 +1449,7 @@ footer .social li {
     font-weight: normal;
     text-transform: none;
     letter-spacing: normal;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'proxima_novalight';
 }
 .sidebox a {
     color: #6c6c6c
@@ -1790,7 +1804,7 @@ textarea {
     line-height: 30px;
     font-weight: 300;
     position: relative;
-    font-family: 'Roboto Slab', serif;
+    font-family: 'proxima_novaregular'
 }
 #testimonials .tab {
     border: none;
@@ -1843,7 +1857,7 @@ textarea {
     padding: 14px 17px;
     margin-right: 6px;
     line-height: 16px;
-    color: #4e4e4e;
+    color: #4e5a62;
     background: #ededed;
     font-weight: 900;
     font-size: 12px;
@@ -1888,7 +1902,7 @@ textarea {
 }
 .accordion-heading .accordion-toggle {
     padding: 11px 15px;
-    color: #4e4e4e;
+    color: #4e5a62;
     background: #ededed;
     font-weight: 900;
     font-size: 12px;
@@ -2014,7 +2028,7 @@ textarea {
     padding: 0 13px 0 16px;
 }
 .fix-portfolio .filter li a {
-    color: #4e4e4e
+    color: #4e5a62
 }
 .fix-portfolio .filter li a.active,
 .fix-portfolio .filter li a:hover {
@@ -2137,7 +2151,7 @@ textarea {
     display: block;
     padding: 10px 0;
     /*     margin: 63px 20px 20px 20px; */
-    font-family: 'Roboto Condensed', sans-serif;
+    font-family: 'proxima_novaregular';
     text-transform: uppercase;
     font-weight: bold;
     color: #e9e9e9;
@@ -2153,7 +2167,7 @@ textarea {
     text-transform: none;
     letter-spacing: 0.2px;
     margin-top: 5px;
-    font-family: 'Roboto Slab', serif;
+    font-family: 'proxima_novaregular'
 }
 .overlay div.da-animate {
     -webkit-transition: all 0.3s ease;
