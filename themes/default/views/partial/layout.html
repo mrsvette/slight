@@ -12,7 +12,7 @@
     <link href="{{ 'css/settings.css' | asset_url }}" rel="stylesheet">
     <link href="{{ 'js/google-code-prettify/prettify.css' | asset_url }}" rel="stylesheet">
     <link href="{{ 'css/style.css' | asset_url }}" rel="stylesheet">
-    <link href="{{ 'css/color/green.css' | asset_url }}" rel="stylesheet">
+    <link href="{{ 'css/color/red.css' | asset_url }}" rel="stylesheet">
     <link href='{{ "fonts.googleapis.com/css4ef4.css?family=Roboto:400,400italic,500,500italic,700italic,700,900,900italic,300italic,300,100italic,100" | asset_url }}' rel='stylesheet' type='text/css'>
     <link href='{{ "fonts.googleapis.com/cssc7ef.css?family=Roboto+Condensed:300italic,400italic,700italic,400,700,300" | asset_url }}' rel='stylesheet' type='text/css'>
     <link href='{{ "fonts.googleapis.com/css6cc7.css?family=Roboto+Slab:400,700,300,100" | asset_url }}' rel='stylesheet' type='text/css'>
@@ -23,8 +23,8 @@
     <div id="header" class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="btn responsive-menu pull-right" data-toggle="collapse" data-target=".nav-collapse">
-                    <i class='icon-menu-1'></i>
+                <a class="responsive-menu pull-right" data-toggle="collapse" data-target=".nav-collapse">
+                    <i class='icon-menu-1'></i> Menu
                 </a>
                 <a class="brand" href="{{ '' | link }}">
                     <img src="{{ 'images/logo.png' | asset_url  }}" alt="" />
@@ -32,12 +32,12 @@
                 <div class="nav-collapse pull-right collapse">
                     <ul class="nav">
                         <li><a href="{{ '' | link }}">Beranda</a></li>
-                        <li><a href="{{ 'tentang-kami' | link }}">Wawasan</a></li>
-                        <li class="dropdown"><a href="#" class="dropdown-toggle js-activated">Tutorial</a>
+                        <!--<li class="dropdown"><a href="#" class="dropdown-toggle js-activated">Tutorial</a>
                             <ul class="dropdown-menu">
                                 <li><a href="#">Blog with Sidebar</a></li>
                             </ul>
-                        </li>
+                        </li>-->
+                        <li><a href="{{ 'tutorial' | link }}">Tutorial</a></li>
                         <li><a href="{{ 'kontak-kami' | link }}">Kontak</a></li>
                     </ul>
                 </div>

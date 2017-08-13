@@ -117,4 +117,47 @@ class PostModel extends \Model\BaseModel
 
         return $items;
     }
+
+    public function getPost($slug)
+    {
+        $sql = "SELECT c.post_id, t.status, t.allow_comment, t.tags, t.created_at, t.updated_at, 
+          c.title, c.content, c.slug, l.id AS language_id, 
+          c.meta_keywords, c.meta_description, l.language_name, ad.username AS author_name 
+        FROM tbl_post t 
+        LEFT JOIN tbl_post_content c ON c.post_id = t.id 
+        LEFT JOIN tbl_post_language l ON l.id = c.language  
+        LEFT JOIN tbl_admin ad ON ad.id = t.author_id  
+        WHERE c.slug =:slug";
+
+        $row = R::getRow( $sql, ['slug'=>$slug] );
+
+        $items = [
+            'id' => $row['post_id'],
+            'status' => $row['status'],
+            'allow_comment' => $row['allow_comment'],
+            'tags' => (!empty($row['tags']))? self::string2array($row['tags']) : array(),
+            'tags_string' => $row['tags'],
+            'author' => $row['author_name'],
+            'created_at' => $row['created_at'],
+            'updated_at' => $row['updated_at'],
+            'title' => $row['title'],
+            'slug' => $row['slug'],
+            'content' => $row['content'],
+            'meta_keywords' => $row['meta_keywords'],
+            'meta_description' => $row['meta_description']
+        ];
+
+        $sql2 = "SELECT t.category_id    
+        FROM tbl_post_in_category t 
+        WHERE t.post_id =:post_id";
+
+        $rows2 = R::getAll( $sql2, ['post_id'=>$row['post_id']] );
+        $category = [];
+        foreach ($rows2 as $j => $row2) {
+            array_push($category, $row2['category_id']);
+        }
+        $items['category'] = $category;
+
+        return $items;
+    }
 }
