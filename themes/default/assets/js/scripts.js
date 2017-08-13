@@ -60,7 +60,7 @@ $(document).ready(function() {
 /*  HEADER
 /*-----------------------------------------------------------------------------------*/
 
-var stickOnMobile = false; // whether or not the header should stick to top on mobile phones ( with width less than 768px )
+var stickOnMobile = true; // whether or not the header should stick to top on mobile phones ( with width less than 768px )
 
 var navbarMinimumPadding = 5;
 
