@@ -55,18 +55,32 @@ class PostModel extends \Model\BaseModel
     
     public function getPosts($data)
     {
-        $sql = "SELECT t.status, c.post_id, c.title, c.content, c.slug, l.id, l.language_name    
+        $sql = "SELECT t.status, c.post_id, c.title, c.content, c.slug, l.id, l.language_name, t.created_at     
         FROM tbl_post t 
         LEFT JOIN tbl_post_content c ON c.post_id = t.id 
         LEFT JOIN tbl_post_language l ON l.id = c.language  
         WHERE 1";
 
+        $params = array();
         if (isset($data['just_default'])) {
             $sql .= ' AND l.is_default = 1';
         }
 
-        $sql .= ' ORDER BY t.id DESC';
-        $rows = R::getAll( $sql );
+        if (isset($data['status'])) {
+            $sql .= ' AND t.status =:status';
+            $params['status'] = $data['status'];
+        }
+
+        if (isset($data['order'])) {
+            if ($data['order'] == 'populer')
+                $sql .= ' ORDER BY c.viewed DESC';
+        } else
+            $sql .= ' ORDER BY t.id DESC';
+
+        if (isset($data['limit']))
+            $sql .= ' LIMIT '.$data['limit'];
+
+        $rows = R::getAll( $sql, $params );
 
         return $rows;
     }
@@ -159,5 +173,38 @@ class PostModel extends \Model\BaseModel
         $items['category'] = $category;
 
         return $items;
+    }
+
+    public function getCategories()
+    {
+        $sql = "SELECT t.id, t.category_name AS title, t.slug, t.description     
+        FROM tbl_post_category t 
+        WHERE 1 ORDER BY t.id ASC";
+
+        $rows = R::getAll( $sql );
+        return $rows;
+    }
+
+    /**
+     * @param $data: id (post id), type
+     * @return array
+     */
+    public function getImages($data)
+    {
+        $sql = "SELECT i.*  
+        FROM tbl_post_images i 
+        WHERE i.post_id =:post_id";
+
+        $params = [ 'post_id'=>$data['id'] ];
+
+        if (isset($data['type'])) {
+            $sql .= " AND i.type =:type";
+            $params['type'] = $data['type'];
+        }
+
+        $sql .= " ORDER BY i.id ASC";
+
+        $rows = R::getAll( $sql, $params );
+        return $rows;
     }
 }

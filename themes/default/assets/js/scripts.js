@@ -64,8 +64,8 @@ var stickOnMobile = true; // whether or not the header should stick to top on mo
 
 var navbarMinimumPadding = 5;
 
-var navbarLogoMinimumHeight = 18;
-var navbarMinimumHeightTopMargin = -6;
+var navbarLogoMinimumHeight = 38;
+var navbarMinimumHeightTopMargin = 6;
 
 var $navbar, $navbarLogo, $offset;
 

@@ -56,7 +56,7 @@ i.large{color:#1abb9c;font-size:40px;width:40px;height:40px}
 .btn,.btn-group>.btn,.btn.active,.btn:active,.btn:focus,.btn:hover,.parallax .btn{color:#fff;-webkit-transition:all .2s ease-in;-o-transition:all .2s ease-in;-moz-transition:all .2s ease-in}
 .body-wrapper,.divide0,.divide10,.divide15,.divide2,.divide20,.divide25,.divide3,.divide30,.divide40,.divide45,.divide5,.divide50,.divide55,.divide60,.divide65,.divide70,.divide75,.divide80,.divide85{width:100%}
 .dropcap{font-weight:900;display:block;float:left;font-size:48px;padding:0;margin:12px 8px 0 0;text-transform:uppercase}
-.btn,.btn-group>.btn,.parallax .btn{background:#1abb9c;margin-bottom:10px;margin-right:5px;padding:9px 20px 11px;font-weight:400;font-size:13px;text-shadow:none;border:none;text-transform:uppercase;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:inset 0 -4px 0 rgba(0,0,0,.15);-moz-box-shadow:inset 0 -4px 0 rgba(0,0,0,.15);box-shadow:inset 0 -4px 0 rgba(0,0,0,.15)}
+.btn,.btn-group>.btn,.parallax .btn{background:#1abb9c;margin-bottom:10px;margin-right:5px;padding:9px 20px 11px;font-weight:400;font-size:13px;text-shadow:none;border:none;text-transform:uppercase;-webkit-border-radius:3px;border-radius:3px;}
 .btn-large{padding:12px 23px 13px}
 .btn.btn-green{background:#1abb9c}
 .btn.btn-blue{background:#3f8dbf}

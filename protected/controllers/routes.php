@@ -8,10 +8,10 @@ $app->get('/[{name}]', function ($request, $response, $args) {
 		$args['name'] = 'index';
 
     $theme = $this->settings['theme'];
+    $model = new \Model\PostModel();
     if (!file_exists($theme['path'].'/'.$theme['name'].'/views/'.$args['name'].'.phtml')) {
-        $model = new \Model\PostModel();
         $data = $model->getPost($args['name']);
-        
+
         if (empty($data['id'])) {
             return $this->response
                 ->withStatus(500)
@@ -20,12 +20,14 @@ $app->get('/[{name}]', function ($request, $response, $args) {
         }
 
         return $this->view->render($response, 'post.phtml', [
-            'data' => $data
+            'data' => $data,
+            'mpost' => $model
         ]);
     }
 
     return $this->view->render($response, $args['name'] . '.phtml', [
-        'name' => $args['name']
+        'name' => $args['name'],
+        'mpost' => $model
     ]);
 });
 
