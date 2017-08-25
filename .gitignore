@@ -6,3 +6,4 @@ index.php
 /protected/configs/*
 *.phtml
 /protected/data/
+/themes/default/assets/images/*
