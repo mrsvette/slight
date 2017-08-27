@@ -26,7 +26,9 @@ class AdminTools
             } else {
                 $name = ucwords( implode(" ", explode("-", $page)) );
             }
-            $pages[] = [ 'name' => $name, 'slug' => $page, 'path' => $filename, 'info' => pathinfo($filename) ];
+			$excludes = ['post'];
+			if (!in_array($page, $excludes))
+            	$pages[] = [ 'name' => $name, 'slug' => $page, 'path' => $filename, 'info' => pathinfo($filename) ];
         }
 
         return $pages;

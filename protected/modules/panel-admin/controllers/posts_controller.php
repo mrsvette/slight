@@ -18,6 +18,8 @@ class PostsController extends BaseController
         $app->map(['GET', 'POST'], '/update/[{id}]', [$this, 'update']);
         $app->map(['POST'], '/delete/[{id}]', [$this, 'delete']);
         $app->map(['POST'], '/get-slug', [$this, 'get_slug']);
+        $app->map(['POST'], '/upload-images', [$this, 'get_upload_images']);
+        $app->map(['POST'], '/delete-image/[{id}]', [$this, 'delete_image']);
     }
 
     public function view($request, $response, $args)
@@ -199,13 +201,18 @@ class PostsController extends BaseController
             }
         }
 
+        $postImages = new \Model\PostImagesModel();
+        $images = $post->getImages(['id'=>$model->id]);
+
         return $this->_container->module->render($response, 'posts/update.html', [
             'languages' => $languages,
             'status_list' => $post->getListStatus(),
             'categories' => $categories,
             'post' => $post_detail,
             'message' => ($message) ? $message : null,
-            'success' => $success
+            'success' => $success,
+            'postImages' => $postImages,
+            'images' => $images
         ]);
     }
 
@@ -241,5 +248,58 @@ class PostsController extends BaseController
 
         $model = new \Model\PostModel();
         return $model->createSlug($_POST['title']);
+    }
+
+    public function get_upload_images($request, $response, $args)
+    {
+        if ($this->_user->isGuest()){
+            return $response->withRedirect($this->_login_url);
+        }
+
+        if (isset($_POST['PostImages'])) {
+            $path_info = pathinfo($_FILES['PostImages']['name']['file_name']);
+            if (!in_array($path_info['extension'], ['jpg','JPG','jpeg','JPEG','png','PNG'])) {
+                echo json_encode(['status'=>'failed','message'=>'Allowed file type are jpg, png']); exit;
+                exit;
+            }
+            $model = new \Model\PostImagesModel();
+            $model->post_id = $_POST['PostImages']['post_id'];
+            $model->type = $_POST['PostImages']['type'];
+            $model->upload_folder = 'uploads/posts';
+            $model->file_name = time().'.'.$path_info['extension'];
+            $model->alt = $_POST['PostImages']['alt'];
+            $model->description = $_POST['PostImages']['description'];
+            $model->created_at = date("Y-m-d H:i:s");
+            $create = \Model\PostImagesModel::model()->save(@$model);
+            if ($create > 0) {
+                $uploadfile = $model->upload_folder . '/' . $model->file_name;
+                move_uploaded_file($_FILES['PostImages']['tmp_name']['file_name'], $uploadfile);
+                echo json_encode(['status'=>'success','message'=>'Successfully uploaded new images']); exit;
+            }
+        }
+
+        echo json_encode(['status'=>'failed','message'=>'Unable to upload the files.']); exit;
+        exit;
+    }
+
+    public function delete_image($request, $response, $args)
+    {
+        if ($this->_user->isGuest()){
+            return $response->withRedirect($this->_login_url);
+        }
+
+        if (!isset($_POST['id'])) {
+            return false;
+        }
+
+        $model = \Model\PostImagesModel::model()->findByPk($_POST['id']);
+        $path = $this->_settings['basePath'].'/../'.$model->upload_folder.'/'.$model->file_name;
+        $delete = \Model\PostImagesModel::model()->delete($model);
+        if ($delete) {
+            if (file_exists($path))
+                unlink($path);
+            echo true;
+        }
+        exit;
     }
 }
