@@ -39,9 +39,11 @@ class AdminTools
 	 * @param $slug
 	 * @return array|bool
 	 */
-	public function getPage($slug)
+	public function getPage($slug, $staging_file = false)
 	{
 		$path = $this->basePath.'/../themes/'.$this->themeName.'/views/'.$slug.'.phtml';
+		if ($staging_file)
+			$path = $this->basePath.'/../themes/'.$this->themeName.'/views/'.$slug.'.ehtml';
 		if (!file_exists($path))
 			return false;
 		return [ 'page' => $slug, 'path' => $path, 'content' => file_get_contents($path) ];

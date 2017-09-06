@@ -33,6 +33,9 @@ Landing Pages - {{ App.name }}
                                             <a href="{{ 'pages/update' | alink }}/{{ page.slug }}">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
+                                            <a href="{{ page.slug | link }}?e=1" target="_newtab">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
                                             <a href="{{ 'pages/delete' | alink }}/{{ page.slug }}" onclick="return hapus(this);">
                                                 <i class="fa fa-trash-o"></i>
                                             </a>
