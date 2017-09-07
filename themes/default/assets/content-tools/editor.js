@@ -3,7 +3,7 @@ window.addEventListener('load', function() {
 	var region = new ContentEdit.Region(element);
     var editor;
 	editor = ContentTools.EditorApp.get();
-	editor.init('*[data-editable]', 'data-name');
+	editor.init('*[data-editable], [data-fixture]', 'data-name');
 
 	editor.addEventListener('saved', function (ev) {
 		var name, payload, regions, xhr;

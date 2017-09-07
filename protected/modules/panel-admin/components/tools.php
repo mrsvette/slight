@@ -43,7 +43,7 @@ class AdminTools
 	{
 		$path = $this->basePath.'/../themes/'.$this->themeName.'/views/'.$slug.'.phtml';
 		if ($staging_file)
-			$path = $this->basePath.'/../themes/'.$this->themeName.'/views/'.$slug.'.ehtml';
+			$path = $this->basePath.'/../themes/'.$this->themeName.'/views/staging/'.$slug.'.ehtml';
 		if (!file_exists($path))
 			return false;
 		return [ 'page' => $slug, 'path' => $path, 'content' => file_get_contents($path) ];

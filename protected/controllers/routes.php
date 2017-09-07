@@ -28,18 +28,18 @@ $app->get('/[{name}]', function ($request, $response, $args) {
         $settings = $this->get('settings');
         $view_path = $settings['theme']['path'] . '/' . $settings['theme']['name'] . '/views';
         if (file_exists($view_path.'/'.$args['name'] . '.phtml')) {
-            if (file_exists($view_path.'/'.$args['name'] . '.ehtml')) {
-                unlink($view_path.'/'.$args['name'] . '.ehtml');
+            if (file_exists($view_path.'/staging/'.$args['name'] . '.ehtml')) {
+                unlink($view_path.'/staging/'.$args['name'] . '.ehtml');
             }
-            $cp = copy($view_path.'/'.$args['name'] . '.phtml', $view_path.'/'.$args['name'] . '.ehtml');
+            $cp = copy($view_path.'/'.$args['name'] . '.phtml', $view_path.'/staging/'.$args['name'] . '.ehtml');
             if ($cp) {
-                $content = file_get_contents($view_path.'/'.$args['name'] . '.ehtml');
+                $content = file_get_contents($view_path.'/staging/'.$args['name'] . '.ehtml');
                 $parsed_content = str_replace(array("{{", "}}"), array("[[", "]]"), $content);
 
-                $update = file_put_contents($view_path.'/'.$args['name'] . '.ehtml', $parsed_content);
+                $update = file_put_contents($view_path.'/staging/'.$args['name'] . '.ehtml', $parsed_content);
             }
-            //var_dump($args['name'] . '.ehtml'); exit;
-            return $this->view->render($response, $args['name'] . '.ehtml', [
+
+            return $this->view->render($response, 'staging/' . $args['name'] . '.ehtml', [
                 'name' => $args['name'],
                 'mpost' => $model,
                 'request' => $_GET
