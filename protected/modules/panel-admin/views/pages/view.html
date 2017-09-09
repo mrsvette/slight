@@ -30,8 +30,11 @@ Landing Pages - {{ App.name }}
                                         <td>{{ page.name }}</td>
                                         <td><a href="{{ page.slug | link }}" target="_newtab">{{  page.slug | link }}</a></td>
                                         <td>
-                                            <a href="{{ 'pages/update' | alink }}/{{ page.slug }}">
+                                            <a href="{{ page.slug | link }}?e=1" target="_newtab" title="Visual Update">
                                                 <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <a href="{{ 'pages/update' | alink }}/{{ page.slug }}" title="Change Code">
+                                                <i class="fa fa-code"></i>
                                             </a>
                                             <a href="{{ 'pages/delete' | alink }}/{{ page.slug }}" onclick="return hapus(this);">
                                                 <i class="fa fa-trash-o"></i>
