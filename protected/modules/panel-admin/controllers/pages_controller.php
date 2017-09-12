@@ -28,8 +28,6 @@ class PagesController extends BaseController
             return $response->withRedirect($this->_login_url);
         }
 
-        require_once $this->_settings['admin']['path']. '/components/tools.php';
-
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
         return $this->_container->module->render($response, 'pages/view.html', [
@@ -42,8 +40,6 @@ class PagesController extends BaseController
         if ($this->_user->isGuest()){
             return $response->withRedirect($this->_login_url);
         }
-
-        require_once $this->_settings['admin']['path']. '/components/tools.php';
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
@@ -73,15 +69,13 @@ class PagesController extends BaseController
         if (isset($_POST['content']) && file_exists($_POST['path'])){
             $update = file_put_contents($_POST['path'], $_POST['content']);
             if ($update) {
-                $message = 'Your data is successfully updated.';
+                $message = 'Data Anda telah berhasil diubah.';
                 $success = true;
             } else {
                 $message = 'Failed to update the page.';
                 $success = false;
             }
         }
-
-        require_once $this->_settings['admin']['path']. '/components/tools.php';
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
@@ -102,8 +96,6 @@ class PagesController extends BaseController
             return false;
         }
 
-        require_once $this->_settings['admin']['path']. '/components/tools.php';
-
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
         $delete = $tools->deletePage($args['name']);
         if ($delete) {
@@ -117,10 +109,6 @@ class PagesController extends BaseController
         if ($this->_user->isGuest()){
             return $response->withRedirect($this->_login_url);
         }
-
-        require_once $this->_settings['admin']['path']. '/components/tools.php';
-        require_once $this->_settings['admin']['path']. '/components/simple_html_dom.php';
-        require_once $this->_settings['admin']['path']. '/components/html_format.php';
 
         if (isset($_POST['content']) && isset($_POST['path'])){
             $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
@@ -158,7 +146,7 @@ class PagesController extends BaseController
 
                 $update = file_put_contents($view_path.'/'.$paths[1] . '.phtml', $new_content);
                 if ($update) {
-                    //unlink($view_path.'/staging/'.$paths[1] . '.ehtml');
+                    unlink($view_path.'/staging/'.$paths[1] . '.ehtml');
                 }
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";

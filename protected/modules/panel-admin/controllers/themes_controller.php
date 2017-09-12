@@ -24,8 +24,6 @@ class ThemesController extends BaseController
             return $response->withRedirect($this->_login_url);
         }
 
-        require_once $this->_settings['admin']['path']. '/components/tools.php';
-
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
         return $this->_container->module->render($response, 'themes/view.html', [
@@ -41,18 +39,33 @@ class ThemesController extends BaseController
             return $response->withRedirect($this->_login_url);
         }
 
-        require_once $this->_settings['admin']['path']. '/components/tools.php';
-
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
         if (isset($_POST['id'])){
-            $update = $tools->updateTheme($_POST['id'], $_POST['install']);
+            if ((int)$_POST['install'] < 1){
+                if (count($tools->getThemes()) < 2)
+                    return false;
+                else
+                    $_POST['id'] = 'default';
+            }
+
+            $model = new \Model\OptionsModel();
+            $theme = \Model\OptionsModel::model()->findByAttributes(['option_name'=>'theme']);
+            if ($theme instanceof \RedBeanPHP\OODBBean) {
+                $theme->option_value = $_POST['id'];
+                $theme->updated_at = date('Y-m-d H:i:s');
+                $update = \Model\OptionsModel::model()->update($theme);
+
+                $hooks = new \PanelAdmin\Components\AdminHooks($this->_settings);
+                $omodel = new \Model\OptionsModel();
+                $hooks->onAfterParamsSaved($model->getOptions());
+            }
             
             if ($update) {
-                $message = ($_POST['install'] > 0)? 'Your theme is successfully updated to '.$_POST['id'] : 'Succesfully uninstall '.$_POST['id'].' theme.';
+                $message = ($_POST['install'] > 0)? 'Tema berhasil diubah menjadi '.$_POST['id'] : 'Sukses menginstall tema '.$_POST['id'];
                 $success = true;
             } else {
-                $message = 'Failed to set the theme.';
+                $message = 'Gagal mengubah tema.';
                 $success = false;
             }
 

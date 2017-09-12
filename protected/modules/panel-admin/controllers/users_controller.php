@@ -84,7 +84,7 @@ class UsersController extends BaseController
                 $bean->password = $model->hasPassword($model->password, $model->salt);
                 $update = \Model\AdminModel::model()->update($bean, false);
 
-                $message = 'Your data is successfully created.';
+                $message = 'Data Anda telah berhasil disimpan.';
                 $success = true;
             } else {
                 $message = \Model\AdminModel::model()->getErrors(false);
@@ -116,7 +116,7 @@ class UsersController extends BaseController
             $model->status = $_POST['Admin']['status'];
             $update = \Model\AdminModel::model()->update($model);
             if ($update) {
-                $message = 'Your data is successfully updated.';
+                $message = 'Data Anda telah berhasil diubah.';
                 $success = true;
             } else {
                 $message = \Model\AdminModel::model()->getErrors(false);
@@ -178,7 +178,7 @@ class UsersController extends BaseController
             $model->created_at = date('Y-m-d H:i:s');
             $create = \Model\AdminGroupModel::model()->save($model);
             if ($create) {
-                $message = 'Your data is successfully created.';
+                $message = 'Data Anda telah berhasil disimpan.';
                 $success = true;
             } else {
                 $message = \Model\AdminGroupModel::model()->getErrors(false);
@@ -209,7 +209,7 @@ class UsersController extends BaseController
             $model->updated_at = date('Y-m-d H:i:s');
             $update = \Model\AdminGroupModel::model()->update($model);
             if ($update) {
-                $message = 'Your data is successfully updated.';
+                $message = 'Data Anda telah berhasil diubah.';
                 $success = true;
             } else {
                 $message = \Model\AdminGroupModel::model()->getErrors(false);
@@ -272,7 +272,7 @@ class UsersController extends BaseController
             $model->updated_at = date('Y-m-d H:i:s');
             $update = \Model\AdminGroupModel::model()->update($model);
             if ($update) {
-                $message = 'Your data is successfully updated.';
+                $message = 'Data Anda telah berhasil diubah.';
                 $success = true;
             } else {
                 $message = \Model\AdminGroupModel::model()->getErrors(false);

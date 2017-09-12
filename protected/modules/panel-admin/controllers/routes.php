@@ -17,6 +17,13 @@ foreach (glob(__DIR__.'/*_controller.php') as $controller) {
 	}
 }
 
+foreach (glob(__DIR__.'/../components/*.php') as $component) {
+    $cname = basename($component, '.php');
+    if (!empty($cname)) {
+        require_once $component;
+    }
+}
+
 $app->group('/panel-admin', function () use ($user) {
     $this->group('/default', function() use ($user) {
         new PanelAdmin\Controllers\DefaultController($this, $user);
@@ -32,6 +39,9 @@ $app->group('/panel-admin', function () use ($user) {
     });
     $this->group('/posts', function() use ($user) {
         new PanelAdmin\Controllers\PostsController($this, $user);
+    });
+    $this->group('/params', function() use ($user) {
+        new PanelAdmin\Controllers\ParamsController($this, $user);
     });
 });
 
