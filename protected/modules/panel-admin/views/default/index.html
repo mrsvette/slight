@@ -1,11 +1,22 @@
 {% extends "layout.html" %}
 {% block pagetitle %}
-{{ App.name }}
+Dashboard - {{ App.name }}
 {% endblock %}
 
 {% block content %}
 <!-- main content -->
 <div id="main_wrapper">
+    <div class="page_bar clearfix">
+        <div class="row">
+            <div class="col-sm-10">
+                <h1 class="page_title">Dashboard</h1>
+                <p class="text-muted">Selamat datang di {{ App.params.site_name }}. Anda dapat menggunakan form dan shortcut berikut untuk mengelola website dengan cepat.</p>
+            </div>
+            <div class="col-sm-2 text-right">
+                <a class="btn btn-default" href="{{ '' | link }}" target="_newtab">Kunjungi website</a>
+            </div>
+        </div>
+    </div>
     <div class="page_content">
         <div class="container-fluid">
             <div class="row">
@@ -14,32 +25,10 @@
                         <div class="col-lg-3 col-md-6">
                             <div class="panel panel-default">
                                 <div class="stat_box stat_up">
-                                    <div class="stat_ico color_f"><i class="ion-ios7-chatboxes-outline"></i></div>
+                                    <div class="stat_ico color_f"><i class="ion-ios7-browsers-outline"></i></div>
                                     <div class="stat_content">
                                         <span class="stat_count">321</span>
-                                        <span class="stat_name">Comments</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="panel panel-default">
-                                <div class="stat_box stat_up">
-                                    <div class="stat_ico color_g"><i class="ion-ios7-cart-outline"></i></div>
-                                    <div class="stat_content">
-                                        <span class="stat_count">$81 483.00</span>
-                                        <span class="stat_name">Sale (last month)</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="panel panel-default">
-                                <div class="stat_box stat_down">
-                                    <div class="stat_ico color_a"><i class="ion-clipboard"></i></div>
-                                    <div class="stat_content">
-                                        <span class="stat_count">637</span>
-                                        <span class="stat_name">Tasks</span>
+                                        <span class="stat_name">Landing Page Aktif</span>
                                     </div>
                                 </div>
                             </div>
@@ -50,7 +39,29 @@
                                     <div class="stat_ico color_d"><i class="ion-ios7-email-outline"></i></div>
                                     <div class="stat_content">
                                         <span class="stat_count">2483</span>
-                                        <span class="stat_name">Messages</span>
+                                        <span class="stat_name">Pesan Pengunjung</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-default">
+                                <div class="stat_box stat_up">
+                                    <div class="stat_ico color_g"><i class="ion-ios7-cart-outline"></i></div>
+                                    <div class="stat_content">
+                                        <span class="stat_count">132</span>
+                                        <span class="stat_name">Total Pemesanan Produk</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-default">
+                                <div class="stat_box stat_down">
+                                    <div class="stat_ico color_a"><i class="ion-clipboard"></i></div>
+                                    <div class="stat_content">
+                                        <span class="stat_count">637</span>
+                                        <span class="stat_name">Postingan Blog</span>
                                     </div>
                                 </div>
                             </div>

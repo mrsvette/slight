@@ -51,7 +51,7 @@ class AdminModel extends \Model\BaseModel
 
     public function getListStatus()
     {
-        return ['Not Active', 'Active'];
+        return ['Tidak Aktif', 'Aktif'];
     }
 
     public function getStatus($status)

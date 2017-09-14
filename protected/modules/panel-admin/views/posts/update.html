@@ -1,17 +1,30 @@
 {% extends "layout.html" %}
 {% block pagetitle %}
-Update Blog Post - {{ App.name }}
+Perbarui Postingan - {{ App.name }}
 {% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{{ 'css/bootstrap-fileupload.min.css' | admin_asset_url }}" />
 <div id="main_wrapper">
+	<div class="page_bar clearfix">
+		<div class="row">
+			<div class="col-sm-10">
+				<h1 class="page_title">{{ post.content[1].title }}</h1>
+				<p class="text-muted">Ubah postingan</p>
+			</div>
+			<div class="col-sm-2 text-right">
+				<a class="btn btn-default" href="{{ 'blog' | link }}/{{ post.content[1].slug }}" target="_newtab">Lihat Postingan</a>
+			</div>
+		</div>
+	</div>
 	<div class="page_content">
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="panel panel-default">
-						<div class="panel-heading">Update Blog Post</div>
+						<div class="panel-heading">
+							Kolom bertanda <span class="red">*</span> tidak boleh dikosongi
+						</div>
 						<div class="panel-body">
 							{% if message %}
 							<div class="alert {% if success %}alert-success{% else %}alert-warning{% endif %}">{{ message }}</div>
@@ -30,15 +43,15 @@ Update Blog Post - {{ App.name }}
 									{% for language in languages %}
 									<div id="language-{{ language.code }}" class="tab-pane {% if language.is_default %}active{% endif %}">
 										<div class="form-group col-sm-6">
-											<label>Title</label>
+											<label>Title <span class="red">*</span></label>
 											<input type="text" name="PostContent[title][{{ language.id }}]" class="form-control" value="{{ post.content[language.id].title}}" lang="{{ language.id }}" onchange="getSlug(this)">
 										</div>
 										<div class="form-group col-sm-6">
-											<label>Permalink</label>
+											<label>Permalink <span class="red">*</span></label>
 											<input type="text" name="PostContent[slug][{{ language.id }}]" class="form-control" id="slug-{{ language.id }}" value="{{ post.content[language.id].slug}}">
 										</div>
 										<div class="form-group col-sm-12">
-											<label>Content</label>
+											<label>Content <span class="red">*</span></label>
 											<textarea class="form-control editor" name="PostContent[content][{{ language.id }}]" style="min-height:200px;">{{ post.content[language.id].content }}</textarea>
 										</div>
 										<input type="hidden" name="PostContent[language][{{ language.id }}]" value="{{ language.id }}">

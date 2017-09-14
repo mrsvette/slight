@@ -1,17 +1,28 @@
 {% extends "layout.html" %}
 {% block pagetitle %}
-Blog Posts - {{ App.name }}
+Daftar Postingan Blog - {{ App.name }}
 {% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{{ 'lib/DataTables/media/css/jquery.dataTables.min.css' | admin_asset_url }}">
 <div id="main_wrapper">
+    <div class="page_bar clearfix">
+        <div class="row">
+            <div class="col-sm-10">
+                <h1 class="page_title">Postingan Blog</h1>
+                <p class="text-muted">Daftar postingan untuk blog</p>
+            </div>
+            <div class="col-sm-2 text-right">
+                <a class="btn btn-default" href="{{ 'posts/create' | alink }}">Buat Postingan Baru</a>
+            </div>
+        </div>
+    </div>
     <div class="page_content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Blog Posts</div>
+                        <div class="panel-heading">Postingan Blog</div>
                         <div class="panel-body">
                             <div id="dt_basic_wrapper" class="dataTables_wrapper form-inline no-footer" role="grid">
                                 <table id="dt_basic" class="table table-striped dataTable">
@@ -29,7 +40,7 @@ Blog Posts - {{ App.name }}
                                     <tr>
                                         <td>{{ i + 1 }}</td>
                                         <td>{{ post.title }}</td>
-                                        <td><a href="{{ post.slug | link }}" target="_newtab">{{  post.slug | link }}</a></td>
+                                        <td><a href="{{ 'blog' | link }}/{{ post.slug }}" target="_newtab">{{ 'blog' | link }}/{{ post.slug }}</a></td>
                                         <td><center>{{ post.status }}</center></td>
                                         <td>
                                             <a href="{{ 'posts/update' | alink }}/{{ post.post_id }}">
