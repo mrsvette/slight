@@ -27,6 +27,10 @@ class VisitorModel extends \Model\BaseModel
         ];
     }
 
+    /**
+     * @param $session_id
+     * @return int
+     */
     public function deactivate($session_id)
     {
         $sql = 'UPDATE tbl_visitor SET active = 0 WHERE session_id = :session_id AND active = 1';
@@ -36,6 +40,12 @@ class VisitorModel extends \Model\BaseModel
         return $update;
     }
 
+    /**
+     * Breakdown the cookie format
+     * @param string $name
+     * @param bool $expiration
+     * @return bool|null|string
+     */
     public function getCookie($name='_ma',$expiration=true)
     {
         if(!empty($_COOKIE[$name])){
@@ -49,5 +59,125 @@ class VisitorModel extends \Model\BaseModel
                 return $pecah[0];
         }
         return null;
+    }
+
+    /**
+     * Getting the active visitor
+     * @param null $date
+     * @return mixed
+     */
+    public function getActiveVisitor($date = null)
+    {
+        if (empty($date))
+            $date = date("Y-m-d H:i:s");
+
+        $sql = 'SELECT COUNT(t.ip_address) AS count 
+          FROM tbl_visitor t 
+          WHERE DATE_FORMAT(t.date_expired,"%Y-%m-%d %H:%i:%s") >= :date_limit 
+          GROUP BY t.session_id';
+
+        $row = R::getRow( $sql, ['date_limit' => date("Y-m-d H:i:s",strtotime($date))] );
+
+        return $row['count'];
+    }
+
+    /**
+     * @param null $data
+     * @return array
+     */
+    public function getVisitorByDevice($data = null)
+    {
+        if (empty($date))
+            $date = date("Y-m-d H:i:s");
+
+        $sql = 'SELECT IF(t.mobile >0, "mobile","desktop") AS device, COUNT(t.ip_address) AS count 
+          FROM tbl_visitor t 
+          WHERE DATE_FORMAT(t.created_at,"%Y-%m-%d") = :date_created 
+          GROUP BY t.mobile';
+
+        $rows = R::getAll( $sql, ['date_created' => date("Y-m-d",strtotime($date))] );
+
+        $items = [];
+        if (is_array($rows)) {
+            foreach ($rows as $i => $row) {
+                $items[$row['device']] = $row['count'];
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param null $date
+     * @return mixed
+     */
+    public function getUniqueVisitor($date = null)
+    {
+        if (empty($date))
+            $date = date("Y-m-d H:i:s");
+
+        $sql = 'SELECT COUNT(DISTINCT v.ip_address) as count 
+          FROM tbl_visitor v 
+          WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d") >= :date_visit';
+
+        $row = R::getRow( $sql, ['date_visit' => date("Y-m-d",strtotime($date))] );
+
+        return $row['count'];
+    }
+
+    /**
+     * @param $data
+     * @return bool|string
+     */
+    public function getAverageDuration($date_from = null, $date_to = null)
+    {
+        if (empty($date_from))
+            $date_from = date('Y-m-d', strtotime('last week'));
+        if (empty($date_to))
+            $date_to = date('Y-m-d');
+
+        $sql = 'SELECT DISTINCT v.session_id 
+          FROM tbl_visitor v 
+          WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d") BETWEEN :date_from AND :date_to 
+          GROUP BY v.session_id';
+
+        $rows = R::getAll( $sql, ['date_from'=>$date_from,'date_to'=>$date_to]);
+        $items = [];
+        if (count($rows)>0){
+            foreach ($rows as $row){
+                $sql2 = 'SELECT TIMEDIFF(MAX(v.created_at),MIN(v.created_at)) as diff 
+                  FROM tbl_visitor v WHERE v.session_id=:session_id';
+
+                $row2 = R::getRow( $sql2, ['session_id'=>$row['session_id']] );
+                if ($row2['diff'] != '00:00:00')
+                    $items[] = strtotime($row2['diff']);
+            }
+        }
+        if (count($items)>0)
+            return date("H:i:s",round(array_sum($items)/count($items),0));
+        else
+            return '00:00:00';
+    }
+
+    /**
+     * @param null $date_from
+     * @param null $date_to
+     * @return mixed
+     */
+    public function getReferral($date_from = null, $date_to = null)
+    {
+        if (empty($date_from))
+            $date_from = date('Y-m-d');
+        if (empty($date_to))
+            $date_to = date('Y-m-d');
+
+        $sql = 'SELECT COUNT(v.id) AS count 
+          FROM tbl_visitor v 
+          WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d") BETWEEN :date_from AND :date_to 
+            AND v.url_referrer NOT LIKE "%'.$_SERVER['HTTP_HOST'].'%"';
+
+        $row = R::getRow( $sql, ['date_from'=>$date_from,'date_to'=>$date_to] );
+
+        return $row['count'];
     }
 }

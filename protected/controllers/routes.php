@@ -110,7 +110,7 @@ $app->post('/tracking', function ($request, $response, $args) {
         $model->page_title = $_POST['t'];
         $model->url = $_POST['u'];
         $model->url_referrer = $_POST['r'];
-        $model->date_entry = date('Y-m-d H:i:s');
+        $model->created_at = date('Y-m-d H:i:s');
         $model->platform = $_POST['p'];
         $model->user_agent = $_POST['b'];
 

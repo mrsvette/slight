@@ -5,8 +5,11 @@ $app->get('/panel-admin', function ($request, $response, $args) use ($user) {
         return $response->withRedirect('/panel-admin/default/login');
     }
 
+    $vmodel = new \Model\VisitorModel();
+
 	return $this->module->render($response, 'default/index.html', [
-        'name' => $args['name']
+        'name' => $args['name'],
+        'vmodel' => $vmodel
     ]);
 });
 
