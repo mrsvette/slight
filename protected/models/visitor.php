@@ -82,20 +82,23 @@ class VisitorModel extends \Model\BaseModel
     }
 
     /**
-     * @param null $data
+     * @param null $date_from
+     * @param null $date_to
      * @return array
      */
-    public function getVisitorByDevice($data = null)
+    public function getVisitorByDevice($date_from = null, $date_to = null)
     {
-        if (empty($date))
-            $date = date("Y-m-d H:i:s");
+        if (empty($date_from))
+            $date_from = date('Y-m-d');
+        if (empty($date_to))
+            $date_to = date('Y-m-d');
 
         $sql = 'SELECT IF(t.mobile >0, "mobile","desktop") AS device, COUNT(t.ip_address) AS count 
           FROM tbl_visitor t 
-          WHERE DATE_FORMAT(t.created_at,"%Y-%m-%d") = :date_created 
+          WHERE DATE_FORMAT(t.created_at,"%Y-%m-%d") BETWEEN :date_from AND :date_to  
           GROUP BY t.mobile';
 
-        $rows = R::getAll( $sql, ['date_created' => date("Y-m-d",strtotime($date))] );
+        $rows = R::getAll( $sql, ['date_from' => date("Y-m-d",strtotime($date_from)), 'date_to' => date("Y-m-d",strtotime($date_to))] );
 
         $items = [];
         if (is_array($rows)) {
@@ -108,19 +111,22 @@ class VisitorModel extends \Model\BaseModel
     }
 
     /**
-     * @param null $date
+     * @param null $date_from
+     * @param null $date_to
      * @return mixed
      */
-    public function getUniqueVisitor($date = null)
+    public function getUniqueVisitor($date_from = null, $date_to = null)
     {
-        if (empty($date))
-            $date = date("Y-m-d H:i:s");
+        if (empty($date_from))
+            $date_from = date('Y-m-d');
+        if (empty($date_to))
+            $date_to = date('Y-m-d');
 
         $sql = 'SELECT COUNT(DISTINCT v.ip_address) as count 
           FROM tbl_visitor v 
-          WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d") >= :date_visit';
+          WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d") BETWEEN :date_from AND :date_to';
 
-        $row = R::getRow( $sql, ['date_visit' => date("Y-m-d",strtotime($date))] );
+        $row = R::getRow( $sql, ['date_from' => date("Y-m-d",strtotime($date_from)), 'date_to' => date("Y-m-d",strtotime($date_to))] );
 
         return $row['count'];
     }
@@ -132,7 +138,7 @@ class VisitorModel extends \Model\BaseModel
     public function getAverageDuration($date_from = null, $date_to = null)
     {
         if (empty($date_from))
-            $date_from = date('Y-m-d', strtotime('last week'));
+            $date_from = date('Y-m-d');
         if (empty($date_to))
             $date_to = date('Y-m-d');
 
@@ -179,5 +185,80 @@ class VisitorModel extends \Model\BaseModel
         $row = R::getRow( $sql, ['date_from'=>$date_from,'date_to'=>$date_to] );
 
         return $row['count'];
+    }
+
+    /**
+     * @param null $date_from
+     * @param null $date_to
+     * @return array
+     */
+    public function getPageViewInterval($date_from = null,$date_to = null)
+    {
+        if(empty($date_from))
+            $date_from = date('Y-m-d', strtotime('last month'));
+        if(empty($date_to))
+            $date_to = date('Y-m-d');
+
+        $begin = new \DateTime($date_from);
+        $end = new \DateTime($date_to);
+        $end = $end->modify( '+1 day' );
+        if ($date_from == $date_to) {
+            $begin = $begin->modify('-2 day');
+        }
+
+        $interval = new \DateInterval('P1D');
+        $daterange = new \DatePeriod($begin, $interval ,$end);
+
+        $page_views = []; $sessions = [];
+        foreach($daterange as $date){
+            $page_views[] = array(
+                strtotime($date->format("Y-m-d"))*1000,
+                self::getCountVisitor($date->format("Y-m-d"),'pageview')
+            );
+            $sessions[] = array(
+                strtotime($date->format("Y-m-d"))*1000,
+                self::getCountVisitor($date->format("Y-m-d"),'session'),
+            );
+        }
+        
+        return [
+            'pageview' => $page_views,
+            'session' => $sessions
+        ];
+    }
+
+    /**
+     * @param $date
+     * @param string $type
+     * @return int
+     */
+    public function getCountVisitor($date, $type = 'pageview')
+    {
+        switch($type){
+            case 'pageview':
+                $sql = 'SELECT COUNT(v.id) as count FROM tbl_visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d")=:date ORDER BY v.id DESC';
+                $row = R::getRow( $sql, ['date'=>$date] );
+
+                return (int)$row['count'];
+                break;
+            case 'session':
+                $sql = 'SELECT COUNT(DISTINCT v.session_id) as count FROM tbl_visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d")=:date GROUP BY v.session_id';
+                $row = R::getRow( $sql, ['date'=>$date] );
+
+                return count($row);
+                break;
+            case 'pageviewmonthly':
+                $sql = 'SELECT COUNT(v.id) as count FROM tbl_visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m")=:date ORDER BY v.id DESC';
+                $row = R::getRow( $sql, ['date'=>$date] );
+
+                return (int)$row['count'];
+                break;
+            case 'sessionmonthly':
+                $sql = 'SELECT COUNT(DISTINCT v.session_id) as count FROM tbl_visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m")=:date GROUP BY v.session_id';
+                $row = R::getRow( $sql, ['date'=>$date] );
+
+                return count($row);
+                break;
+        }
     }
 }

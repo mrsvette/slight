@@ -6,10 +6,17 @@ $app->get('/panel-admin', function ($request, $response, $args) use ($user) {
     }
 
     $vmodel = new \Model\VisitorModel();
+    if (isset($_GET['start']) || isset($_GET['end'])) {
+        $params = [
+            'date_from' => date("Y-m-d", $_GET['start'] / 1000),
+            'date_to' => date("Y-m-d", $_GET['end'] / 1000),
+        ];
+    }
 
 	return $this->module->render($response, 'default/index.html', [
         'name' => $args['name'],
-        'vmodel' => $vmodel
+        'vmodel' => $vmodel,
+        'params' => $params
     ]);
 });
 
