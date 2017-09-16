@@ -8,7 +8,7 @@
         <li>
             <a href="#">
                 <span class="ion-clipboard"></span>
-                <span class="nav_title">Pages</span>
+                <span class="nav_title">Halaman</span>
             </a>
             <div class="sub_panel">
                 <div class="side_inner">
@@ -31,7 +31,7 @@
                     <ul>
                         <li><a href="{{ 'posts/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span>Daftar Postingan</a></li>
                         <li><a href="{{ 'posts/create' | alink }}"><span class="side_icon ion-ios7-star-outline"></span>Tambah Postingan Baru</a></li>
-                        <li><a href="{{ 'posts/comments' | alink }}"><span class="side_icon ion-ios7-paperplane-outline"></span>Daftar Komentar</a></li>
+                        {#<li><a href="{{ 'posts/comments' | alink }}"><span class="side_icon ion-ios7-paperplane-outline"></span>Daftar Komentar</a></li>#}
                     </ul>
                 </div>
             </div>
@@ -39,13 +39,13 @@
         <li>
             <a href="#">
                 <span class="ion-monitor"></span>
-                <span class="nav_title">Appearance</span>
+                <span class="nav_title">Tampilan</span>
             </a>
             <div class="sub_panel">
                 <div class="side_inner">
-                    <h4 class="panel_heading panel_heading_first">Appearance</h4>
+                    <h4 class="panel_heading panel_heading_first">Tampilan</h4>
                     <ul>
-                        <li><a href="{{ 'themes/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> Theme</a></li>
+                        <li><a href="{{ 'themes/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> Tema</a></li>
                     </ul>
                 </div>
             </div>
@@ -53,12 +53,13 @@
         <li>
             <a href="#">
                 <span class="ion-settings"></span>
-                <span class="nav_title">Manage</span>
+                <span class="nav_title">Kelola</span>
             </a>
             <div class="sub_panel">
                 <div class="side_inner">
-                    <h4 class="panel_heading panel_heading_first">Manage</h4>
+                    <h4 class="panel_heading panel_heading_first">Kelola</h4>
                     <ul>
+                        <li><a href="{{ 'params/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> Parameter</a></li>
                         <li><a href="{{ 'users/view' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> User</a></li>
                         <li><a href="{{ 'users/group' | alink }}"><span class="side_icon ion-ios7-folder-outline"></span> User Goup</a></li>
                     </ul>

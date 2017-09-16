@@ -36,6 +36,9 @@ window.addEventListener('load', function() {
 		        if (ev.target.status == '200') {
 		            // Save was successful, notify the user with a flash
 		            new ContentTools.FlashUI('ok');
+					setTimeout(function () {
+						window.location.reload(true);
+					}, 2000);
 		        } else {
 		            // Save failed, notify the user with a flash
 		            new ContentTools.FlashUI('no');

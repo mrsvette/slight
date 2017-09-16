@@ -99,6 +99,21 @@ class BaseModel extends \RedBeanPHP\SimpleModel
         return R::findOne($this->tableName, ' id = ?', [$id]);
     }
 
+    public function getRows($params)
+    {
+        $sql = 'SELECT * FROM '.$this->tableName.' WHERE 1';
+
+        $field = array();
+        foreach ($params as $attr => $val){
+            $field[] = $attr. '= :'. $attr;
+        }
+
+        if (count($field) > 0)
+            $sql .= ' AND '.implode(" AND ", $field);
+        
+        return R::getAll($sql, $params);
+    }
+
     public function save($bean)
     {
         $validate = $this->validate($bean);
@@ -199,7 +214,7 @@ class BaseModel extends \RedBeanPHP\SimpleModel
 
             return $this->_errors;
         } else {
-            $msg = "<ul>Please check the following errors :";
+            $msg = "<ul>Silakan periksa kembali beberapa kesalahan berikut :";
             foreach ($this->_errors as $i => $error){
                 foreach (array_values($error) as $j => $err_detail) {
                     $msg .= "<li>" . $err_detail . "</li>";

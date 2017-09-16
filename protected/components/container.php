@@ -121,7 +121,8 @@ function addGlobal($env, $c, $user = null)
         'baseUrl' => (!defined('BASE_URL')) ? $base_url : BASE_URL,
         'basePath' => $setting['basePath'],
         'adminBasePath' => $setting['admin']['path'],
-        'user' => $user
+        'user' => $user,
+        'params' => $setting['params']
     ];
 
     $env->addGlobal('App', $globals);

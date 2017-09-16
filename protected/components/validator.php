@@ -27,10 +27,10 @@ class Validator
             if ($model->{$attribute} == null) {
                 if (array_key_exists('on', $rule)) {
                     if ($model->getScenario() == $rule['on']) {
-                        $errors[$attribute] = $attribute . ' could not be empty.';
+                        $errors[$attribute] = $attribute . ' tidak boleh dikosongi.';
                     }
                 } else
-                    $errors[$attribute] = $attribute . ' could not be empty.';
+                    $errors[$attribute] = $attribute . ' tidak boleh dikosongi.';
             }
         }
 
@@ -45,10 +45,10 @@ class Validator
             if (filter_var($model->{$attribute}, FILTER_VALIDATE_EMAIL) === false) {
                 if (array_key_exists('on', $rule)) {
                     if ($model->getScenario() == $rule['on']) {
-                        $errors[$attribute] = $model->{$attribute}.' is not a valid email.';
+                        $errors[$attribute] = $model->{$attribute}.' bukan email yang valid.';
                     }
                 } else
-                    $errors[$attribute] = $model->{$attribute}.' is not a valid email.';
+                    $errors[$attribute] = $model->{$attribute}.' bukan email yang valid.';
             }
         }
 
@@ -63,14 +63,14 @@ class Validator
             if (!is_numeric($model->{$attribute})) {
                 if (array_key_exists('on', $rule)) {
                     if ($model->getScenario() == $rule['on']) {
-                        $errors[$attribute] = $model->{$attribute}.' is not a number.';
+                        $errors[$attribute] = $model->{$attribute}.' bukan dalam format angka.';
                     }
                 } else
-                    $errors[$attribute] = $model->{$attribute}.' is not a number.';
+                    $errors[$attribute] = $model->{$attribute}.' bukan dalam format angka.';
             } else {
                 if (array_key_exists('integerOnly', $rule) && $rule['integerOnly']) {
                     if (is_int($model->{$attribute}))
-                        $errors[$attribute] = $model->{$attribute}.' is not an integer.';
+                        $errors[$attribute] = $model->{$attribute}.' bukan bilangan bulat.';
                 }
             }
         }
@@ -85,12 +85,12 @@ class Validator
         foreach ($attributes as $i => $attribute){
             if (array_key_exists('max', $rule)) {
                 if (strlen($model->{$attribute}) > $rule['max']) {
-                    $errors[$attribute] = 'Maximum character for '.$model->{$attribute}.' is '.$rule['max'].'.';
+                    $errors[$attribute] = 'Maksimal jumlah karakter untuk '.$model->{$attribute}.' adalah '.$rule['max'].'.';
                 }
             }
             if (array_key_exists('min', $rule)) {
                 if (strlen($model->{$attribute}) < $rule['min']) {
-                    $errors[$attribute] = 'Minimum character for '.$model->{$attribute}.' is '.$rule['min'].'.';
+                    $errors[$attribute] = 'Minimal jumlah karakter untuk '.$model->{$attribute}.' adalah '.$rule['min'].'.';
                 }
             }
             if (array_key_exists('on', $rule)) {
@@ -110,7 +110,7 @@ class Validator
         foreach ($attributes as $i => $attribute){
             $data = $model->findByAttributes([$attribute=>$model->{$attribute}]);
             if ($data instanceof \RedBeanPHP\OODBBean){
-                $errors[$attribute] = $attribute.' '.$model->{$attribute}.' already exist.';
+                $errors[$attribute] = $attribute.' '.$model->{$attribute}.' sudah ada di database.';
             }
         }
         if (array_key_exists('on', $rule)) {

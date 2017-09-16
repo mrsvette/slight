@@ -31,26 +31,28 @@
 <!-- top bar -->
 <header class="navbar navbar-fixed-top" role="banner">
     <div class="container-fluid">
-        <div class="navbar-header pull-right">
+        <div class="navbar-header pull-left">
             <a href="{{ '' | alink }}" class="navbar-brand">
                 <img src="{{ 'img/blank.gif' | admin_asset_url }}" alt="Logo">
             </a>
         </div>
-        <ul class="top_links rm20">
+        <ul class="top_links l_tinynav1">
             <li>
-                <a href="{{ 'posts/comments' | alink }}"><span>23</span>Comments</a>
+                <a href="{{ '' | alink }}">
+                    <span class="fa fa-home"></span> {{ App.params.site_name }} {% if App.params.tag_line %}- {{ App.params.tag_line }}{% endif %}
+                </a>
             </li>
         </ul>
-        <ul class="nav navbar-nav navbar-left">
+        <ul class="nav navbar-nav navbar-right">
             <li class="user_menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="navbar_el_icon ion-person"></span> <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-left">
-                    <li><a href="{{ 'profile' | alink }}">Profile</a></li>
-                    <li><a href="{{ 'change-password' | alink }}">Change Password</a></li>
+                    <li><a href="{{ 'profile' | alink }}">Profil</a></li>
+                    <li><a href="{{ 'change-password' | alink }}">Ubah Password</a></li>
                     <li class="divider"></li>
-                    <li><a href="{{ 'default/logout' | alink }}">Log Out</a></li>
+                    <li><a href="{{ 'default/logout' | alink }}">Keluar</a></li>
                 </ul>
             </li>
             <li><a href="javascript:void(0)" class="slidebar-toggle"><span class="navbar_el_icon ion-navicon-round"></span></a></li>

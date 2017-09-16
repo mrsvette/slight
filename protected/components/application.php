@@ -14,15 +14,30 @@ class Application
 
     public function getTheme()
     {
-        if (!file_exists(realpath(dirname(__DIR__)).'/data/'.self::getThemeConfig().'.th'))
+        if (!file_exists(realpath(dirname(__DIR__)).'/data/configs.json'))
             return 'default';
 
-        $theme = file_get_contents(realpath(dirname(__DIR__)).'/data/'.self::getThemeConfig().'.th');
-        $theme = json_decode($theme, true);
-        if (is_array($theme)){
-            return $theme['id'];
+        $content = file_get_contents(realpath(dirname(__DIR__)).'/data/configs.json');
+        $configs = json_decode($content, true);
+        if (is_array($configs)){
+            return $configs['theme'];
         }
 
         return 'default';
+    }
+
+    public function getParams()
+    {
+        if (!file_exists(realpath(dirname(__DIR__)).'/data/configs.json'))
+            return array();
+
+        $content = file_get_contents(realpath(dirname(__DIR__)).'/data/configs.json');
+        $configs = json_decode($content, true);
+
+        if (is_array($configs)){
+            return $configs;
+        }
+
+        return array();
     }
 }

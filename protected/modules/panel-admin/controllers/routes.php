@@ -5,8 +5,18 @@ $app->get('/panel-admin', function ($request, $response, $args) use ($user) {
         return $response->withRedirect('/panel-admin/default/login');
     }
 
+    $vmodel = new \Model\VisitorModel();
+    if (isset($_GET['start']) || isset($_GET['end'])) {
+        $params = [
+            'date_from' => date("Y-m-d", $_GET['start'] / 1000),
+            'date_to' => date("Y-m-d", $_GET['end'] / 1000),
+        ];
+    }
+
 	return $this->module->render($response, 'default/index.html', [
-        'name' => $args['name']
+        'name' => $args['name'],
+        'vmodel' => $vmodel,
+        'params' => $params
     ]);
 });
 
@@ -15,6 +25,13 @@ foreach (glob(__DIR__.'/*_controller.php') as $controller) {
 	if (!empty($cname)) {
 		require_once $controller;
 	}
+}
+
+foreach (glob(__DIR__.'/../components/*.php') as $component) {
+    $cname = basename($component, '.php');
+    if (!empty($cname)) {
+        require_once $component;
+    }
 }
 
 $app->group('/panel-admin', function () use ($user) {
@@ -32,6 +49,9 @@ $app->group('/panel-admin', function () use ($user) {
     });
     $this->group('/posts', function() use ($user) {
         new PanelAdmin\Controllers\PostsController($this, $user);
+    });
+    $this->group('/params', function() use ($user) {
+        new PanelAdmin\Controllers\ParamsController($this, $user);
     });
 });
 
