@@ -43,4 +43,16 @@ class OptionsModel extends \Model\BaseModel
 
         return $items;
     }
+
+    /**
+     * Installing the new extension from ext service
+     * @param $sql
+     * @param $params
+     * @return int
+     */
+    public function installExt($sql, $params)
+    {
+        $execute = R::exec($sql, $params);
+        return $execute;
+    }
 }
