@@ -116,4 +116,30 @@ class AdminTools
 	{
 		return \Components\Application::getThemeConfig();
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getExtensions()
+	{
+		$items = array();
+		foreach (scandir($this->basePath.'/extensions') as $dir) {
+			if ( !in_array($dir, ['.', '..']) && is_dir($this->basePath.'/extensions/'.$dir) ){
+				if (file_exists($this->basePath.'/extensions/'.$dir.'/manifest.json')){
+					$manifest = file_get_contents($this->basePath.'/extensions/'.$dir.'/manifest.json');
+					$item = json_decode($manifest, true);
+
+					if (!is_array($item)){
+						$item = ['id'=>$dir, 'name'=>ucfirst($dir), 'icon'=>'icon.png'];
+					}
+
+					$item ['path'] = $this->basePath.'/extensions/'.$dir;
+					$item ['icon'] = 'extensions/'.$dir.'/'.$item['icon'];
+					$items[$dir] = $item;
+				}
+			}
+		}
+
+		return $items;
+	}
 }

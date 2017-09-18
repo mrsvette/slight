@@ -53,6 +53,9 @@ $app->group('/panel-admin', function () use ($user) {
     $this->group('/params', function() use ($user) {
         new PanelAdmin\Controllers\ParamsController($this, $user);
     });
+    $this->group('/extensions', function() use ($user) {
+        new PanelAdmin\Controllers\ExtensionsController($this, $user);
+    });
 });
 
 ?>
