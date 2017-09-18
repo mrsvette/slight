@@ -172,6 +172,13 @@ class PostModel extends \Model\BaseModel
         }
         $items['category'] = $category;
 
+        $sql3 = "SELECT c.*     
+        FROM tbl_post_in_category t 
+        LEFT JOIN tbl_post_category c ON c.id = t.category_id 
+        WHERE t.post_id =:post_id";
+
+        $items['main_category'] = R::getRow( $sql3, ['post_id'=>$row['post_id']] );
+
         return $items;
     }
 

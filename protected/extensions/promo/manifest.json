@@ -1,7 +1,7 @@
 {
-    "id" : "ecommerce",
-    "name" : "eCommerce",
-    "description" : "ECommerce module for slightsite 1.0",
+    "id" : "promo",
+    "name" : "Promo",
+    "description" : "Promo module for slightsite 1.0",
     "icon" : "icon.png",
     "author" : "farid efendi",
     "author_url" : "http://jagungbakar.web.id/",
