@@ -142,4 +142,20 @@ class AdminTools
 
 		return $items;
 	}
+
+	/**
+	 * @param $id
+	 * @return array|bool|mixed
+	 */
+	public function getExtension($id)
+	{
+		if (file_exists($this->basePath.'/extensions/'.$id.'/manifest.json')){
+			$manifest = file_get_contents($this->basePath.'/extensions/'.$id.'/manifest.json');
+			$item = json_decode($manifest, true);
+
+			return (!is_array($item))? false : $item;
+		}
+
+		return false;
+	}
 }

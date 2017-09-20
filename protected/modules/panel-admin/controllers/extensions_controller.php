@@ -16,6 +16,7 @@ class ExtensionsController extends BaseController
     {
         $app->map(['GET'], '/view', [$this, 'view']);
         $app->map(['GET', 'POST'], '/setup', [$this, 'setup']);
+        $app->map(['GET', 'POST'], '/manage/[{id}]', [$this, 'manage']);
     }
 
     public function view($request, $response, $args)
@@ -49,8 +50,8 @@ class ExtensionsController extends BaseController
             $model = \Model\OptionsModel::model()->findByAttributes(['option_name'=>'extensions']);
             if ($model instanceof \RedBeanPHP\OODBBean) {
                 $exts = [];
-                if (!empty($model->extension))
-                    $exts = json_decode($model->extension, true);
+                if (!empty($model->option_value))
+                    $exts = json_decode($model->option_value, true);
 
                 if ((int)$_POST['install'] < 1){
                     if (in_array($_POST['id'], $exts)) {
@@ -87,11 +88,21 @@ class ExtensionsController extends BaseController
 
                 $className = "Extensions\\".ucfirst($_POST['id'])."Service";
                 $ecommerce = new $className($this->_settings);
-                if (is_object($ecommerce) && method_exists($ecommerce, 'install')) {
-                    try {
-                        $ecommerce->install();
-                    } catch (\Exception $e) {
-                        var_dump($e->getMessage());
+                if ($_POST['install'] > 0) {
+                    if (is_object($ecommerce) && method_exists($ecommerce, 'install')) {
+                        try {
+                            $ecommerce->install();
+                        } catch (\Exception $e) {
+                            var_dump($e->getMessage());
+                        }
+                    }
+                } else {
+                    if (is_object($ecommerce) && method_exists($ecommerce, 'install')) {
+                        try {
+                            $ecommerce->uninstall();
+                        } catch (\Exception $e) {
+                            var_dump($e->getMessage());
+                        }
                     }
                 }
             } else {
@@ -102,4 +113,47 @@ class ExtensionsController extends BaseController
             return json_encode(['success'=>$success, 'message'=>$message]);
         }
     }
+
+    public function manage($request, $response, $args)
+    {
+        if ($this->_user->isGuest()) {
+            return $response->withRedirect($this->_login_url);
+        }
+
+        $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
+
+        $model = \Model\OptionsModel::model()->findByAttributes(['option_name'=>'ext_'.$args['id']]);
+
+        if (isset($_POST['Configs'])){
+            if ($model instanceof \RedBeanPHP\OODBBean) {
+                $model->option_value = json_encode($_POST['Configs']);
+                $model->updated_at = date('Y-m-d H:i:s');
+                $save = \Model\OptionsModel::model()->update($model);
+            } else {
+                $model = new \Model\OptionsModel();
+                $model->option_name = 'ext_'.$args['id'];
+                $model->option_value = json_encode($_POST['Configs']);
+                $model->created_at = date('Y-m-d H:i:s');
+                $save = \Model\OptionsModel::model()->save($model);
+            }
+
+            if ($save) {
+                $message = 'Data Anda telah berhasil disimpan.';
+                $success = true;
+            } else {
+                $message = \Model\OptionsModel::model()->getErrors(false);
+                $errors = \Model\OptionsModel::model()->getErrors(true, true);
+                $success = false;
+            }
+        }
+
+        return $this->_container->module->render($response, 'extensions/manage.html', [
+            'extension' => $tools->getExtension($args['id']),
+            'ext_value' => ($model instanceof \RedBeanPHP\OODBBean)? json_decode($model->option_value, true) : false,
+            'message' => ($message) ? $message : null,
+            'success' => $success,
+            'errors' => $errors
+        ]);
+    }
+
 }

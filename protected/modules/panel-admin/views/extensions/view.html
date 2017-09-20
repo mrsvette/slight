@@ -44,16 +44,18 @@ Ekstensi - {{ App.name }}
                                             <td>{{ extension.description | default('-') }}</td>
                                             <td>
                                                 {% if not installed_exts or extension.id not in installed_exts %}
-                                                <a href="{{ 'extensions/setup' | alink }}" id="{{ extension.id }}" title="Aktifkan ekstensi {{ extension.name }}" install="1" onclick="return install(this);" class="btnIconLeft">
-                                                    <i class="fa fa-check icon"></i> <span>Aktifkan</span>
-                                                </a>
+                                                    <a href="{{ 'extensions/setup' | alink }}" id="{{ extension.id }}" title="Aktifkan ekstensi {{ extension.name }}" install="1" onclick="return install(this);" class="btnIconLeft">
+                                                        <i class="fa fa-check icon"></i> <span>Aktifkan</span>
+                                                    </a>
                                                 {% else %}
-                                                <a class="btnIconLeft" href="{{ 'extensions/setup' | alink }}" id="{{ extension.id }}" title="Non aktifkan ekstensi {{ extension.name }}" install="0" onclick="return install(this);">
-                                                    <i class="fa fa-times icon text-danger"></i> <span class="text-danger">Non Aktifkan</span>
-                                                </a>
-                                                <a class="btnIconLeft" href="{{ 'extensions/manage' | alink }}" id="{{ extension.id }}" title="Konfigurasi ekstensi {{ extension.name }}">
-                                                    <i class="fa fa-cog icon"></i> <span>Konfigurasi</span>
-                                                </a>
+                                                    <a class="btnIconLeft" href="{{ 'extensions/setup' | alink }}" id="{{ extension.id }}" title="Non aktifkan ekstensi {{ extension.name }}" install="0" onclick="return install(this);">
+                                                        <i class="fa fa-times icon text-danger"></i> <span class="text-danger">Non Aktifkan</span>
+                                                    </a>
+                                                    {% if extension.config %}
+                                                    <a class="btnIconLeft" href="{{ 'extensions/manage' | alink }}/{{ extension.id }}" title="Konfigurasi ekstensi {{ extension.name }}">
+                                                        <i class="fa fa-cog icon"></i> <span>Konfigurasi</span>
+                                                    </a>
+                                                    {% endif %}
                                                 {% endif %}
                                             </td>
                                         </tr>
