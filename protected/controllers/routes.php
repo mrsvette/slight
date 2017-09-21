@@ -1,6 +1,13 @@
 <?php
-// Routes
-require $settings['settings']['admin']['path'] . '/controllers/routes.php';
+// Modules Routes
+foreach(glob($settings['settings']['basePath'] . '/modules/*/controllers/routes.php') as $mod_routes) {
+    require_once $mod_routes;
+}
+
+// Extensions routes
+foreach(glob($settings['settings']['basePath'] . '/extensions/*/controllers/routes.php') as $ext_routes) {
+    require_once $ext_routes;
+}
 
 $app->get('/[{name}]', function ($request, $response, $args) {
     
