@@ -13,7 +13,7 @@ Daftar Postingan Blog - {{ App.name }}
                 <p class="text-muted">Daftar postingan untuk blog</p>
             </div>
             <div class="col-sm-2 text-right">
-                <a class="btn btn-default" href="{{ 'posts/create' | alink }}">Buat Postingan Baru</a>
+                <a class="btn btn-default" href="{{ 'blog/posts/create' | link }}">Buat Postingan Baru</a>
             </div>
         </div>
     </div>
@@ -43,10 +43,10 @@ Daftar Postingan Blog - {{ App.name }}
                                         <td><a href="{{ 'blog' | link }}/{{ post.slug }}" target="_newtab">{{ 'blog' | link }}/{{ post.slug }}</a></td>
                                         <td><center>{{ post.status }}</center></td>
                                         <td>
-                                            <a href="{{ 'posts/update' | alink }}/{{ post.post_id }}">
+                                            <a href="{{ 'blog/posts/update' | link }}/{{ post.post_id }}">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
-                                            <a href="{{ 'posts/delete' | alink }}/{{ post.post_id }}" onclick="return hapus(this);">
+                                            <a href="{{ 'blog/posts/delete' | link }}/{{ post.post_id }}" onclick="return hapus(this);">
                                                 <i class="fa fa-trash-o"></i>
                                             </a>
                                         </td>

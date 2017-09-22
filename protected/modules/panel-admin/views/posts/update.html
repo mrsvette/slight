@@ -111,7 +111,7 @@ Perbarui Postingan - {{ App.name }}
 						<div class="panel-heading">Add More Images</div>
 						<div class="panel-body">
 							<div class="alert" id="upload-alert" style="display: none;"></div>
-							<form class="form-bordered" id="image-form" action="{{ 'posts/upload-images' | alink }}">
+							<form class="form-bordered" id="image-form" action="{{ 'blog/posts/upload-images' | link }}">
 								<div class="form-group">
 									<label class="control-label">Images</label>
 									<div class="fileupload fileupload-new" data-provides="fileupload">
@@ -216,7 +216,7 @@ Perbarui Postingan - {{ App.name }}
 		var success_message = "{{ message }}";
 		if (success_message && success_message.length > 0) {
 			setTimeout(function () {
-				window.location.href = "{{ 'posts/update' | alink }}/{{ post.id }}";
+				window.location.href = "{{ 'blog/posts/update' | link }}/{{ post.id }}";
 			}, 3000);
 		}
 		$("#submit-image-form").click(function(){
@@ -258,7 +258,7 @@ Perbarui Postingan - {{ App.name }}
 		$.ajax({
 			'beforeSend': function() {  },
 			'complete': function() {  },
-			'url': "{{ 'posts/get-slug' | alink }}",
+			'url': "{{ 'blog/posts/get-slug' | link }}",
 			'type':'post',
 			'data':{'title':$(data).val()},
 			'success': function(data) {
@@ -272,7 +272,7 @@ Perbarui Postingan - {{ App.name }}
 			$.ajax({
 				'beforeSend': function() {  },
 				'complete': function() {  },
-				'url': "{{ 'posts/delete-image' | alink }}/"+$this.attr('attr-id'),
+				'url': "{{ 'blog/posts/delete-image' | link }}/"+$this.attr('attr-id'),
 				'type':'post',
 				'data':{'id':$this.attr('attr-id')},
 				'success': function(data) {

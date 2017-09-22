@@ -1,9 +1,9 @@
 <?php
-namespace Model;
+namespace ExtensionsModel;
 
-require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/../../../models/base.php';
 
-class PostImagesModel extends \Model\BaseModel
+class PostLanguageModel extends \Model\BaseModel
 {
     public static function model($className=__CLASS__)
     {
@@ -12,7 +12,7 @@ class PostImagesModel extends \Model\BaseModel
 
     public function tableName()
     {
-        return 'post_images';
+        return 'ext_post_language';
     }
 
     /**
@@ -23,7 +23,8 @@ class PostImagesModel extends \Model\BaseModel
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return [
-            ['post_id', 'required'],
+            ['name, code', 'required'],
+            ['is_default', 'numerical', 'integerOnly' => true],
             ['created_at', 'required', 'on'=>'create'],
         ];
     }

@@ -1,7 +1,7 @@
 <?php
-namespace Model;
+namespace ExtensionsModel;
 
-require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/../../../models/base.php';
 
 class PostContentModel extends \Model\BaseModel
 {
@@ -12,7 +12,7 @@ class PostContentModel extends \Model\BaseModel
 
     public function tableName()
     {
-        return 'post_content';
+        return 'ext_post_content';
     }
 
     /**

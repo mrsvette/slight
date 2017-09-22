@@ -76,5 +76,13 @@ Kelola Ekstensi - {{ App.name }}
 {% endblock %}
 {% block endbodyjs %}
 <script type="text/javascript">
+    $(function () {
+        var success_message = "{{ message }}";
+        if (success_message && success_message.length > 0) {
+            setTimeout(function () {
+                window.location.href = window.location;
+            }, 3000);
+        }
+    });
 </script>
 {% endblock %}

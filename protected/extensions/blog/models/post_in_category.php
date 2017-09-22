@@ -1,9 +1,9 @@
 <?php
-namespace Model;
+namespace ExtensionsModel;
 
-require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/../../../models/base.php';
 
-class PostCategoryModel extends \Model\BaseModel
+class PostInCategoryModel extends \Model\BaseModel
 {
     public static function model($className=__CLASS__)
     {
@@ -12,7 +12,7 @@ class PostCategoryModel extends \Model\BaseModel
 
     public function tableName()
     {
-        return 'post_category';
+        return 'ext_post_in_category';
     }
 
     /**
@@ -23,9 +23,7 @@ class PostCategoryModel extends \Model\BaseModel
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return [
-            ['category_name, slug', 'required'],
-            ['parent_id', 'numerical', 'integerOnly' => true],
-            ['created_at', 'required', 'on'=>'create'],
+            ['post_id, category_id', 'required'],
         ];
     }
 }

@@ -1,7 +1,9 @@
 <?php
-namespace Model;
+namespace ExtensionsModel;
 
-require_once __DIR__ . '/base.php';
+use Model\R;
+
+require_once __DIR__ . '/../../../models/base.php';
 
 class PostModel extends \Model\BaseModel
 {
@@ -12,7 +14,7 @@ class PostModel extends \Model\BaseModel
 
     public function tableName()
     {
-        return 'post';
+        return 'ext_post';
     }
 
     /**
@@ -56,9 +58,9 @@ class PostModel extends \Model\BaseModel
     public function getPosts($data)
     {
         $sql = "SELECT t.status, c.post_id, c.title, c.content, c.slug, l.id, l.language_name, t.created_at     
-        FROM tbl_post t 
-        LEFT JOIN tbl_post_content c ON c.post_id = t.id 
-        LEFT JOIN tbl_post_language l ON l.id = c.language  
+        FROM {tablePrefix}ext_post t 
+        LEFT JOIN {tablePrefix}ext_post_content c ON c.post_id = t.id 
+        LEFT JOIN {tablePrefix}ext_post_language l ON l.id = c.language  
         WHERE 1";
 
         $params = array();
@@ -80,7 +82,9 @@ class PostModel extends \Model\BaseModel
         if (isset($data['limit']))
             $sql .= ' LIMIT '.$data['limit'];
 
-        $rows = R::getAll( $sql, $params );
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
+
+        $rows = \Model\R::getAll( $sql, $params );
 
         return $rows;
     }
@@ -90,13 +94,15 @@ class PostModel extends \Model\BaseModel
         $sql = "SELECT c.post_id, t.status, t.allow_comment, t.tags, t.created_at, t.updated_at, 
           c.title, c.content, c.slug, l.id AS language_id, 
           c.meta_keywords, c.meta_description, l.language_name, ad.username AS author_name 
-        FROM tbl_post t 
-        LEFT JOIN tbl_post_content c ON c.post_id = t.id 
-        LEFT JOIN tbl_post_language l ON l.id = c.language  
-        LEFT JOIN tbl_admin ad ON ad.id = t.author_id  
+        FROM {tablePrefix}ext_post t 
+        LEFT JOIN {tablePrefix}ext_post_content c ON c.post_id = t.id 
+        LEFT JOIN {tablePrefix}ext_post_language l ON l.id = c.language  
+        LEFT JOIN {tablePrefix}admin ad ON ad.id = t.author_id  
         WHERE t.id =:id";
 
-        $rows = R::getAll( $sql, ['id'=>$id] );
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
+
+        $rows = \Model\R::getAll( $sql, ['id'=>$id] );
 
         $items = [
             'id' => $rows[0]['post_id'],
@@ -119,10 +125,12 @@ class PostModel extends \Model\BaseModel
         }
 
         $sql2 = "SELECT t.category_id    
-        FROM tbl_post_in_category t 
+        FROM {tablePrefix}ext_post_in_category t 
         WHERE t.post_id =:post_id";
 
-        $rows2 = R::getAll( $sql2, ['post_id'=>$id] );
+        $sql2 = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql2);
+
+        $rows2 = \Model\R::getAll( $sql2, ['post_id'=>$id] );
         $category = [];
         foreach ($rows2 as $j => $row2) {
             array_push($category, $row2['category_id']);
@@ -137,13 +145,15 @@ class PostModel extends \Model\BaseModel
         $sql = "SELECT c.post_id, t.status, t.allow_comment, t.tags, t.created_at, t.updated_at, 
           c.title, c.content, c.slug, l.id AS language_id, 
           c.meta_keywords, c.meta_description, l.language_name, ad.username AS author_name 
-        FROM tbl_post t 
-        LEFT JOIN tbl_post_content c ON c.post_id = t.id 
-        LEFT JOIN tbl_post_language l ON l.id = c.language  
-        LEFT JOIN tbl_admin ad ON ad.id = t.author_id  
+        FROM {tablePrefix}ext_post t 
+        LEFT JOIN {tablePrefix}ext_post_content c ON c.post_id = t.id 
+        LEFT JOIN {tablePrefix}ext_post_language l ON l.id = c.language  
+        LEFT JOIN {tablePrefix}admin ad ON ad.id = t.author_id  
         WHERE c.slug =:slug";
 
-        $row = R::getRow( $sql, ['slug'=>$slug] );
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
+
+        $row = \Model\R::getRow( $sql, ['slug'=>$slug] );
 
         $items = [
             'id' => $row['post_id'],
@@ -162,10 +172,13 @@ class PostModel extends \Model\BaseModel
         ];
 
         $sql2 = "SELECT t.category_id    
-        FROM tbl_post_in_category t 
+        FROM {tablePrefix}ext_post_in_category t 
         WHERE t.post_id =:post_id";
 
-        $rows2 = R::getAll( $sql2, ['post_id'=>$row['post_id']] );
+        $sql2 = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql2);
+
+        $rows2 = \Model\R::getAll( $sql2, ['post_id'=>$row['post_id']] );
+
         $category = [];
         foreach ($rows2 as $j => $row2) {
             array_push($category, $row2['category_id']);
@@ -173,11 +186,13 @@ class PostModel extends \Model\BaseModel
         $items['category'] = $category;
 
         $sql3 = "SELECT c.*     
-        FROM tbl_post_in_category t 
-        LEFT JOIN tbl_post_category c ON c.id = t.category_id 
+        FROM {tablePrefix}ext_post_in_category t 
+        LEFT JOIN {tablePrefix}ext_post_category c ON c.id = t.category_id 
         WHERE t.post_id =:post_id";
 
-        $items['main_category'] = R::getRow( $sql3, ['post_id'=>$row['post_id']] );
+        $sql3 = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql3);
+
+        $items['main_category'] = \Model\R::getRow( $sql3, ['post_id'=>$row['post_id']] );
 
         return $items;
     }
@@ -185,10 +200,12 @@ class PostModel extends \Model\BaseModel
     public function getCategories()
     {
         $sql = "SELECT t.id, t.category_name AS title, t.slug, t.description     
-        FROM tbl_post_category t 
+        FROM {tablePrefix}ext_post_category t 
         WHERE 1 ORDER BY t.id ASC";
 
-        $rows = R::getAll( $sql );
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
+
+        $rows = \Model\R::getAll( $sql );
         return $rows;
     }
 
@@ -199,7 +216,7 @@ class PostModel extends \Model\BaseModel
     public function getImages($data)
     {
         $sql = "SELECT i.*  
-        FROM tbl_post_images i 
+        FROM {tablePrefix}ext_post_images i 
         WHERE i.post_id =:post_id";
 
         $params = [ 'post_id'=>$data['id'] ];
@@ -211,7 +228,9 @@ class PostModel extends \Model\BaseModel
 
         $sql .= " ORDER BY i.id ASC";
 
-        $rows = R::getAll( $sql, $params );
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
+
+        $rows = \Model\R::getAll( $sql, $params );
         return $rows;
     }
 }

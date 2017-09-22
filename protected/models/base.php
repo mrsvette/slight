@@ -14,6 +14,7 @@ class BaseModel extends \RedBeanPHP\SimpleModel
     protected $tableName;
     protected $_errors;
     protected $_scenario;
+    protected $_tbl_prefix;
 
     private static $_models = array(); // class name => model
     
@@ -30,6 +31,7 @@ class BaseModel extends \RedBeanPHP\SimpleModel
         $this->username = $configs['settings']['db']['username'];
         $this->password = $configs['settings']['db']['password'];
         $this->tableName = $configs['settings']['db']['tablePrefix'].$this->tableName();
+        $this->_tbl_prefix = $configs['settings']['db']['tablePrefix'];
 
         if (!$this->is_connected) {
             $this->setup();

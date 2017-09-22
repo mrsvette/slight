@@ -1,6 +1,6 @@
 <?php
 
-namespace PanelAdmin\Controllers;
+namespace Extensions\Controllers;
 
 use Components\BaseController as BaseController;
 
@@ -28,7 +28,7 @@ class PostsController extends BaseController
             return $response->withRedirect($this->_login_url);
         }
 
-        $model = new \Model\PostModel();
+        $model = new \ExtensionsModel\PostModel();
         $posts = $model->getPosts([ 'just_default' => true]);
         
         return $this->_container->module->render($response, 'posts/view.html', [
@@ -42,9 +42,9 @@ class PostsController extends BaseController
             return $response->withRedirect($this->_login_url);
         }
 
-        $languages = \Model\PostLanguageModel::model()->findAll();
-        $model = new \Model\PostModel('create');
-        $categories = \Model\PostCategoryModel::model()->findAll();
+        $languages = \ExtensionsModel\PostLanguageModel::model()->findAll();
+        $model = new \ExtensionsModel\PostModel('create');
+        $categories = \ExtensionsModel\PostCategoryModel::model()->findAll();
 
         if (isset($_POST['Post'])){
             $model->status = $_POST['Post']['status'];
@@ -56,12 +56,12 @@ class PostsController extends BaseController
             }
             $model->created_at = date('Y-m-d H:i:s');
             $model->updated_at = date('Y-m-d H:i:s');
-            $create = \Model\PostModel::model()->save(@$model);
+            $create = \ExtensionsModel\PostModel::model()->save(@$model);
             if ($create > 0) {
-                $post_content = \Model\PostContentModel::model();
+                $post_content = \ExtensionsModel\PostContentModel::model();
                 foreach ($_POST['PostContent']['title'] as $lang => $title) {
                     if (!empty($title) && !empty($_POST['PostContent']['content'][$lang])) {
-                        $model2 = new \Model\PostContentModel;
+                        $model2 = new \ExtensionsModel\PostContentModel;
                         $model2->post_id = $model->id;
                         $model2->title = $title;
                         if (!empty($_POST['PostContent']['slug'][$lang])){
@@ -83,10 +83,10 @@ class PostsController extends BaseController
                         $create_content = $post_content->save($model2);
                     }
                 }
-                $post_in_category = \Model\PostInCategoryModel::model();
+                $post_in_category = \ExtensionsModel\PostInCategoryModel::model();
                 if (!empty($_POST['Post']['post_category']) && is_array($_POST['Post']['post_category'])) {
                     foreach ($_POST['Post']['post_category'] as $ci => $category_id) {
-                        $model3 = new \Model\PostInCategoryModel();
+                        $model3 = new \ExtensionsModel\PostInCategoryModel();
                         $model3->post_id = $model->id;
                         $model3->category_id = $category_id;
                         $model3->created_at = date("Y-m-d H:i:s");
@@ -120,10 +120,10 @@ class PostsController extends BaseController
         if (empty($args['id']))
             return false;
 
-        $languages = \Model\PostLanguageModel::model()->findAll();
-        $model = \Model\PostModel::model()->findByPk($args['id']);
-        $post = new \Model\PostModel();
-        $categories = \Model\PostCategoryModel::model()->findAll();
+        $languages = \ExtensionsModel\PostLanguageModel::model()->findAll();
+        $model = \ExtensionsModel\PostModel::model()->findByPk($args['id']);
+        $post = new \ExtensionsModel\PostModel();
+        $categories = \ExtensionsModel\PostCategoryModel::model()->findAll();
         $post_detail = $post->getPostDetail($args['id']);
 
         if (isset($_POST['Post'])){
@@ -134,14 +134,14 @@ class PostsController extends BaseController
                 $model->tags = $_POST['Post']['tags'];
             }
             $model->updated_at = date('Y-m-d H:i:s');
-            $update = \Model\PostModel::model()->update($model);
+            $update = \ExtensionsModel\PostModel::model()->update($model);
             if ($update) {
-                $post_content = \Model\PostContentModel::model();
+                $post_content = \ExtensionsModel\PostContentModel::model();
                 foreach ($_POST['PostContent']['title'] as $lang => $title) {
                     if (!empty($title) && !empty($_POST['PostContent']['content'][$lang])) {
-                        $model2 = \Model\PostContentModel::model()->findByAttributes([ 'post_id'=>$model->id, 'language'=>$lang ]);
+                        $model2 = \ExtensionsModel\PostContentModel::model()->findByAttributes([ 'post_id'=>$model->id, 'language'=>$lang ]);
                         if (!$model2 instanceof \RedBeanPHP\OODBBean) {
-                            $model2 = new \Model\PostContentModel;
+                            $model2 = new \ExtensionsModel\PostContentModel;
                             $model2->created_at = date("Y-m-d H:i:s");
                         }
                         $model2->post_id = $model->id;
@@ -170,12 +170,12 @@ class PostsController extends BaseController
                         }
                     }
                 }
-                $post_in_category = \Model\PostInCategoryModel::model();
+                $post_in_category = \ExtensionsModel\PostInCategoryModel::model();
                 if (!empty($_POST['Post']['post_category']) && is_array($_POST['Post']['post_category'])) {
                     foreach ($_POST['Post']['post_category'] as $ci => $category_id) {
-                        $model3 = \Model\PostInCategoryModel::model()->findByAttributes([ 'post_id'=>$model->id, 'category_id'=>$category_id ]);
+                        $model3 = \ExtensionsModel\PostInCategoryModel::model()->findByAttributes([ 'post_id'=>$model->id, 'category_id'=>$category_id ]);
                         if (!$model3 instanceof \RedBeanPHP\OODBBean) {
-                            $model3 = new \Model\PostInCategoryModel();
+                            $model3 = new \ExtensionsModel\PostInCategoryModel();
                             $model3->created_at = date("Y-m-d H:i:s");
                             $model3->post_id = $model->id;
                             $model3->category_id = $category_id;
@@ -185,8 +185,8 @@ class PostsController extends BaseController
                     if (is_array($post_detail['category']) && count($post_detail['category'])>0){
                         foreach ($post_detail['category'] as $ipc => $pc_id) {
                             if (!in_array($pc_id, $_POST['Post']['post_category'])) {
-                                $dmodel = \Model\PostInCategoryModel::model()->findByAttributes([ 'post_id'=>$model->id, 'category_id'=>$pc_id ]);
-                                $del = \Model\PostInCategoryModel::model()->delete($dmodel);
+                                $dmodel = \ExtensionsModel\PostInCategoryModel::model()->findByAttributes([ 'post_id'=>$model->id, 'category_id'=>$pc_id ]);
+                                $del = \ExtensionsModel\PostInCategoryModel::model()->delete($dmodel);
                             }
                         }
                     }
@@ -201,7 +201,7 @@ class PostsController extends BaseController
             }
         }
 
-        $postImages = new \Model\PostImagesModel();
+        $postImages = new \ExtensionsModel\PostImagesModel();
         $images = $post->getImages(['id'=>$model->id]);
 
         return $this->_container->module->render($response, 'posts/update.html', [
@@ -226,11 +226,11 @@ class PostsController extends BaseController
             return false;
         }
 
-        $model = \Model\PostModel::model()->findByPk($args['id']);
-        $delete = \Model\PostModel::model()->delete($model);
+        $model = \ExtensionsModel\PostModel::model()->findByPk($args['id']);
+        $delete = \ExtensionsModel\PostModel::model()->delete($model);
         if ($delete) {
-            $delete2 = \Model\PostContentModel::model()->deleteAllByAttributes(['post_id'=>$args['id']]);
-            $delete3 = \Model\PostInCategoryModel::model()->deleteAllByAttributes(['post_id'=>$args['id']]);
+            $delete2 = \ExtensionsModel\PostContentModel::model()->deleteAllByAttributes(['post_id'=>$args['id']]);
+            $delete3 = \ExtensionsModel\PostInCategoryModel::model()->deleteAllByAttributes(['post_id'=>$args['id']]);
             $message = 'Your page is successfully created.';
             echo true;
         }
@@ -246,7 +246,7 @@ class PostsController extends BaseController
             return false;
         }
 
-        $model = new \Model\PostModel();
+        $model = new \ExtensionsModel\PostModel();
         return $model->createSlug($_POST['title']);
     }
 
@@ -262,7 +262,7 @@ class PostsController extends BaseController
                 echo json_encode(['status'=>'failed','message'=>'Allowed file type are jpg, png']); exit;
                 exit;
             }
-            $model = new \Model\PostImagesModel();
+            $model = new \ExtensionsModel\PostImagesModel();
             $model->post_id = $_POST['PostImages']['post_id'];
             $model->type = $_POST['PostImages']['type'];
             $model->upload_folder = 'uploads/posts';
@@ -270,7 +270,7 @@ class PostsController extends BaseController
             $model->alt = $_POST['PostImages']['alt'];
             $model->description = $_POST['PostImages']['description'];
             $model->created_at = date("Y-m-d H:i:s");
-            $create = \Model\PostImagesModel::model()->save(@$model);
+            $create = \ExtensionsModel\PostImagesModel::model()->save(@$model);
             if ($create > 0) {
                 $uploadfile = $model->upload_folder . '/' . $model->file_name;
                 move_uploaded_file($_FILES['PostImages']['tmp_name']['file_name'], $uploadfile);
@@ -292,9 +292,9 @@ class PostsController extends BaseController
             return false;
         }
 
-        $model = \Model\PostImagesModel::model()->findByPk($_POST['id']);
+        $model = \ExtensionsModel\PostImagesModel::model()->findByPk($_POST['id']);
         $path = $this->_settings['basePath'].'/../'.$model->upload_folder.'/'.$model->file_name;
-        $delete = \Model\PostImagesModel::model()->delete($model);
+        $delete = \ExtensionsModel\PostImagesModel::model()->delete($model);
         if ($delete) {
             if (file_exists($path))
                 unlink($path);

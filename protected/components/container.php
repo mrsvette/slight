@@ -122,7 +122,7 @@ function addFilter($env, $c)
                 }),
                 new \Twig_SimpleFilter('mlink', function ($string) use ($base_url, $module_name) {
                     return $base_url .'/'. $module_name. '/' .$string;
-                }),
+                })
             ];
             $filters = array_merge($filters, $mfilters);
         }
