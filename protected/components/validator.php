@@ -110,7 +110,7 @@ class Validator
         foreach ($attributes as $i => $attribute){
             $data = $model->findByAttributes([$attribute=>$model->{$attribute}]);
             if ($data instanceof \RedBeanPHP\OODBBean){
-                $errors[$attribute] = $attribute.' '.$model->{$attribute}.' sudah ada di database.';
+                $errors[$attribute] = $attribute.' '.$model->{$attribute}.' sudah terdaftar.';
             }
         }
         if (array_key_exists('on', $rule)) {

@@ -46,6 +46,7 @@ Create New Page - {{ App.name }}
         </div>
     </div>
 </div>
+{% include 'partial/right_menu.html' %}
 {% endblock %}
 {% block endbodyjs %}
 <script src="{{ 'lib/editarea/edit_area_full.js' | admin_asset_url }}"></script>

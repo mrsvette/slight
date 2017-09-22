@@ -6,6 +6,14 @@ $container = $app->getContainer();
 require __DIR__ . '/identity.php';
 $user = new \Components\UserIdentity($app);
 
+// Check if there is another identity
+if (!empty($settings['settings']['params']['extensions'])) {
+    $exts = json_decode($settings['settings']['params']['extensions'], true);
+    if (is_array($exts) && in_array('client', $exts)) {
+        $client = new \Extensions\Components\ClientIdentity($app);
+    }
+}
+
 // Controller
 require __DIR__ . '/controller.php';
 

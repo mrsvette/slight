@@ -23,7 +23,9 @@ class ClientModel extends \Model\BaseModel
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return [
-            ['email, first_name, last_name', 'required'],
+            ['email, name', 'required', 'on' => 'create'],
+            ['email', 'email', 'on' => 'create'],
+            ['email', 'unique', 'on' => 'create']
         ];
     }
 
