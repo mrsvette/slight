@@ -33,7 +33,9 @@ class VisitorModel extends \Model\BaseModel
      */
     public function deactivate($session_id)
     {
-        $sql = 'UPDATE tbl_visitor SET active = 0 WHERE session_id = :session_id AND active = 1';
+        $sql = 'UPDATE {tablePrefix}visitor SET active = 0 WHERE session_id = :session_id AND active = 1';
+
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
 
         $update = R::exec( $sql, ['session_id' => $session_id] );
 
@@ -72,9 +74,11 @@ class VisitorModel extends \Model\BaseModel
             $date = date("Y-m-d H:i:s");
 
         $sql = 'SELECT COUNT(t.ip_address) AS count 
-          FROM tbl_visitor t 
+          FROM {tablePrefix}visitor t 
           WHERE DATE_FORMAT(t.date_expired,"%Y-%m-%d %H:%i:%s") >= :date_limit 
           GROUP BY t.session_id';
+
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
 
         $row = R::getRow( $sql, ['date_limit' => date("Y-m-d H:i:s",strtotime($date))] );
 
@@ -94,9 +98,11 @@ class VisitorModel extends \Model\BaseModel
             $date_to = date('Y-m-d');
 
         $sql = 'SELECT IF(t.mobile >0, "mobile","desktop") AS device, COUNT(t.ip_address) AS count 
-          FROM tbl_visitor t 
+          FROM {tablePrefix}visitor t 
           WHERE DATE_FORMAT(t.created_at,"%Y-%m-%d") BETWEEN :date_from AND :date_to  
           GROUP BY t.mobile';
+
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
 
         $rows = R::getAll( $sql, ['date_from' => date("Y-m-d",strtotime($date_from)), 'date_to' => date("Y-m-d",strtotime($date_to))] );
 
@@ -123,8 +129,10 @@ class VisitorModel extends \Model\BaseModel
             $date_to = date('Y-m-d');
 
         $sql = 'SELECT COUNT(DISTINCT v.ip_address) as count 
-          FROM tbl_visitor v 
+          FROM {tablePrefix}visitor v 
           WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d") BETWEEN :date_from AND :date_to';
+
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
 
         $row = R::getRow( $sql, ['date_from' => date("Y-m-d",strtotime($date_from)), 'date_to' => date("Y-m-d",strtotime($date_to))] );
 
@@ -143,16 +151,20 @@ class VisitorModel extends \Model\BaseModel
             $date_to = date('Y-m-d');
 
         $sql = 'SELECT DISTINCT v.session_id 
-          FROM tbl_visitor v 
+          FROM {tablePrefix}visitor v 
           WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d") BETWEEN :date_from AND :date_to 
           GROUP BY v.session_id';
+
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
 
         $rows = R::getAll( $sql, ['date_from'=>$date_from,'date_to'=>$date_to]);
         $items = [];
         if (count($rows)>0){
             foreach ($rows as $row){
                 $sql2 = 'SELECT TIMEDIFF(MAX(v.created_at),MIN(v.created_at)) as diff 
-                  FROM tbl_visitor v WHERE v.session_id=:session_id';
+                  FROM {tablePrefix}visitor v WHERE v.session_id=:session_id';
+
+                $sql2 = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql2);
 
                 $row2 = R::getRow( $sql2, ['session_id'=>$row['session_id']] );
                 if ($row2['diff'] != '00:00:00')
@@ -178,9 +190,11 @@ class VisitorModel extends \Model\BaseModel
             $date_to = date('Y-m-d');
 
         $sql = 'SELECT COUNT(v.id) AS count 
-          FROM tbl_visitor v 
+          FROM {tablePrefix}visitor v 
           WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d") BETWEEN :date_from AND :date_to 
             AND v.url_referrer NOT LIKE "%'.$_SERVER['HTTP_HOST'].'%"';
+
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
 
         $row = R::getRow( $sql, ['date_from'=>$date_from,'date_to'=>$date_to] );
 
@@ -236,25 +250,29 @@ class VisitorModel extends \Model\BaseModel
     {
         switch($type){
             case 'pageview':
-                $sql = 'SELECT COUNT(v.id) as count FROM tbl_visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d")=:date ORDER BY v.id DESC';
+                $sql = 'SELECT COUNT(v.id) as count FROM {tablePrefix}visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d")=:date ORDER BY v.id DESC';
+                $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
                 $row = R::getRow( $sql, ['date'=>$date] );
 
                 return (int)$row['count'];
                 break;
             case 'session':
-                $sql = 'SELECT COUNT(DISTINCT v.session_id) as count FROM tbl_visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d")=:date GROUP BY v.session_id';
+                $sql = 'SELECT COUNT(DISTINCT v.session_id) as count FROM {tablePrefix}visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m-%d")=:date GROUP BY v.session_id';
+                $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
                 $row = R::getRow( $sql, ['date'=>$date] );
 
                 return count($row);
                 break;
             case 'pageviewmonthly':
-                $sql = 'SELECT COUNT(v.id) as count FROM tbl_visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m")=:date ORDER BY v.id DESC';
+                $sql = 'SELECT COUNT(v.id) as count FROM {tablePrefix}visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m")=:date ORDER BY v.id DESC';
+                $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
                 $row = R::getRow( $sql, ['date'=>$date] );
 
                 return (int)$row['count'];
                 break;
             case 'sessionmonthly':
-                $sql = 'SELECT COUNT(DISTINCT v.session_id) as count FROM tbl_visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m")=:date GROUP BY v.session_id';
+                $sql = 'SELECT COUNT(DISTINCT v.session_id) as count FROM {tablePrefix}visitor v WHERE DATE_FORMAT(v.created_at,"%Y-%m")=:date GROUP BY v.session_id';
+                $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
                 $row = R::getRow( $sql, ['date'=>$date] );
 
                 return count($row);
