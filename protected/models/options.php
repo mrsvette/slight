@@ -52,7 +52,7 @@ class OptionsModel extends \Model\BaseModel
      * @param $params
      * @return int
      */
-    public function installExt($sql, $params)
+    public function installExt($sql, $params = array())
     {
         $execute = R::exec($sql, $params);
         return $execute;
