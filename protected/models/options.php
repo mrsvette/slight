@@ -27,11 +27,13 @@ class OptionsModel extends \Model\BaseModel
         ];
     }
 
-    public function getOptions($data)
+    public function getOptions()
     {
         $sql = 'SELECT t.option_name, t.option_value  
-          FROM tbl_options t 
+          FROM {tablePrefix}options t 
           WHERE 1';
+
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
 
         $options = R::getAll( $sql );
         $items = [];
