@@ -102,4 +102,16 @@ class BlogService
     {
         return true;
     }
+
+    /**
+     * Blog extension available menu
+     * @return array
+     */
+    public function getMenu()
+    {
+        return [
+            [ 'label' => 'Daftar Postingan', 'url' => 'blog/posts/view' ],
+            [ 'label' => 'Tambah Postingan', 'url' => 'blog/posts/create' ],
+        ];
+    }
 }

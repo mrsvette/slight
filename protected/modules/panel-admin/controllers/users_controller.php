@@ -29,12 +29,24 @@ class UsersController extends BaseController
     {
         return [
             ['allow',
-                'actions' => ['view', 'create', 'update', 'delete'],
+                'actions' => ['view', 'create', 'update', 'delete', 'group', 'group/create', 'group/update', 'group/delete', 'group/priviledge'],
                 'users'=> ['@'],
             ],
             ['allow',
-                'actions' => ['view'],
+                'actions' => ['view', 'group'],
+                'expression' => $this->hasAccess('panel-admin/users/read'),
+            ],
+            ['allow',
+                'actions' => ['create', 'group/create', 'group/priviledge'],
                 'expression' => $this->hasAccess('panel-admin/users/create'),
+            ],
+            ['allow',
+                'actions' => ['update', 'group/update'],
+                'expression' => $this->hasAccess('panel-admin/users/update'),
+            ],
+            ['allow',
+                'actions' => ['delete', 'group/delete'],
+                'expression' => $this->hasAccess('panel-admin/users/delete'),
             ],
             ['deny',
                 'users' => ['*'],
@@ -62,8 +74,12 @@ class UsersController extends BaseController
 
     public function create($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $model = new \Model\AdminModel('create');
@@ -103,8 +119,12 @@ class UsersController extends BaseController
 
     public function update($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $model = \Model\AdminModel::model()->findByPk($args['id']);
@@ -152,8 +172,12 @@ class UsersController extends BaseController
 
     public function group($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $models = \Model\AdminGroupModel::model()->findAll();
@@ -166,8 +190,12 @@ class UsersController extends BaseController
 
     public function group_create($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $model = new \Model\AdminGroupModel('create');
@@ -197,8 +225,12 @@ class UsersController extends BaseController
 
     public function group_update($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $model = \Model\AdminGroupModel::model()->findByPk($args['id']);
@@ -227,8 +259,12 @@ class UsersController extends BaseController
 
     public function group_delete($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         if (!isset($args['id'])) {
@@ -245,8 +281,12 @@ class UsersController extends BaseController
 
     public function group_priviledge($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $model = \Model\AdminGroupModel::model()->findByPk($args['id']);

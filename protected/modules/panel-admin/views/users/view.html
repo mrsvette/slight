@@ -44,7 +44,11 @@ Kelola User - {{ App.name }}
                                         <td><center>{{ i + 1 }}</center></td>
                                         <td>{{ model.username }}</td>
                                         <td>{{ model.email }}</td>
-                                        <td><center>{{ cmodel.getGroup(model.group_id) }}</center></td>
+                                        <td>
+                                            <center>
+                                            <a href="{{ 'users/group/priviledge' | alink }}/{{ model.group_id }}">{{ cmodel.getGroup(model.group_id) }}</a>
+                                            </center>
+                                        </td>
                                         <td><center>{{ cmodel.getStatus(model.status) }}</center></td>
                                         <td>
                                             <a href="{{ 'users/update' | alink }}/{{ i }}" title="Update">

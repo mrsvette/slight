@@ -22,10 +22,43 @@ class PagesController extends BaseController
         $app->map(['GET', 'POST'], '/update-visual', [$this, 'update_visual']);
     }
 
+    public function accessRules()
+    {
+        return [
+            ['allow',
+                'actions' => ['view', 'create', 'update', 'delete', 'update-visual'],
+                'users'=> ['@'],
+            ],
+            ['allow',
+                'actions' => ['view'],
+                'expression' => $this->hasAccess('panel-admin/pages/read'),
+            ],
+            ['allow',
+                'actions' => ['create'],
+                'expression' => $this->hasAccess('panel-admin/pages/create'),
+            ],
+            ['allow',
+                'actions' => ['update', 'update-visual'],
+                'expression' => $this->hasAccess('panel-admin/pages/update'),
+            ],
+            ['allow',
+                'actions' => ['delete'],
+                'expression' => $this->hasAccess('panel-admin/pages/delete'),
+            ],
+            ['deny',
+                'users' => ['*'],
+            ],
+        ];
+    }
+
     public function view($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
@@ -37,8 +70,12 @@ class PagesController extends BaseController
 
     public function create($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
@@ -62,8 +99,12 @@ class PagesController extends BaseController
 
     public function update($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         if (isset($_POST['content']) && file_exists($_POST['path'])){
@@ -88,8 +129,12 @@ class PagesController extends BaseController
 
     public function delete($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         if (!isset($args['name'])) {
@@ -106,8 +151,12 @@ class PagesController extends BaseController
 
     public function update_visual($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         if (isset($_POST['content']) && isset($_POST['path'])){

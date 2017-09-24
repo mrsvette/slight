@@ -1,51 +1,40 @@
 <!-- right slidebar -->
 <div id="slidebar">
     <div id="slidebar_content">
-        <div class="input-group">
-            <input type="text" class="form-control input-sm" placeholder="Search...">
-					<span class="input-group-btn">
-						<button class="btn btn-default btn-sm" type="button"><i class="fa fa-search"></i></button>
-					</span>
+        <div class="events_list">
+            <div class="events_date clearfix">
+                <span class="event_date_big ion-ios7-briefcase-outline"></span>
+                <span class="event_date_day">Ekstensi</span>
+                <span class="event_date_full">Aplikasi tambahan</span>
+            </div>
         </div>
         <hr>
-
-        <div class="sepH_a">
-            <div class="progress">
-                <div style="width: 60%;" role="progressbar" class="progress-bar">
-                    60%
+        <div class="events_list">
+            {% set exts = App.optionModel.getInstalledExtensions() %}
+            {% if exts %}
+                {% for e, ext in exts %}
+                <div class="event_item">
+                    <div class="event_hour">
+                        <img src="{{ ext.icon | link }}"/>
+                    </div>
+                    <ul class="event_content">
+                        <li>
+                            <p>{{ ext.name }}</p>
+                            <span>version {{ ext.version }}</span>
+                        </li>
+                        {% if ext.menu %}
+                            {% for em, menu in ext.menu %}
+                                <li>
+                                    <p><a href="{{ menu.url | link }}">{{ menu.label }}</a></p>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
                 </div>
-            </div>
-            <span class="help-block">CPU Usage</span>
+                {% endfor %}
+            {% else %}
+                Tidak ada ekstensi yang terpasang.
+            {% endif %}
         </div>
-        <div class="sepH_a">
-            <div class="progress">
-                <div style="width: 28%;" class="progress-bar progress-bar-success">
-                    28%
-                </div>
-            </div>
-            <span class="help-block">Disk Usage</span>
-        </div>
-        <div class="progress">
-            <div style="width: 82%;" class="progress-bar progress-bar-danger">
-                0.2GB/20GB
-            </div>
-        </div>
-        <span class="help-block">Monthly Transfer</span>
-        <hr>
-
-        <form>
-            <div class="form-group">
-                <input type="text" class="input-sm form-control" placeholder="Tilte...">
-            </div>
-            <div class="form-group">
-                <textarea cols="30" rows="3" class="form-control input-sm" placeholder="Message..."></textarea>
-            </div>
-            <button type="button" class="btn btn-default btn-sm">Send message</button>
-        </form>
-        <hr>
-        <div class="sepH_a">
-            <span class="label label-info">Reminder</span>
-        </div>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat fuga omnis ipsa odit sint aut molestiae enim. Quia cupiditate distinctio ad dicta qui ducimus aspernatur debitis incidunt minima laboriosam atque.</p>
     </div>
 </div>

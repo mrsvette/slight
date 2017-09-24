@@ -18,10 +18,35 @@ class ThemesController extends BaseController
         $app->map(['GET', 'POST'], '/update', [$this, 'update']);
     }
 
+    public function accessRules()
+    {
+        return [
+            ['allow',
+                'actions' => ['view', 'update'],
+                'users'=> ['@'],
+            ],
+            ['allow',
+                'actions' => ['view'],
+                'expression' => $this->hasAccess('panel-admin/themes/read'),
+            ],
+            ['allow',
+                'actions' => ['update'],
+                'expression' => $this->hasAccess('panel-admin/themes/update'),
+            ],
+            ['deny',
+                'users' => ['*'],
+            ],
+        ];
+    }
+
     public function view($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
@@ -35,8 +60,12 @@ class ThemesController extends BaseController
 
     public function update($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);

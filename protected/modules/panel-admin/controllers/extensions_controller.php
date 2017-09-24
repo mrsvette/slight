@@ -19,10 +19,35 @@ class ExtensionsController extends BaseController
         $app->map(['GET', 'POST'], '/manage/[{id}]', [$this, 'manage']);
     }
 
+    public function accessRules()
+    {
+        return [
+            ['allow',
+                'actions' => ['view', 'setup', 'manage'],
+                'users'=> ['@'],
+            ],
+            ['allow',
+                'actions' => ['view'],
+                'expression' => $this->hasAccess('panel-admin/extensions/read'),
+            ],
+            ['allow',
+                'actions' => ['setup', 'manage'],
+                'expression' => $this->hasAccess('panel-admin/extensions/create'),
+            ],
+            ['deny',
+                'users' => ['*'],
+            ],
+        ];
+    }
+
     public function view($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
@@ -40,8 +65,12 @@ class ExtensionsController extends BaseController
 
     public function setup($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
@@ -116,8 +145,12 @@ class ExtensionsController extends BaseController
 
     public function manage($request, $response, $args)
     {
-        if ($this->_user->isGuest()) {
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);

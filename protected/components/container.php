@@ -116,6 +116,9 @@ function addFilter($env, $c)
         new \Twig_SimpleFilter('alink', function ($string) use ($base_url, $admin_module) {
             return $base_url .'/'. $admin_module. '/' .$string;
         }),
+        new \Twig_SimpleFilter('json_decode', function ($string) {
+            return json_decode($string, true);
+        }),
     ];
 
     $uri_path = $c->get('request')->getUri()->getPath();
@@ -156,7 +159,8 @@ function addGlobal($env, $c, $user = null)
         'basePath' => $setting['basePath'],
         'adminBasePath' => $setting['admin']['path'],
         'user' => $user,
-        'params' => $setting['params']
+        'params' => $setting['params'],
+        'optionModel' => new \Model\OptionsModel(),
     ];
 
     $env->addGlobal('App', $globals);

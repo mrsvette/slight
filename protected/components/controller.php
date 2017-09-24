@@ -19,10 +19,14 @@ class BaseController
         $this->register($app);
     }
 
-    protected function isAllowed($request, $response)
+    protected function isAllowed($request, $response, $args = null)
     {
         $path = $request->getUri()->getPath();
         $action = end(explode('/',$path));
+        if (!empty($args) && in_array($action, $args)) {
+            $sprites = explode('/',$path);
+            $action = $sprites[count($sprites)-2];
+        }
 
         $access_rules = $this->accessRules();
         $allows = [];
