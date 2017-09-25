@@ -1,40 +1,29 @@
 <!-- right slidebar -->
 <div id="slidebar">
     <div id="slidebar_content">
-        <div class="events_list">
-            <div class="events_date clearfix">
-                <span class="event_date_big ion-ios7-briefcase-outline"></span>
-                <span class="event_date_day">Ekstensi</span>
-                <span class="event_date_full">Aplikasi tambahan</span>
-            </div>
-        </div>
-        <hr>
-        <div class="events_list">
+        <div class="panel panel-default">
             {% set exts = App.optionModel.getInstalledExtensions() %}
-            {% if exts %}
+            <div class="panel-heading">Ekstensi <a href="#" id="template_add" class="btn btn-success btn-xs pull-right">{{ exts | length }} Aktif</a></div>
+            <ul class="file_list">
+                {% if exts %}
                 {% for e, ext in exts %}
-                <div class="event_item">
-                    <div class="event_hour">
-                        <img src="{{ ext.icon | link }}"/>
+                <li>
+                    <div class="btn-group btn-group-xs file_actions pull-right">
+                        {% for em, menu in ext.menu %}
+                            <a href="{{ menu.url | link }}" class="btn btn-default" title="{{ menu.label }}">
+                                <i class="{{ menu.icon }}"></i>
+                            </a>
+                        {% endfor %}
                     </div>
-                    <ul class="event_content">
-                        <li>
-                            <p>{{ ext.name }}</p>
-                            <span>version {{ ext.version }}</span>
-                        </li>
-                        {% if ext.menu %}
-                            {% for em, menu in ext.menu %}
-                                <li>
-                                    <p><a href="{{ menu.url | link }}">{{ menu.label }}</a></p>
-                                </li>
-                            {% endfor %}
-                        {% endif %}
-                    </ul>
-                </div>
+                    <i class="fa fa-file-o"></i>
+                    <p class="file_name">
+                        <a href="{% if ext.menu %}{{ ext.menu[0].url | link }}{% else %}#{% endif %}" data-file-name="basic_layout" data-name="Basic Layout">{{ ext.name }}</a>
+                        <small class="text-muted">{{ ext.description }}</small>
+                    </p>
+                </li>
                 {% endfor %}
-            {% else %}
-                Tidak ada ekstensi yang terpasang.
-            {% endif %}
+                {% endif %}
+            </ul>
         </div>
     </div>
 </div>

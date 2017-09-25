@@ -110,8 +110,8 @@ class BlogService
     public function getMenu()
     {
         return [
-            [ 'label' => 'Daftar Postingan', 'url' => 'blog/posts/view' ],
-            [ 'label' => 'Tambah Postingan', 'url' => 'blog/posts/create' ],
+            [ 'label' => 'Daftar Postingan', 'url' => 'blog/posts/view', 'icon' => 'fa fa-search' ],
+            [ 'label' => 'Tambah Postingan', 'url' => 'blog/posts/create', 'icon' => 'fa fa-plus' ],
         ];
     }
 }
