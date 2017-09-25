@@ -32,7 +32,7 @@ class BaseController
         $allows = [];
         if (is_array($access_rules)){
             foreach ($access_rules as $i => $rules) {
-                if (in_array($action, $rules['actions']) && $rules[0] == 'allow'){
+                if (is_array($rules['actions']) && in_array($action, $rules['actions']) && $rules[0] == 'allow'){
                     if (!empty($rules['users'][0])){
                         if ($rules['users'][0] == '@')
                             array_push($allows, !$this->_user->isGuest());
