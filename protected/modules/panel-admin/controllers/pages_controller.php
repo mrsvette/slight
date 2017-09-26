@@ -64,7 +64,8 @@ class PagesController extends BaseController
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
         return $this->_container->module->render($response, 'pages/view.html', [
-            'pages' => $tools->getPages()
+            'pages' => $tools->getPages(),
+            'session_id' => $this->_user->session_id
         ]);
     }
 

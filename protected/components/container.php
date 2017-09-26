@@ -7,6 +7,7 @@ require __DIR__ . '/identity.php';
 $user = new \Components\UserIdentity($app);
 
 // Check if there is another identity
+$client = null;
 if (!empty($settings['settings']['params']['extensions'])) {
     $exts = json_decode($settings['settings']['params']['extensions'], true);
     if (is_array($exts) && in_array('client', $exts)) {
@@ -41,7 +42,7 @@ $app->add(function (Request $request, Response $response, callable $next) {
 });
 
 // Register Twig View helper
-$container['view'] = function ($c) {
+$container['view'] = function ($c) use ($client) {
 	$settings = $c->get('settings');
 
 	$view_path = $settings['theme']['path'] . '/' . $settings['theme']['name'] . '/views';
@@ -51,7 +52,7 @@ $container['view'] = function ($c) {
     ]);
 
     addFilter($view->getEnvironment(), $c);
-    addGlobal($view->getEnvironment(), $c);
+    addGlobal($view->getEnvironment(), $c, $client);
 
     return $view;
 };

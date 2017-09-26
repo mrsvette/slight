@@ -41,7 +41,7 @@ Landing Pages - {{ App.name }}
                                         <td>{{ page.name }}</td>
                                         <td><a href="{{ page.slug | link }}" target="_newtab">{{  page.slug | link }}</a></td>
                                         <td>
-                                            <a href="{{ page.slug | link }}?e=1" target="_newtab" title="Visual Update">
+                                            <a href="{{ page.slug | link }}?e=1&token={{ session_id }}" target="_newtab" title="Visual Update">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
                                             <a href="{{ 'pages/update' | alink }}/{{ page.slug }}" title="Change Code">
