@@ -14,6 +14,7 @@ class ConfigureController extends ClientBaseController
     public function register($app)
     {
         $app->map(['GET', 'POST'], '/signup', [$this, 'signup']);
+        $app->map(['POST'], '/theme', [$this, 'theme']);
         $app->map(['GET', 'POST'], '/[{name}]', [$this, 'configure']);
     }
 
@@ -31,6 +32,30 @@ class ConfigureController extends ClientBaseController
                 ->withHeader('Content-Type', 'text/html')
                 ->write('Page not found!');
         }
+
+        /*if (isset($_POST['Order'])) {
+            $model->client_id = $this->_user->id;
+            $model->product_id = $product->id;
+            $model->group_id = time();
+            $model->group_master = 1;
+            $model->invoice_option = \ExtensionsModel\ClientOrderModel::INVOICE_OPTION_NO_INVOICE;
+            $model->title = $product->title.' untuk '.$_POST['Order']['site_name'];
+            $model->currency = 'IDR';
+            $model->service_type = $product->type;
+            $model->period = '1M';
+            $model->quantity = 1;
+            $model->unit = 'product';
+            $model->price = 0;
+            $model->discount = 0;
+            $model->status = \ExtensionsModel\ClientOrderModel::STATUS_PENDING_SETUP;
+            $model->config = json_encode($_POST['Order']);
+            $model->created_at = date('c');
+            $model->updated_at = date('c');
+            $save = \ExtensionsModel\ClientOrderModel::model()->save(@$model);
+            if ($save) {
+
+            }
+        }*/
 
         return $this->_container->view->render($response, 'order/configure_site.phtml', [
             'model' => $model,
@@ -73,5 +98,20 @@ class ConfigureController extends ClientBaseController
             'errors' => (!empty($errors))? $errors : null,
             'client' => (!empty($_POST))? $_POST['Client'] : null
         ]);
+    }
+
+    public function theme($request, $response, $args)
+    {
+        if (isset($_POST['Order'])) {
+            $data = $_POST['Order'];
+            $product = \ExtensionsModel\ProductModel::model()->findByAttributes( ['slug'=>$_POST['Order']['slug']] );
+
+            return $this->_container->view->render($response, 'order/themes.phtml', [
+                'data' => $data,
+                'product' => $product
+            ]);
+        } else {
+            return $response->withRedirect('/');
+        }
     }
 }
