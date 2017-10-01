@@ -24,6 +24,7 @@ Landing Pages - {{ App.name }}
                     <div class="panel panel-default">
                         <div class="panel-heading">Daftar Halaman</div>
                         <div class="panel-body">
+                            {% set exts = App.params.extensions | json_decode %}
                             <div id="dt_basic_wrapper" class="dataTables_wrapper form-inline no-footer table-responsive" role="grid">
                                 <table id="dt_basic" class="table table-striped dataTable">
                                     <thead>
@@ -41,10 +42,17 @@ Landing Pages - {{ App.name }}
                                         <td>{{ page.name }}</td>
                                         <td><a href="{{ page.slug | link }}" target="_newtab">{{  page.slug | link }}</a></td>
                                         <td>
-                                            <a href="{{ page.slug | link }}?e=1&token={{ session_id }}" target="_newtab" title="Visual Update">
+                                            {% if 'texteditor' in exts %}
+                                            <a href="{{ page.slug | link }}?e=1&token={{ session_id }}" target="_newtab" title="Ubah Secara Visual">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
-                                            <a href="{{ 'pages/update' | alink }}/{{ page.slug }}" title="Change Code">
+                                            {% endif %}
+                                            {% if 'blockeditor' in exts %}
+                                            <a href="{{ 'block-editor/update' | link }}/{{ page.slug }}" target="_newtab" title="Ubah Secara Visual">
+                                                <i class="fa fa-arrows-alt"></i>
+                                            </a>
+                                            {% endif %}
+                                            <a href="{{ 'pages/update' | alink }}/{{ page.slug }}" title="Ubah Kode">
                                                 <i class="fa fa-code"></i>
                                             </a>
                                             <a href="{{ 'pages/delete' | alink }}/{{ page.slug }}" onclick="return hapus(this);">
