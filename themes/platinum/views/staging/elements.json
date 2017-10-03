@@ -1,15 +1,1 @@
-{"elements": {
-    "Section 1":[
-    	{"url":"elements/original/basic1.html","height":273, "thumbnail":"elements/thumbs/basic1.jpg"}
-    ],
-  "Section 2":[
-    {"url":"elements/original/basic1.html","height":273, "thumbnail":"elements/thumbs/basic1.jpg"}
-  ],
-  "Section 3":[
-    {"url":"elements/original/basic1.html","height":273, "thumbnail":"elements/thumbs/basic1.jpg"}
-  ],
-  "Section 4":[
-    {"url":"elements/original/basic1.html","height":273, "thumbnail":"elements/thumbs/basic1.jpg"}
-  ]
-    }
-}
+{"elements":{"index-header":[{"url":"elements\/original\/index-header.ehtml","height":701,"thumbnail":"elements\/thumbs\/basic.jpg"}],"index-about":[{"url":"elements\/original\/index-about.ehtml","height":701,"thumbnail":"elements\/thumbs\/basic.jpg"}],"index-services":[{"url":"elements\/original\/index-services.ehtml","height":701,"thumbnail":"elements\/thumbs\/basic.jpg"}],"index-portfolio":[{"url":"elements\/original\/index-portfolio.ehtml","height":701,"thumbnail":"elements\/thumbs\/basic.jpg"}],"index-call-to-action":[{"url":"elements\/original\/index-call-to-action.ehtml","height":701,"thumbnail":"elements\/thumbs\/basic.jpg"}],"index-contact":[{"url":"elements\/original\/index-contact.ehtml","height":701,"thumbnail":"elements\/thumbs\/basic.jpg"}]}}

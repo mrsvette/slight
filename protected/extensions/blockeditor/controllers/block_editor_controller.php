@@ -75,48 +75,92 @@ class BlockEditorController extends BaseController
 
             $html_dom = new \PanelAdmin\Components\DomHelper();
             $html = $html_dom->str_get_html($get_page['content']);
-            $sections = [];
+            $sections = []; $elements = [];
             foreach ($html->find('section') as $section) {
-                $sections[$section->id] = $section->innertext();
+                $s_content = $section->innertext();
+                if (!empty($s_content)) {
+                    $elements[$args['name'].'-'.$section->id] = array(
+                        array(
+                            'url' => 'elements/original/'.$args['name'].'-'.$section->id.'.ehtml',
+                            'height' => 701,
+                            'thumbnail' => 'elements/thumbs/basic.jpg'
+                        )
+                    );
+                }
+                $sections[$args['name'].'-'.$section->id] = $section->innertext();
+            }
+            // create the full page
+            /*$full_elements = array(
+                array(
+                    'url' => 'elements/original/'.$args['name'].'.html',
+                    'height' => 273,
+                    'thumbnail' => 'elements/thumbs/basic.jpg'
+                )
+            );
+            array_unshift($elements, $full_elements);*/
+
+            try {
+                $this->create_elements($elements);
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+            }
+
+            try {
+                $this->create_section($sections);
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
             }
 
             return $this->_container->view->render($response, 'staging/index.phtml', [
                 'sections' => $sections,
                 'page' => $args['name']
             ]);
-            var_dump($sections); exit;
-
-            /*$class_name = uniqid();
-            $current_content = str_replace(array("[[", "]]"), array("{{", "}}"), $get_page['content']);
-
-            $html = $html_dom->str_get_html('<div class="'.$class_name.'">'.$current_content.'</div>');*/
-
-            foreach ($_POST as $node => $html_data) {
-                if (!in_array($node, ['content', 'path'])) {
-                    $html->find('.'.$node, 0)->__set('innertext', $html_data);
-                }
-            }
-
-            $new_content = $html->find('.'.$class_name, 0)->innertext();
-            if (empty($new_content))
-                return false;
-
-            try {
-                $view_path = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views';
-                $cp = copy($view_path.'/'.$paths[1] . '.phtml', $view_path.'/backup/'.$paths[1] . '.xhtml');
-
-                $format = new \PanelAdmin\Components\Format();
-                $new_content = $format->HTML($new_content);
-
-                $update = file_put_contents($view_path.'/'.$paths[1] . '.phtml', $new_content);
-                if ($update) {
-                    unlink($view_path.'/staging/'.$paths[1] . '.ehtml');
-                }
-            } catch (Exception $e) {
-                echo 'Caught exception: ',  $e->getMessage(), "\n";
-            }
-
-            return true;
         }
+    }
+
+    /**
+     * @param $data
+     * @return bool
+     */
+    private function create_elements($data)
+    {
+        $elements_data = ['elements' => $data];
+        $file_path = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/staging/';
+        if (!file_exists($file_path.'elements.json')) {
+            $fp = fopen($file_path.'elements.json', "wb");
+            fwrite($fp, json_encode($elements_data));
+            fclose($fp);
+        } else {
+            file_put_contents($file_path.'elements.json', json_encode($elements_data));
+        }
+
+        return true;
+    }
+
+    private function create_section($data)
+    {
+        $html_dom = new \PanelAdmin\Components\DomHelper();
+        $format = new \PanelAdmin\Components\Format();
+        
+        $file_path = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/staging/original';
+        $basic = file_get_contents($file_path.'/basic.html');
+
+        foreach ($data as $section_name => $section_data) {
+            if (!file_exists($file_path.'/'.$section_name.'.ehtml')) {
+                $fp = fopen($file_path.'/'.$section_name.'.ehtml', "wb");
+                fwrite($fp, $section_data);
+                fclose($fp);
+            }
+
+            $html = $html_dom->str_get_html($basic);
+            $html->find('.page', 0)->__set('innertext', '<div id="'.$section_name.'">'.$section_data.'</div>');
+
+            $new_content = $html->find('html', 0)->innertext();
+            $new_content = $format->HTML('<html lang="en">'.$new_content.'</html>');
+
+            $update = file_put_contents($file_path.'/'.$section_name.'.ehtml', '<!DOCTYPE html>'.$new_content);
+        }
+        
+        return true;
     }
 }
