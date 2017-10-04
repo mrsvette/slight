@@ -54,6 +54,7 @@ p {
 
 section {
   padding: 100px 0; }
+section#header {padding:0px;}
 
 .section-heading {
   margin-top: 0; }
