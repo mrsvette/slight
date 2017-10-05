@@ -19,6 +19,9 @@ class BlockEditorController extends BaseController
         $app->map(['GET', 'POST'], '/update/elements/[{name}]', [$this, 'elements']);
         $app->map(['GET', 'POST'], '/update/bundles/[{name}]', [$this, 'bundles']);
         $app->map(['GET', 'POST'], '/update/[{name}]', [$this, 'update']);
+        $app->map(['GET', 'POST'], '/preview/[{name}]', [$this, 'preview']);
+        $app->map(['GET', 'POST'], '/publish/[{name}]', [$this, 'publish']);
+        $app->map(['GET', 'POST'], '/skeleton', [$this, 'skeleton']);
     }
 
     public function thumbs($request, $response, $args)
@@ -55,9 +58,9 @@ class BlockEditorController extends BaseController
 
     public function update($request, $response, $args)
     {
-        /*if ($this->_user->isGuest()){
+        if ($this->_user->isGuest()){
             return $response->withRedirect($this->_login_url);
-        }*/
+        }
 
         if (isset($args['name'])){
             $pos = strpos($args['name'], '.');
@@ -87,17 +90,13 @@ class BlockEditorController extends BaseController
                         )
                     );
                 }
-                $sections[$args['name'].'-'.$section->id] = $section->innertext();
+                $class_name = $section->getAttribute('class');
+                $sections[$args['name'].'-'.$section->id] = [
+                    'content' => $section->innertext(),
+                    'class' => $class_name,
+                    'id' => $section->id
+                ];
             }
-            // create the full page
-            /*$full_elements = array(
-                array(
-                    'url' => 'elements/original/'.$args['name'].'.html',
-                    'height' => 273,
-                    'thumbnail' => 'elements/thumbs/basic.jpg'
-                )
-            );
-            array_unshift($elements, $full_elements);*/
 
             try {
                 $this->create_elements($elements);
@@ -148,12 +147,16 @@ class BlockEditorController extends BaseController
         foreach ($data as $section_name => $section_data) {
             if (!file_exists($file_path.'/'.$section_name.'.ehtml')) {
                 $fp = fopen($file_path.'/'.$section_name.'.ehtml', "wb");
-                fwrite($fp, $section_data);
+                fwrite($fp, $section_data['content']);
                 fclose($fp);
             }
 
             $html = $html_dom->str_get_html($basic);
-            $html->find('.page', 0)->__set('innertext', '<div id="'.$section_name.'">'.$section_data.'</div>');
+            if (!empty($section_data['class']))
+                $innertext = '<section id="'.$section_data['id'].'" class="'.$section_data['class'].'">'.$section_data['content'].'</section>';
+            else
+                $innertext = '<section id="'.$section_data['id'].'">'.$section_data['content'].'</section>';
+            $html->find('.page', 0)->__set('innertext', $innertext);
 
             $new_content = $html->find('html', 0)->innertext();
             $new_content = $format->HTML('<html lang="en">'.$new_content.'</html>');
@@ -162,5 +165,79 @@ class BlockEditorController extends BaseController
         }
         
         return true;
+    }
+
+    public function preview($request, $response, $args)
+    {
+        $html_dom = new \PanelAdmin\Components\DomHelper();
+        $html = $html_dom->str_get_html($_POST['page']);
+        $new_content = $html->find('.page', 0)->innertext();
+
+        $content = '{% extends "partial/layout.phtml" %}{% block pagetitle %}{{ App.params.tag_line }} - {{App.name}}{% endblock %}{% block content %}';
+        $content .= $new_content;
+        $content .= '{% endblock %}';
+
+        $format = new \PanelAdmin\Components\Format();
+        $pageContent = $format->HTML( $content );
+
+        $filename = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/staging/original/'.$args['name'].'.preview.ehtml';
+
+        $previewFile = fopen($filename, "w");
+
+        fwrite($previewFile, $pageContent);
+
+        fclose($previewFile);
+
+        return $this->_container->view->render($response, 'staging/original/'.$args['name'].'.preview.ehtml', [
+            'args' => $args
+        ]);
+    }
+
+    public function skeleton($request, $response, $args)
+    {
+        return $this->_container->view->render($response, 'staging/skeleton.phtml', [
+            'args' => $args
+        ]);
+    }
+
+    public function publish($request, $response, $args)
+    {
+        if (empty($_POST['page'])) {
+            return $response
+                ->withStatus(500)
+                ->withHeader('Content-Type', 'text/html')
+                ->write('Gagal menerbitkan situs Anda!');
+        }
+
+        $html_dom = new \PanelAdmin\Components\DomHelper();
+        $html = $html_dom->str_get_html($_POST['page']);
+        $new_content = $html->find('.page', 0)->innertext();
+
+        $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
+
+        $get_page = $tools->getPage($args['name']);
+
+        $page_filename = $get_page['path'];
+
+        $content = '{% extends "partial/layout.phtml" %}{% block pagetitle %}{{ App.params.tag_line }} - {{App.name}}{% endblock %}{% block content %}';
+        $content .= $new_content;
+        $content .= '{% endblock %}';
+
+        $format = new \PanelAdmin\Components\Format();
+        $pageContent = $format->HTML( $content );
+
+        $update = file_put_contents( $page_filename, stripcslashes($pageContent) );
+        if ($update) {
+            $preview_file = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/staging/original/'.$args['name'].'.preview.ehtml';
+            if (file_exists( $preview_file ))
+                unlink( $preview_file );
+            // remove the stagings files
+            foreach (glob($this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/staging/original/'.$args['name'].'-*') as $filename) {
+                if (file_exists($filename))
+                    unlink($filename);
+            }
+        }
+
+        return $response->withRedirect( '/'.$args['name'] );
     }
 }

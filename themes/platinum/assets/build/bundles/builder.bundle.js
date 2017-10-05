@@ -39856,8 +39856,90 @@
 	        }
 	
 	    };
+
+        var publish = {
+
+            modalPublish: document.getElementById('publishModal'),
+            buttonPublish: document.getElementById('buttonPublish'),
+
+            init: function() {
+
+                //events
+                $(this.modalPublish).on('shown.bs.modal', this.prepPublish);
+                $(this.modalPublish).find('form').on('submit', this.prepPublishSubmit);
+
+                //reveal publish button
+                $(this.buttonPublish).show();
+            },
+
+
+            /*
+             prepares the publish data
+             */
+            prepPublish: function() {
+
+                publisher.publish('onBeforePreview');
+
+                $('#publishModal form input[type="hidden"]').remove();
+
+                //build the page
+                siteBuilder.site.activePage.fullPage();
+
+                var newInput;
+
+                //markup
+                newInput = $('<input type="hidden" name="page" value="">');
+                $('#publishModal form').prepend( newInput );
+                newInput.val( "<!DOCTYPE html><html>"+$('iframe#skeleton').contents().find('html').html()+"</html>" );
+
+                //page title
+                newInput = $('<input type="hidden" name="meta_title" value="">');
+                $('#publishModal form').prepend( newInput );
+                newInput.val( siteBuilder.site.activePage.pageSettings.title );
+
+                //page meta description
+                newInput = $('<input type="hidden" name="meta_description" value="">');
+                $('#publishModal form').prepend( newInput );
+                newInput.val( siteBuilder.site.activePage.pageSettings.meta_description );
+
+                //page meta keywords
+                newInput = $('<input type="hidden" name="meta_keywords" value="">');
+                $('#previewModal form').prepend( newInput );
+                newInput.val( siteBuilder.site.activePage.pageSettings.meta_keywords );
+
+                //page header includes
+                newInput = $('<input type="hidden" name="header_includes" value="">');
+                $('#publishModal form').prepend( newInput );
+                newInput.val( siteBuilder.site.activePage.pageSettings.header_includes );
+
+                //page css
+                newInput = $('<input type="hidden" name="page_css" value="">');
+                $('#publishModal form').prepend( newInput );
+                newInput.val( siteBuilder.site.activePage.pageSettings.page_css );
+
+                //site ID
+                newInput = $('<input type="hidden" name="siteID" value="">');
+                $('#publishModal form').prepend( newInput );
+                newInput.val( siteBuilder.site.data.sites_id );
+
+            },
+
+
+            /*
+             prepares after published
+             */
+            prepPublishSubmit: function() {
+                $('#publishModal > form .alert').html( '<p>Perubahan konten halaman telah berhasil diterbitkan.</p>' );
+                $('#publishModal > form .alert').removeClass('alert-warning').addClass('alert-success');
+                $('#publishModal > form #exportSubmit').hide('');
+                $('#publishModal > form #exportCancel').text('Tutup');
+                $(window).unbind('beforeunload');
+            }
+
+        };
 	
 	    preview.init();
+        publish.init();
 	
 	}());
 
