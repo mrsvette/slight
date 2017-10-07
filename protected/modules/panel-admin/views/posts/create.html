@@ -12,7 +12,7 @@ Tambah Postingan Baru - {{ App.name }}
 				<p class="text-muted">Formulir penambahan postingan baru</p>
 			</div>
 			<div class="col-sm-2 text-right">
-				<a class="btn btn-default" href="{{ 'posts/view' | alink }}">Daftar Postingan</a>
+				<a class="btn btn-default" href="{{ 'blog/posts/view' | link }}">Daftar Postingan</a>
 			</div>
 		</div>
 	</div>
@@ -106,6 +106,7 @@ Tambah Postingan Baru - {{ App.name }}
         </div>
     </div>
 </div>
+{% include 'partial/right_menu.html' %}
 {% endblock %}
 {% block endbodyjs %}
 <script type="text/javascript" src="{{ 'lib/wysihtml5/wysihtml5.min.js' | admin_asset_url }}"></script>
@@ -118,7 +119,7 @@ $(function(){
 	var success_message = "{{ message }}";
 	if (success_message && success_message.length > 0) {
 		setTimeout(function () {
-			window.location.href = "{{ 'posts/create' | alink }}";
+			window.location.href = "{{ 'blog/posts/create' | link }}";
 		}, 3000);
 	}
 });
@@ -127,7 +128,7 @@ function getSlug(data){
 	$.ajax({
 		'beforeSend': function() {  },
 		'complete': function() {  },
-		'url': "{{ 'posts/get-slug' | alink }}",
+		'url': "{{ 'blog/posts/get-slug' | link }}",
 		'type':'post',
 		'data':{'title':$(data).val()},
 		'success': function(data) {

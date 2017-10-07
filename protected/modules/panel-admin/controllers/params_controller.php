@@ -21,10 +21,43 @@ class ParamsController extends BaseController
         $app->map(['POST'], '/delete/[{id}]', [$this, 'delete']);
     }
 
+    public function accessRules()
+    {
+        return [
+            ['allow',
+                'actions' => ['view', 'create', 'update', 'delete'],
+                'users'=> ['@'],
+            ],
+            ['allow',
+                'actions' => ['view'],
+                'expression' => $this->hasAccess('panel-admin/params/read'),
+            ],
+            ['allow',
+                'actions' => ['create'],
+                'expression' => $this->hasAccess('panel-admin/params/create'),
+            ],
+            ['allow',
+                'actions' => ['update'],
+                'expression' => $this->hasAccess('panel-admin/params/update'),
+            ],
+            ['allow',
+                'actions' => ['delete'],
+                'expression' => $this->hasAccess('panel-admin/params/delete'),
+            ],
+            ['deny',
+                'users' => ['*'],
+            ],
+        ];
+    }
+
     public function view($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $options = \Model\OptionsModel::model()->findAll();
@@ -36,8 +69,12 @@ class ParamsController extends BaseController
 
     public function create($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $model = new \Model\OptionsModel('create');
@@ -71,8 +108,12 @@ class ParamsController extends BaseController
 
     public function update($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $model = \Model\OptionsModel::model()->findByPk($args['id']);
@@ -107,8 +148,12 @@ class ParamsController extends BaseController
 
     public function delete($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response, $args);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         if (!isset($args['id'])) {

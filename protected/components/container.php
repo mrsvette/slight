@@ -6,6 +6,15 @@ $container = $app->getContainer();
 require __DIR__ . '/identity.php';
 $user = new \Components\UserIdentity($app);
 
+// Check if there is another identity
+$client = null;
+if (!empty($settings['settings']['params']['extensions'])) {
+    $exts = json_decode($settings['settings']['params']['extensions'], true);
+    if (is_array($exts) && in_array('client', $exts)) {
+        $client = new \Extensions\Components\ClientIdentity($app);
+    }
+}
+
 // Controller
 require __DIR__ . '/controller.php';
 
@@ -33,7 +42,7 @@ $app->add(function (Request $request, Response $response, callable $next) {
 });
 
 // Register Twig View helper
-$container['view'] = function ($c) {
+$container['view'] = function ($c) use ($client) {
 	$settings = $c->get('settings');
 
 	$view_path = $settings['theme']['path'] . '/' . $settings['theme']['name'] . '/views';
@@ -43,7 +52,7 @@ $container['view'] = function ($c) {
     ]);
 
     addFilter($view->getEnvironment(), $c);
-    addGlobal($view->getEnvironment(), $c);
+    addGlobal($view->getEnvironment(), $c, $client);
 
     return $view;
 };
@@ -51,7 +60,15 @@ $container['view'] = function ($c) {
 // Register Twig View module
 $container['module'] = function ($c) use ($user) {
 	$settings = $c->get('settings');
-	$view_path = $settings['admin']['path'] . '/views';
+    $uri_path = $c->get('request')->getUri()->getPath();
+    $view_path = $settings['admin']['path'] . '/views';
+
+    if (!empty($uri_path)) { // allow each module to have own theme view
+        $chunk = explode("/", $uri_path);
+        $mod_paths = $settings['basePath'].'/modules/'.$chunk[1].'/views';
+        if (is_dir($mod_paths))
+            $view_path = $mod_paths;
+    }
 
     $view = new \Slim\Views\Twig( $view_path , [
         'cache' => $settings['cache']['path'],
@@ -100,7 +117,28 @@ function addFilter($env, $c)
         new \Twig_SimpleFilter('alink', function ($string) use ($base_url, $admin_module) {
             return $base_url .'/'. $admin_module. '/' .$string;
         }),
+        new \Twig_SimpleFilter('json_decode', function ($string) {
+            return json_decode($string, true);
+        }),
     ];
+
+    $uri_path = $c->get('request')->getUri()->getPath();
+    if (!empty($uri_path)) { // allow each module to have own filter
+        $chunk = explode("/", $uri_path);
+        $mod_paths = $c->get('settings')['basePath'].'/modules/'.$chunk[1];
+        if (is_dir($mod_paths)) {
+            $module_name = $chunk[1];
+            $mfilters = [
+                new \Twig_SimpleFilter('m_asset_url', function ($string) use ($base_url, $module_name) {
+                    return $base_url .'/protected/modules/'. $module_name .'/assets/'. $string;
+                }),
+                new \Twig_SimpleFilter('mlink', function ($string) use ($base_url, $module_name) {
+                    return $base_url .'/'. $module_name. '/' .$string;
+                })
+            ];
+            $filters = array_merge($filters, $mfilters);
+        }
+    }
 
     foreach ($filters as $i => $filter) {
         $env->addFilter($filter);
@@ -122,7 +160,8 @@ function addGlobal($env, $c, $user = null)
         'basePath' => $setting['basePath'],
         'adminBasePath' => $setting['admin']['path'],
         'user' => $user,
-        'params' => $setting['params']
+        'params' => $setting['params'],
+        'optionModel' => new \Model\OptionsModel(),
     ];
 
     $env->addGlobal('App', $globals);

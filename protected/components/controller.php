@@ -19,16 +19,20 @@ class BaseController
         $this->register($app);
     }
 
-    protected function isAllowed($request, $response)
+    protected function isAllowed($request, $response, $args = null)
     {
         $path = $request->getUri()->getPath();
         $action = end(explode('/',$path));
+        if (!empty($args) && in_array($action, $args)) {
+            $sprites = explode('/',$path);
+            $action = $sprites[count($sprites)-2];
+        }
 
         $access_rules = $this->accessRules();
         $allows = [];
         if (is_array($access_rules)){
             foreach ($access_rules as $i => $rules) {
-                if (in_array($action, $rules['actions']) && $rules[0] == 'allow'){
+                if (is_array($rules['actions']) && in_array($action, $rules['actions']) && $rules[0] == 'allow'){
                     if (!empty($rules['users'][0])){
                         if ($rules['users'][0] == '@')
                             array_push($allows, !$this->_user->isGuest());

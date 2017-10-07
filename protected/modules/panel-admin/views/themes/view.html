@@ -27,7 +27,7 @@ Themes - {{ App.name }}
                                     <h4>{{ theme.name }}</h4>
                                     <img src="{{ theme.img_path | link }}" class="img-responsive"/>
                                     {% if removable %}
-                                    <p class="text-center">
+                                    <p class="text-center mt20">
                                     {% if theme.id == current_theme %}
                                         <a href="javascript:void(0);" install="0" id="{{ theme.id }}" class="btn btn-warning" onclick="install(this);">Uninstall Theme</a>
                                     {% else %}
@@ -53,6 +53,7 @@ Themes - {{ App.name }}
         </div>
     </div>
 </div>
+{% include 'partial/right_menu.html' %}
 {% endblock %}
 {% block endbodyjs %}
 <script type="text/javascript">

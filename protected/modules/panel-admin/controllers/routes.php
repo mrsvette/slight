@@ -6,6 +6,7 @@ $app->get('/panel-admin', function ($request, $response, $args) use ($user) {
     }
 
     $vmodel = new \Model\VisitorModel();
+    $params = [];
     if (isset($_GET['start']) || isset($_GET['end'])) {
         $params = [
             'date_from' => date("Y-m-d", $_GET['start'] / 1000),
@@ -46,9 +47,6 @@ $app->group('/panel-admin', function () use ($user) {
     });
     $this->group('/users', function() use ($user) {
         new PanelAdmin\Controllers\UsersController($this, $user);
-    });
-    $this->group('/posts', function() use ($user) {
-        new PanelAdmin\Controllers\PostsController($this, $user);
     });
     $this->group('/params', function() use ($user) {
         new PanelAdmin\Controllers\ParamsController($this, $user);

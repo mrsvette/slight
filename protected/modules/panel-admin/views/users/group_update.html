@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block pagetitle %}
-Update Group User - {{ model.username }} - {{ App.name }}
+Update Group User - {{ model.name }} - {{ App.name }}
 {% endblock %}
 
 {% block content %}
@@ -42,4 +42,17 @@ Update Group User - {{ model.username }} - {{ App.name }}
         </div>
     </div>
 </div>
+{% include 'partial/right_menu.html' %}
+{% endblock %}
+{% block endbodyjs %}
+<script type="text/javascript">
+	$(function () {
+		var success_message = "{{ message }}";
+		if (success_message && success_message.length > 0) {
+			setTimeout(function () {
+				window.location.href = window.location;
+			}, 3000);
+		}
+	});
+</script>
 {% endblock %}
