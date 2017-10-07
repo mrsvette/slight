@@ -71,9 +71,10 @@ class BlockEditorController extends BaseController
         if (isset($args['name'])){
             $pos = strpos($args['name'], '.');
             if ($pos !== false) {
-                return $this->_container->view->render($response, 'staging/'.$args['name'], [
-                    'args' => $args
-                ]);
+                header('Content-Type: application/json');
+                $file = file_get_contents($this->_settings['basePath'].'/data/'.$args['name']);
+
+                return $file;
             }
 
             $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
@@ -130,7 +131,7 @@ class BlockEditorController extends BaseController
     private function create_elements($data)
     {
         $elements_data = ['elements' => $data];
-        $file_path = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/staging/';
+        $file_path = $this->_settings['basePath'] . '/data/';
         if (!file_exists($file_path.'elements.json')) {
             $fp = fopen($file_path.'elements.json', "wb");
             fwrite($fp, json_encode($elements_data));
