@@ -171,6 +171,10 @@ class ExtensionsController extends BaseController
             }
 
             if ($save) {
+                $hooks = new \PanelAdmin\Components\AdminHooks($this->_settings);
+                $omodel = new \Model\OptionsModel();
+                $hooks->onAfterParamsSaved($omodel->getOptions());
+                
                 $message = 'Data Anda telah berhasil disimpan.';
                 $success = true;
             } else {

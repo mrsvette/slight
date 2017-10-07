@@ -38,7 +38,8 @@ class BlockEditorController extends BaseController
 
     public function css($request, $response, $args)
     {
-        return $response->withRedirect($this->_settings['params']['site_url'].'/themes/'.$this->_settings['params']['theme'].'/assets/build/elements/css/'.$args['name']);
+        //return $response->withRedirect($this->_settings['params']['site_url'].'/themes/'.$this->_settings['params']['theme'].'/assets/build/elements/css/'.$args['name']);
+        return $response->withRedirect($this->getVendorUrl().'build/elements/css/'.$args['name']);
     }
 
     public function elements($request, $response, $args)
@@ -53,7 +54,8 @@ class BlockEditorController extends BaseController
 
     public function bundles($request, $response, $args)
     {
-        return $response->withRedirect($this->_settings['params']['site_url'].'/themes/'.$this->_settings['params']['theme'].'/assets/build/bundles/'.$args['name']);
+        //return $response->withRedirect($this->_settings['params']['site_url'].'/themes/'.$this->_settings['params']['theme'].'/assets/build/bundles/'.$args['name']);
+        return $response->withRedirect($this->getVendorUrl().'bundles/'.$args['name']);
     }
 
     public function update($request, $response, $args)
@@ -239,5 +241,17 @@ class BlockEditorController extends BaseController
         }
 
         return $response->withRedirect( '/'.$args['name'] );
+    }
+
+    private function getVendorUrl()
+    {
+        $vendor_url = 'http://bootblock.slightsite.com/';
+
+        if (!empty($this->_settings['params']['ext_blockeditor'])) {
+            $configs = json_decode($this->_settings['params']['ext_blockeditor'], true);
+            $vendor_url = $configs['vendor_url'];
+        }
+
+        return $vendor_url;
     }
 }
