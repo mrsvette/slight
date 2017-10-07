@@ -18,6 +18,7 @@ class BlockEditorController extends BaseController
         $app->map(['GET', 'POST'], '/update/elements/css/[{name}]', [$this, 'css']);
         $app->map(['GET', 'POST'], '/update/elements/[{name}]', [$this, 'elements']);
         $app->map(['GET', 'POST'], '/update/bundles/[{name}]', [$this, 'bundles']);
+        $app->map(['GET', 'POST'], '/update/auto-save', [$this, 'auto_save']);
         $app->map(['GET', 'POST'], '/update/[{name}]', [$this, 'update']);
         $app->map(['GET', 'POST'], '/preview/[{name}]', [$this, 'preview']);
         $app->map(['GET', 'POST'], '/publish/[{name}]', [$this, 'publish']);
@@ -258,5 +259,10 @@ class BlockEditorController extends BaseController
         }
 
         return $vendor_url;
+    }
+
+    public function auto_save($request, $response, $args)
+    {
+        return true;
     }
 }
