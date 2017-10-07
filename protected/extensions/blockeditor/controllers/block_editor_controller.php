@@ -55,7 +55,15 @@ class BlockEditorController extends BaseController
     public function bundles($request, $response, $args)
     {
         //return $response->withRedirect($this->_settings['params']['site_url'].'/themes/'.$this->_settings['params']['theme'].'/assets/build/bundles/'.$args['name']);
-        return $response->withRedirect($this->getVendorUrl().'bundles/'.$args['name']);
+
+        if (strpos($args['name'], '.woff') !== false) {
+            header('Content-Type: application/x-font-woff');
+        } else {
+            header('Content-Type: application/octet-stream');
+        }
+        $fh = file_get_contents($this->getVendorUrl().'bundles/'.$args['name']);
+
+        return $fh;
     }
 
     public function update($request, $response, $args)
