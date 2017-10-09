@@ -56,13 +56,33 @@ class AdminTools
 	 */
 	public function createPage($data)
 	{
-		if (is_array(self::getPage($data['name'])))
+		if (is_array(self::getPage($data['permalink']))) {
 			return false;
+		}
 
 		// create the file
-		$slug = str_replace(" ", "-", strtolower($data['name']));
+		$slug = str_replace(" ", "-", strtolower($data['permalink']));
 		$fp = fopen($this->basePath.'/../themes/'.$this->themeName.'/views/'.$slug.'.phtml', "wb");
-		fwrite($fp, $data['content']);
+		$content = '{% extends "partial/layout.phtml" %}';
+		if (isset($data['title']))
+			$content .= '{% block pagetitle %}'.$data['title'].' - {{App.name}}{% endblock %}';
+		else
+			$content .= '{% block pagetitle %}{{ App.params.tag_line }} - {{App.name}}{% endblock %}';
+
+		if (isset($data['meta_keyword']))
+			$content .= '{% block meta_keyword %}'.$data['meta_keyword'].'{% endblock %}';
+
+		if (isset($data['meta_description']))
+			$content .= '{% block meta_description %}'.$data['meta_keyword'].'{% endblock %}';
+
+		$content .= '{% block content %}';
+		if (empty($data['content'])) {
+			$content .= '<section id="'.$slug.'"></section>';
+		} else {
+			$content .= $data['content'];
+		}
+		$content .= '{% endblock %}';
+		fwrite($fp, $content);
 		fclose($fp);
 
 		return true;

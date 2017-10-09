@@ -20,6 +20,7 @@ class PagesController extends BaseController
         $app->map(['GET', 'POST'], '/update/[{name}]', [$this, 'update']);
         $app->map(['POST'], '/delete/[{name}]', [$this, 'delete']);
         $app->map(['GET', 'POST'], '/update-visual', [$this, 'update_visual']);
+        $app->map(['POST'], '/inspiration/[{name}]', [$this, 'inspiration']);
     }
 
     public function accessRules()
@@ -34,7 +35,7 @@ class PagesController extends BaseController
                 'expression' => $this->hasAccess('panel-admin/pages/read'),
             ],
             ['allow',
-                'actions' => ['create'],
+                'actions' => ['create', 'inspiration'],
                 'expression' => $this->hasAccess('panel-admin/pages/create'),
             ],
             ['allow',
@@ -81,20 +82,37 @@ class PagesController extends BaseController
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
-        if (isset($_POST['content'])){
-            $create = $tools->createPage($_POST);
+        $success = false; $message = []; $page_data = null;
+        if (isset($_POST['Page'])){
+            if (empty($_POST['Page']['title'])) {
+                array_push( $message, 'Judul halaman tidak boleh dikosongi.' );
+            }
+            if (empty($_POST['Page']['permalink'])) {
+                array_push( $message, 'Tuliskan format url yang benar.' );
+            }
+
+            $page_data = $_POST['Page'];
+
+            $create = $tools->createPage($_POST['Page']);
             if ($create) {
-                $message = 'Your page is successfully created.';
+                if (in_array( 'blockeditor', $this->_extensions) ) {
+                    return $response->withRedirect($this->_settings['params']['site_url'].'/block-editor/update/'.$_POST['Page']['permalink'].'?blank=1');
+                    //return $response->withRedirect('/panel-admin/pages/inspiration/'.$_POST['Page']['permalink']);
+                }
+                array_push( $message, 'Halaman Anda telah berhasil disimpan.' );
                 $success = true;
             } else {
-                $message = 'Failed to create new page.';
+                if (count($message) == 0)
+                    array_push( $message, 'Gagal membuat halaman baru. Halaman '.$_POST['Page']['permalink'].' sudah ada.' );
                 $success = false;
             }
         }
 
         return $this->_container->module->render($response, 'pages/create.html', [
             'message' => ($message) ? $message : null,
-            'success' => $success
+            'success' => $success,
+            'page_data' => $page_data,
+            'has_blockeditor' => (in_array( 'blockeditor', $this->_extensions) ) ? true : false
         ]);
     }
 
@@ -120,9 +138,12 @@ class PagesController extends BaseController
         }
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
+        $page_content = $tools->getPage($args['name']);
+        $format = new \PanelAdmin\Components\Format();
+        $page_content['content'] = $format->HTML($page_content['content']);
 
         return $this->_container->module->render($response, 'pages/update.html', [
-            'data' => $tools->getPage($args['name']),
+            'data' => $page_content,
             'message' => ($message) ? $message : null,
             'success' => $success
         ]);
@@ -206,4 +227,21 @@ class PagesController extends BaseController
         }
     }
 
+    public function inspiration($request, $response, $args)
+    {
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
+        }
+
+        $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
+
+        return $this->_container->module->render($response, 'pages/inspiration.html', [
+            'pages' => $tools->getPages(),
+            'session_id' => $this->_user->session_id
+        ]);
+    }
 }
