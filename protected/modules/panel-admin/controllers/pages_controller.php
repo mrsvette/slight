@@ -20,7 +20,7 @@ class PagesController extends BaseController
         $app->map(['GET', 'POST'], '/update/[{name}]', [$this, 'update']);
         $app->map(['POST'], '/delete/[{name}]', [$this, 'delete']);
         $app->map(['GET', 'POST'], '/update-visual', [$this, 'update_visual']);
-        $app->map(['POST'], '/inspiration/[{name}]', [$this, 'inspiration']);
+        $app->map(['GET', 'POST'], '/inspiration/[{name}]', [$this, 'inspiration']);
     }
 
     public function accessRules()
@@ -96,9 +96,9 @@ class PagesController extends BaseController
             $create = $tools->createPage($_POST['Page']);
             if ($create) {
                 if (in_array( 'blockeditor', $this->_extensions) ) {
-                    return $response->withRedirect($this->_settings['params']['site_url'].'/block-editor/update/'.$_POST['Page']['permalink'].'?blank=1');
-                    //return $response->withRedirect('/panel-admin/pages/inspiration/'.$_POST['Page']['permalink']);
+                    return $response->withRedirect('/panel-admin/pages/inspiration/'.$_POST['Page']['permalink']);
                 }
+
                 array_push( $message, 'Halaman Anda telah berhasil disimpan.' );
                 $success = true;
             } else {
@@ -239,9 +239,38 @@ class PagesController extends BaseController
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
+        $content = $tools->getPage($args['name']);
+        $inspirations = $tools->getInspirationPages();
+
+        if (isset($_POST['Page']['name'])) {
+            $page_path = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/'.$_POST['Page']['name'].'.phtml';
+            $inspirations_path = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/inspiration';
+            $file_path = $inspirations_path.'/'.$_POST['Page']['theme'];
+            if (file_exists($file_path)) {
+                $content = file_get_contents( $file_path );
+                $html_dom = new \PanelAdmin\Components\DomHelper();
+                $html = $html_dom->str_get_html($content);
+                $s_content = '';
+                foreach ($html->find('section') as $section) {
+                    $s_content .= '<section id="'.$section->id.'">'.$section->innertext().'</section>';
+                }
+                if (!empty($s_content)) {
+                    $format = new \PanelAdmin\Components\Format();
+                    $s_content = $format->HTML($s_content);
+                    $create = $tools->createPage(['content' => $s_content, 'permalink' => $_POST['Page']['name'], 'rewrite' => true]);
+                    if ($create) {
+                        if (in_array( 'blockeditor', $this->_extensions) ) {
+                            return $response->withRedirect('/block-editor/update/'.$_POST['Page']['name']);
+                        }
+                    }
+                }
+            }
+        }
+
         return $this->_container->module->render($response, 'pages/inspiration.html', [
-            'pages' => $tools->getPages(),
-            'session_id' => $this->_user->session_id
+            'content' => $content,
+            'inspirations' => $inspirations,
+            'page_name' => $args['name']
         ]);
     }
 }

@@ -851,18 +851,18 @@ a.fc-event:hover{text-decoration:underline;color:#fff}
 .tt-suggestion p{margin:0}
 .freewall_container{width:100%;margin:0 auto}
 .freewall_container .freewall_item{float:left;width:220px;position:relative;overflow:hidden}
-.freewall_container .freewall_item>img{width:100%;border:1px solid rgba(0,0,0,.4)}
-.freewall_container .freewall_item .item_overlay{position:absolute;left:0;right:0;top:0;bottom:0;background:rgba(0,0,0,.5);opacity:0;filter:alpha(opacity=0 );-webkit-transition:all 375ms ease-in-out;transition:all 375ms ease-in-out;padding:10px;color:#fff;visibility:hidden}
+.freewall_container .freewall_item>img{width:100%;border:1px solid #dbdbdb;padding:5px;}
+.freewall_container .freewall_item .item_overlay{position:absolute;left:0;right:0;top:0;bottom:0;background:rgba(0,0,0,.7);opacity:0;filter:alpha(opacity=0 );-webkit-transition:all 375ms ease-in-out;transition:all 375ms ease-in-out;padding:10px;color:#fff;visibility:hidden}
 .freewall_container .freewall_item .item_overlay.show_overlay,.freewall_container .freewall_item.item_selected .item_overlay{opacity:1;filter:alpha(opacity=100 );visibility:visible}
-.freewall_container .freewall_item .item_overlay .item_select{display:block;position:absolute;right:0;top:0;width:24px;text-align:left;z-index:100;padding:2px 4px 0;cursor:pointer}
+.freewall_container .freewall_item .item_overlay .item_select{display:block;position:absolute;left:30%;top:60%;text-align:left;z-index:100;padding:8px;cursor:pointer}
 .freewall_container .freewall_item .item_overlay .item_select .fa{color:#fff;font-size:18px}
 .freewall_container .freewall_item .item_overlay h4{font-size:15px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .freewall_container .freewall_item .item_overlay .item_edit,.freewall_container .freewall_item .item_overlay .item_preview{position:absolute;color:#bbb;font-size:26px;-webkit-transition:all 275ms ease-in-out;transition:all 275ms ease-in-out}
 .freewall_container .freewall_item .item_overlay .item_edit:hover,.freewall_container .freewall_item .item_overlay .item_preview:hover{color:#fff}
 .freewall_container .freewall_item .item_overlay .item_edit{bottom:17px;left:-100px}
-.freewall_container .freewall_item .item_overlay .item_preview{bottom:20px;right:-100px}
+.freewall_container .freewall_item .item_overlay .item_preview{position: absolute;left: 50%; top: 50%;transform: translate(-50%,-50%);}
 .freewall_container .freewall_item .item_overlay.show_overlay .item_edit{left:50%;margin-left:-34px}
-.freewall_container .freewall_item .item_overlay.show_overlay .item_preview{right:50%;margin-right:-34px}
+.freewall_container .freewall_item .item_overlay.show_overlay .item_preview{position: absolute;left: 50%; top: 50%;transform: translate(-50%,-50%);}
 #noty_bottom_layout_container,#noty_top_layout_container{width:98%!important;left:1%!important}
 #noty_top_layout_container{margin-top:50px!important}
 #noty_bottom_layout_container{margin-bottom:10px!important}

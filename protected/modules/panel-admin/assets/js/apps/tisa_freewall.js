@@ -16,7 +16,7 @@
 				gallery_wall.reset({
 					selector: '.freewall_item',
 					animate: true,
-					cellW: 220,
+					cellW: 280,
 					cellH: 'auto',
 					onResize: function() {
 						gallery_wall.fitWidth();
@@ -37,8 +37,15 @@
 				
 				$('.freewall_item .item_select').on('click', function(e) {
 					e.preventDefault();
+					$('.freewall_item').each(function () {
+						if ($(this).hasClass('item_selected')) {
+							$(this).toggleClass('item_selected');
+							$(this).find('.fa').toggleClass('fa-check-square-o fa-square-o');
+						}
+					});
 					$(this).closest('.freewall_item').toggleClass('item_selected');
 					$(this).children('.fa').toggleClass('fa-square-o fa-check-square-o');
+					$('#page-theme').val($(this).attr('href'));
 				})
 				
 				$("#gallery_grid_filters button").click(function() {

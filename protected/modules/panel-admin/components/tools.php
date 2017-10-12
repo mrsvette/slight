@@ -57,7 +57,8 @@ class AdminTools
 	public function createPage($data)
 	{
 		if (is_array(self::getPage($data['permalink']))) {
-			return false;
+			if (!isset($data['rewrite']))
+				return false;
 		}
 
 		// create the file
@@ -177,5 +178,28 @@ class AdminTools
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get all pages under themes folder
+	 * @return array
+	 */
+	public function getInspirationPages()
+	{
+		$pages = array();
+		foreach (glob($this->basePath.'/../themes/'.$this->themeName.'/views/inspiration/*.phtml') as $filename) {
+			$page = basename($filename, '.phtml');
+			$name = ucwords( implode(" ", explode("-", $page)) );
+			if (!in_array($page, $excludes))
+				$pages[] = [
+					'name' => $name,
+					'slug' => $page,
+					'path' => $filename,
+					'info' => pathinfo($filename) ,
+					'image_thumb' => 'uploads/inspirations/'.$this->themeName.'/'.$page.'.png'
+				];
+		}
+
+		return $pages;
 	}
 }
