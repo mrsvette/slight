@@ -41,7 +41,7 @@ Tambah Halaman Baru - {{ App.name }}
 							<div class="row">
 								<div class="form-group col-md-6 has-info">
 									<label>Judul Halaman <span class="red">*</span></label>
-									<input type="text" name="Page[title]" class="form-control" placeholder="Masukkan judul halaman. contoh: Belajar SEO" value="{{ page_data.title }}">
+									<input type="text" name="Page[title]" class="form-control" placeholder="Masukkan judul halaman. contoh: Belajar SEO" value="{{ page_data.title }}" id="page-title">
 									<span class="help-block">Berikan judul yang tepat untuk halaman ini karena akan sangat bermanfaat untuk SEO.</span>
 								</div>
 								<div class="form-group col-md-6 has-info">
@@ -57,7 +57,7 @@ Tambah Halaman Baru - {{ App.name }}
 										<div class="input-group-btn">
 											<button class="btn btn-info" type="button">{{ '' | link }}</button>
 										</div>
-										<input type="text" name="Page[permalink]" class="form-control" placeholder="Masukkan url halaman. contoh : belajar-seo" value="{{ page_data.permalink }}">
+										<input type="text" name="Page[permalink]" class="form-control" placeholder="Masukkan url halaman. contoh : belajar-seo" value="{{ page_data.permalink }}" id="permalink">
 									</div>
 									<span class="help-block">Gunakan tanda '-' untuk memisahkan kata.<br/>Contoh format url yang tepat : <u>{{ 'belajar-seo' | link }}</u></span>
 								</div>
@@ -90,6 +90,7 @@ Tambah Halaman Baru - {{ App.name }}
 {% include 'partial/right_menu.html' %}
 {% endblock %}
 {% block endbodyjs %}
+{% if not has_blockeditor %}
 <script src="{{ 'lib/editarea/edit_area_full.js' | admin_asset_url }}"></script>
 <script type="text/javascript">
 $(function(){
@@ -104,4 +105,17 @@ $(function(){
 	});
 });
 </script>
+{% else %}
+<script type="text/javascript">
+	$(function () {
+		$('#page-title').keyup(function () {
+			var permalink = $(this).val().toLowerCase();
+			if (permalink && permalink.length > 0) {
+				var permalink = permalink.replace(/\s+/g, "-");
+			}
+			$('#permalink').val(permalink);
+		});
+	});
+</script>
+{% endif %}
 {% endblock %}

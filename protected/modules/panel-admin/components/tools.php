@@ -61,30 +61,41 @@ class AdminTools
 				return false;
 		}
 
-		// create the file
-		$slug = str_replace(" ", "-", strtolower($data['permalink']));
-		$fp = fopen($this->basePath.'/../themes/'.$this->themeName.'/views/'.$slug.'.phtml', "wb");
-		$content = '{% extends "partial/layout.phtml" %}';
-		if (isset($data['title']))
-			$content .= '{% block pagetitle %}'.$data['title'].' - {{App.name}}{% endblock %}';
-		else
-			$content .= '{% block pagetitle %}{{ App.params.tag_line }} - {{App.name}}{% endblock %}';
+		// create the file if not rewrite page
+		if (!isset($data['rewrite'])) {
+			$slug = str_replace(" ", "-", strtolower($data['permalink']));
+			$fp = fopen($this->basePath.'/../themes/'.$this->themeName.'/views/'.$slug.'.phtml', "wb");
+			$content = '{% extends "partial/layout.phtml" %}';
+			if (isset($data['title']))
+				$content .= '{% block pagetitle %}'.$data['title'].' - {{App.name}}{% endblock %}';
+			else
+				$content .= '{% block pagetitle %}{{ App.params.tag_line }} - {{App.name}}{% endblock %}';
 
-		if (isset($data['meta_keyword']))
-			$content .= '{% block meta_keyword %}'.$data['meta_keyword'].'{% endblock %}';
+			if (isset($data['meta_keyword']))
+				$content .= '{% block meta_keyword %}'.$data['meta_keyword'].'{% endblock %}';
 
-		if (isset($data['meta_description']))
-			$content .= '{% block meta_description %}'.$data['meta_keyword'].'{% endblock %}';
+			if (isset($data['meta_description']))
+				$content .= '{% block meta_description %}'.$data['meta_description'].'{% endblock %}';
 
-		$content .= '{% block content %}';
-		if (empty($data['content'])) {
-			$content .= '<section id="'.$slug.'"></section>';
+			$content .= '{% block content %}';
+			if (empty($data['content'])) {
+				$content .= '<section id="'.$slug.'"></section>';
+			} else {
+				$content .= $data['content'];
+			}
+			$content .= '{% endblock %}';
+			fwrite($fp, $content);
+			fclose($fp);
 		} else {
-			$content .= $data['content'];
+			include_once __DIR__ . '/simple_html_dom.php';
+
+			$file_path = $this->basePath.'/../themes/'.$this->themeName.'/views/'.$data['permalink'].'.phtml';
+			$content = file_get_contents( $file_path );
+			$html_dom = new \PanelAdmin\Components\DomHelper();
+			$html = $html_dom->str_get_html( $content );
+			$html->find('section', 0)->outertext = $data['content'];
+			$html->save($file_path);
 		}
-		$content .= '{% endblock %}';
-		fwrite($fp, $content);
-		fclose($fp);
 
 		return true;
 	}

@@ -70,4 +70,18 @@ class BaseController
         $model = new \Model\AdminGroupModel();
         return $model->hasAccess($this->_user, $path);
     }
+
+    public function getBaseUrl($request)
+    {
+        if (empty($this->_container->get('settings')['params']['site_url'])) {
+            $uri = $request->getUri();
+            $base_url = $uri->getScheme().'://'.$uri->getHost().$uri->getBasePath();
+            if (!empty($uri->getPort()))
+                $base_url .= ':'.$uri->getPort();
+
+            return $base_url;
+        }
+
+        return $this->_container->get('settings')['params']['site_url'];
+    }
 }
