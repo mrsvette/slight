@@ -160,12 +160,14 @@ class ExtensionsController extends BaseController
         if (isset($_POST['Configs'])){
             if ($model instanceof \RedBeanPHP\OODBBean) {
                 $model->option_value = json_encode($_POST['Configs']);
+                $model->autoload = 'no';
                 $model->updated_at = date('Y-m-d H:i:s');
                 $save = \Model\OptionsModel::model()->update($model);
             } else {
                 $model = new \Model\OptionsModel();
                 $model->option_name = 'ext_'.$args['id'];
                 $model->option_value = json_encode($_POST['Configs']);
+                $model->autoload = 'no';
                 $model->created_at = date('Y-m-d H:i:s');
                 $save = \Model\OptionsModel::model()->save($model);
             }

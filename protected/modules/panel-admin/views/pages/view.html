@@ -62,7 +62,7 @@ Landing Pages - {{ App.name }}
                                     </tr>
                                     {% else %}
                                     <tr>
-                                        <td>No data founds</td>
+                                        <td>Tidak ditemukan data</td>
                                     </tr>
                                     {% endfor %}
                                     </tbody>
@@ -88,7 +88,7 @@ Landing Pages - {{ App.name }}
 <script src="{{ 'lib/DataTables/media/js/dataTables.bootstrap.js' | admin_asset_url }}"></script>
 <script type="text/javascript">
 function hapus(data) {
-	if (confirm('Are you sure to delete ?')) {
+	if (confirm('Anda yakin ingin menghapus ?')) {
 		var $this =  $(data);
 		var url = $this.attr('href');
 		$.ajax({

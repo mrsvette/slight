@@ -8,6 +8,7 @@ class BaseController
     protected $_settings;
     protected $_user;
     protected $_login_url = '/panel-admin/default/login';
+    protected $_extensions;
 
     public function __construct($app, $user)
     {
@@ -15,6 +16,9 @@ class BaseController
         $this->_container = $container;
         $this->_settings = $container->get('settings');
         $this->_user = $user;
+        if (!empty($container->get('settings')['params']['extensions'])) {
+            $this->_extensions = json_decode($container->get('settings')['params']['extensions'], true);
+        }
 
         $this->register($app);
     }
@@ -65,5 +69,19 @@ class BaseController
     {
         $model = new \Model\AdminGroupModel();
         return $model->hasAccess($this->_user, $path);
+    }
+
+    public function getBaseUrl($request)
+    {
+        if (empty($this->_container->get('settings')['params']['site_url'])) {
+            $uri = $request->getUri();
+            $base_url = $uri->getScheme().'://'.$uri->getHost().$uri->getBasePath();
+            if (!empty($uri->getPort()))
+                $base_url .= ':'.$uri->getPort();
+
+            return $base_url;
+        }
+
+        return $this->_container->get('settings')['params']['site_url'];
     }
 }

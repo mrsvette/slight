@@ -20,6 +20,7 @@ class PagesController extends BaseController
         $app->map(['GET', 'POST'], '/update/[{name}]', [$this, 'update']);
         $app->map(['POST'], '/delete/[{name}]', [$this, 'delete']);
         $app->map(['GET', 'POST'], '/update-visual', [$this, 'update_visual']);
+        $app->map(['GET', 'POST'], '/inspiration/[{name}]', [$this, 'inspiration']);
     }
 
     public function accessRules()
@@ -34,7 +35,7 @@ class PagesController extends BaseController
                 'expression' => $this->hasAccess('panel-admin/pages/read'),
             ],
             ['allow',
-                'actions' => ['create'],
+                'actions' => ['create', 'inspiration'],
                 'expression' => $this->hasAccess('panel-admin/pages/create'),
             ],
             ['allow',
@@ -81,20 +82,37 @@ class PagesController extends BaseController
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
 
-        if (isset($_POST['content'])){
-            $create = $tools->createPage($_POST);
+        $success = false; $message = []; $page_data = null;
+        if (isset($_POST['Page'])){
+            if (empty($_POST['Page']['title'])) {
+                array_push( $message, 'Judul halaman tidak boleh dikosongi.' );
+            }
+            if (empty($_POST['Page']['permalink'])) {
+                array_push( $message, 'Tuliskan format url yang benar.' );
+            }
+
+            $page_data = $_POST['Page'];
+
+            $create = $tools->createPage($_POST['Page']);
             if ($create) {
-                $message = 'Your page is successfully created.';
+                if (in_array( 'blockeditor', $this->_extensions) ) {
+                    return $response->withRedirect('/panel-admin/pages/inspiration/'.$_POST['Page']['permalink']);
+                }
+
+                array_push( $message, 'Halaman Anda telah berhasil disimpan.' );
                 $success = true;
             } else {
-                $message = 'Failed to create new page.';
+                if (count($message) == 0)
+                    array_push( $message, 'Gagal membuat halaman baru. Halaman '.$_POST['Page']['permalink'].' sudah ada.' );
                 $success = false;
             }
         }
 
         return $this->_container->module->render($response, 'pages/create.html', [
             'message' => ($message) ? $message : null,
-            'success' => $success
+            'success' => $success,
+            'page_data' => $page_data,
+            'has_blockeditor' => (in_array( 'blockeditor', $this->_extensions) ) ? true : false
         ]);
     }
 
@@ -120,9 +138,12 @@ class PagesController extends BaseController
         }
 
         $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
+        $page_content = $tools->getPage($args['name']);
+        $format = new \PanelAdmin\Components\Format();
+        $page_content['content'] = $format->HTML($page_content['content']);
 
         return $this->_container->module->render($response, 'pages/update.html', [
-            'data' => $tools->getPage($args['name']),
+            'data' => $page_content,
             'message' => ($message) ? $message : null,
             'success' => $success
         ]);
@@ -206,4 +227,50 @@ class PagesController extends BaseController
         }
     }
 
+    public function inspiration($request, $response, $args)
+    {
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
+        }
+
+        $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
+
+        $content = $tools->getPage($args['name']);
+        $inspirations = $tools->getInspirationPages();
+
+        if (isset($_POST['Page']['name'])) {
+            $page_path = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/'.$_POST['Page']['name'].'.phtml';
+            $inspirations_path = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/inspiration';
+            $file_path = $inspirations_path.'/'.$_POST['Page']['theme'];
+            if (file_exists($file_path)) {
+                $content = file_get_contents( $file_path );
+                $html_dom = new \PanelAdmin\Components\DomHelper();
+                $html = $html_dom->str_get_html($content);
+                $s_content = '';
+                foreach ($html->find('section') as $section) {
+                    $s_content .= '<section id="'.$section->id.'">'.$section->innertext().'</section>';
+                }
+                if (!empty($s_content)) {
+                    $format = new \PanelAdmin\Components\Format();
+                    $s_content = $format->HTML($s_content);
+                    $create = $tools->createPage(['content' => $s_content, 'permalink' => $_POST['Page']['name'], 'rewrite' => true]);
+                    if ($create) {
+                        if (in_array( 'blockeditor', $this->_extensions) ) {
+                            return $response->withRedirect('/block-editor/update/'.$_POST['Page']['name']);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $this->_container->module->render($response, 'pages/inspiration.html', [
+            'content' => $content,
+            'inspirations' => $inspirations,
+            'page_name' => $args['name']
+        ]);
+    }
 }

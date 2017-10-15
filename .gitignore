@@ -10,4 +10,4 @@ index.php
 /protected/data/
 /themes/default/assets/images/*
 /uploads/*
-**/elements.json
+*.lock

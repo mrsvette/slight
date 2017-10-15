@@ -60,7 +60,7 @@ class ParamsController extends BaseController
             return $this->notAllowedAction();
         }
 
-        $options = \Model\OptionsModel::model()->findAll();
+        $options = \Model\OptionsModel::model()->findAllByAttributes( ['autoload' => 'yes'] );
 
         return $this->_container->module->render($response, 'params/view.html', [
             'options' => $options

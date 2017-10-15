@@ -18,10 +18,12 @@ class BlockEditorController extends BaseController
         $app->map(['GET', 'POST'], '/update/elements/css/[{name}]', [$this, 'css']);
         $app->map(['GET', 'POST'], '/update/elements/[{name}]', [$this, 'elements']);
         $app->map(['GET', 'POST'], '/update/bundles/[{name}]', [$this, 'bundles']);
+        $app->map(['GET', 'POST'], '/update/auto-save', [$this, 'auto_save']);
         $app->map(['GET', 'POST'], '/update/[{name}]', [$this, 'update']);
         $app->map(['GET', 'POST'], '/preview/[{name}]', [$this, 'preview']);
         $app->map(['GET', 'POST'], '/publish/[{name}]', [$this, 'publish']);
         $app->map(['GET', 'POST'], '/skeleton', [$this, 'skeleton']);
+        $app->map(['GET', 'POST'], '/upload-image', [$this, 'upload_image']);
     }
 
     public function thumbs($request, $response, $args)
@@ -55,7 +57,11 @@ class BlockEditorController extends BaseController
     public function bundles($request, $response, $args)
     {
         //return $response->withRedirect($this->_settings['params']['site_url'].'/themes/'.$this->_settings['params']['theme'].'/assets/build/bundles/'.$args['name']);
-        return $response->withRedirect($this->getVendorUrl().'bundles/'.$args['name']);
+        header('Content-Type: application/octet-stream');
+
+        $fh = file_get_contents($this->getVendorUrl().'bundles/'.$args['name']);
+
+        return $fh;
     }
 
     public function update($request, $response, $args)
@@ -67,9 +73,10 @@ class BlockEditorController extends BaseController
         if (isset($args['name'])){
             $pos = strpos($args['name'], '.');
             if ($pos !== false) {
-                return $this->_container->view->render($response, 'staging/'.$args['name'], [
-                    'args' => $args
-                ]);
+                header('Content-Type: application/json');
+                $file = file_get_contents($this->_settings['basePath'].'/data/'.$args['name']);
+
+                return $file;
             }
 
             $tools = new \PanelAdmin\Components\AdminTools($this->_settings);
@@ -126,7 +133,7 @@ class BlockEditorController extends BaseController
     private function create_elements($data)
     {
         $elements_data = ['elements' => $data];
-        $file_path = $this->_settings['theme']['path'] . '/' . $this->_settings['theme']['name'] . '/views/staging/';
+        $file_path = $this->_settings['basePath'] . '/data/';
         if (!file_exists($file_path.'elements.json')) {
             $fp = fopen($file_path.'elements.json', "wb");
             fwrite($fp, json_encode($elements_data));
@@ -253,5 +260,84 @@ class BlockEditorController extends BaseController
         }
 
         return $vendor_url;
+    }
+
+    public function auto_save($request, $response, $args)
+    {
+        return true;
+    }
+
+    public function upload_image($request, $response, $args)
+    {
+        $uploads_dir = $this->_settings['basePath'].'/../uploads/pages';//specify the upload folder, make sure it's writable!
+        if (!is_dir($uploads_dir)) {
+            mkdir( $uploads_dir, 0777, true );
+        }
+
+        $relative_path = $this->getBaseUrl($request).'/uploads/pages';//specify the relative path from your elements to the upload folder
+
+        $allowed_types = [
+            "image/jpeg", "image/gif", "image/png", "image/svg", "application/pdf"
+        ];
+
+        /* DON'T CHANGE ANYTHING HERE!! */
+
+        $return = array();
+
+
+        //does the folder exist?
+        if( !file_exists( $uploads_dir ) ) {
+
+            $return['code'] = 0;
+            $return['response'] = "The specified upload location does not exist. Please provide a correct folder in /_upload.php";
+
+            die( json_encode( $return ) );
+
+        }
+
+        //is the folder writable?
+        if( !is_writable( $uploads_dir ) ) {
+
+            $return['code'] = 0;
+            $return['response'] = "The specified upload location is not writable. Please make sure the specified folder has the correct write permissions set for it.";
+
+            die( json_encode( $return ) );
+
+        }
+
+        if ( !isset($_FILES['imageFileField']['error']) || is_array($_FILES['imageFileField']['error']) ) {
+
+            $return['code'] = 0;
+            $return['response'] = $_FILES['imageFileField']['error'];
+
+            die( json_encode( $return ) );
+
+        }
+
+        $name = $_FILES['imageFileField']['name'];
+
+        $file_type = $_FILES['imageFileField']['type'];
+
+
+        if ( in_array($file_type, $allowed_types) ) {
+
+            if ( move_uploaded_file( $_FILES['imageFileField']['tmp_name'], $uploads_dir."/".$name ) ) {
+
+            } else {
+                $return['code'] = 0;
+                $return['response'] = "The uploaded file couldn't be saved. Please make sure you have provided a correct upload folder and that the upload folder is writable.";
+            }
+
+            $return['code'] = 1;
+            $return['response'] = $relative_path."/".$name;
+
+        } else {
+
+            $return['code'] = 0;
+            $return['response'] = "File type not allowed";
+
+        }
+
+        return json_encode( $return );
     }
 }
