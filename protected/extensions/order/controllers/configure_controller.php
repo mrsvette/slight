@@ -20,9 +20,9 @@ class ConfigureController extends ClientBaseController
 
     public function configure($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
+        /*if ($this->_user->isGuest()){
             return $response->withRedirect('/order/configure/signup?p='.$args['name']);
-        }
+        }*/
 
         $model = new \ExtensionsModel\ClientOrderModel('create');
         $product = \ExtensionsModel\ProductModel::model()->findByAttributes( ['slug'=>$args['name']] );
