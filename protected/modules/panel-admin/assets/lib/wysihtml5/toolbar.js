@@ -56,7 +56,7 @@
                             "</div>" +
                             "<div class='modal-body has-padding'>" +
                                 "<div class='form-group'>" +
-                                    "<input type='text' value='http://' class='bootstrap-wysihtml5-insert-link-url form-control'>" +
+                                    "<input type='text' value='//' class='bootstrap-wysihtml5-insert-link-url form-control'>" +
                                     "<label class='checkbox'> <input type='checkbox' class='bootstrap-wysihtml5-insert-link-target styled' checked>" + locale.link.target + "</label>" +
                                 "</div>" +
                             "</div>" +
@@ -83,7 +83,7 @@
                             "</div>" +
                             "<div class='modal-body has-padding'>" +
                                 "<div class='form-group'>" +
-                                    "<input type='text' value='http://' class='bootstrap-wysihtml5-insert-image-url form-control'>" +
+                                    "<input type='text' value='//' class='bootstrap-wysihtml5-insert-image-url form-control'>" +
                                 "</div>" +
                             "</div>" +
                             "<div class='modal-footer'>" +
