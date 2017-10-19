@@ -56,10 +56,10 @@ class BlockEditorController extends BaseController
 
     public function bundles($request, $response, $args)
     {
-        //return $response->withRedirect($this->_settings['params']['site_url'].'/themes/'.$this->_settings['params']['theme'].'/assets/build/bundles/'.$args['name']);
         header('Content-Type: application/octet-stream');
 
-        $fh = file_get_contents($this->getVendorUrl().'bundles/'.$args['name']);
+        //$fh = file_get_contents($this->getVendorUrl().'bundles/'.$args['name']);
+        $fh = file_get_contents($this->_settings['basePath'].'/extensions/blockeditor/assets/fonts/'.$args['name']);
 
         return $fh;
     }
@@ -252,7 +252,7 @@ class BlockEditorController extends BaseController
 
     private function getVendorUrl()
     {
-        $vendor_url = 'http://bootblock.slightsite.com/';
+        $vendor_url = $this->getBaseUrl().'/';
 
         if (!empty($this->_settings['params']['ext_blockeditor'])) {
             $configs = json_decode($this->_settings['params']['ext_blockeditor'], true);
