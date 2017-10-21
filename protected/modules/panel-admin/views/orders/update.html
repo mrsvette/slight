@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+{% block pagetitle %}
+{{ model.title }} - Order - {{ App.name }}
+{% endblock %}
+
+{% block content %}
+<div id="main_wrapper">
+	<div class="page_bar clearfix">
+		<div class="row">
+			<div class="col-sm-10">
+				<h1 class="page_title">#{{ model.id }} {{ model.title }}</h1>
+				<p class="text-muted">Kelola order</p>
+			</div>
+			<div class="col-sm-2 text-right">
+				<a class="btn btn-default" href="{{ 'order/admin/view' | link }}">Daftar Order</a>
+			</div>
+		</div>
+	</div>
+    <div class="page_content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+							Detail Order
+						</div>
+						<div class="panel-body">
+							<table class="table table-hover">
+								<tr>
+									<td>Id</td>
+									<td>#{{ model.id }}</td>
+								</tr>
+								<tr>
+									<td>Nama Order</td>
+									<td>{{ model.title }}</td>
+								</tr>
+								<tr>
+									<td>Periode</td>
+									<td>{{ model.period }}</td>
+								</tr>
+								<tr>
+									<td>Status</td>
+									<td>{{ model.status }}</td>
+								</tr>
+								<tr>
+									<td>Catatan</td>
+									<td>{{ model.notes }}</td>
+								</tr>
+								<tr>
+									<td>Tanggal Expired</td>
+									<td>{{ model.expires_at }}</td>
+								</tr>
+								<tr>
+									<td>Tanggal Order</td>
+									<td>{{ model.created_at }}</td>
+								</tr>
+							</table>
+						</div>
+						<div class="panel-footer">
+							<a href="#" class="btn btn-info">Activate</a>
+							<a href="#" class="btn btn-warning">Suspend</a>
+							<a href="#" class="btn btn-danger">Cancel</a>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'partial/right_menu.html' %}
+{% endblock %}
+{% block endbodyjs %}
+<script type="text/javascript">
+	$(function () {
+		var success_message = "{{ message }}";
+		if (success_message && success_message.length > 0) {
+			setTimeout(function () {
+				window.location.href = window.location;
+			}, 3000);
+		}
+	});
+</script>
+{% endblock %}

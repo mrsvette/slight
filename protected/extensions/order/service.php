@@ -65,4 +65,20 @@ class OrderService
     {
         return true;
     }
+
+    /**
+     * Order extension available menu
+     * @return array
+     */
+    public function getMenu()
+    {
+        return [
+            [ 'label' => 'Daftar Order', 'url' => 'order/admin/view', 'icon' => 'fa fa-search' ],
+        ];
+    }
+
+    public function activate($model)
+    {
+        return $model;
+    }
 }
