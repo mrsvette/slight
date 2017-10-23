@@ -79,6 +79,106 @@ class OrderService
 
     public function activate($model)
     {
-        return $model;
+        if (!$model instanceof \RedBeanPHP\OODBBean)
+            return false;
+
+        $model->status = \ExtensionsModel\ClientOrderModel::STATUS_ACTIVE;
+        $model->expires_at = $this->set_expiration_date($model->period, $model->expires_at);
+        $model->activated_at = date("Y-m-d H:i:s");
+        $model->updated_at = date("Y-m-d H:i:s");
+        $update = \ExtensionsModel\ClientOrderModel::model()->update($model);
+
+        if ($update) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function suspend($model)
+    {
+        if (!$model instanceof \RedBeanPHP\OODBBean)
+            return false;
+
+        $model->status = \ExtensionsModel\ClientOrderModel::STATUS_SUSPENDED;
+        $model->suspended_at = date("Y-m-d H:i:s");
+        $model->updated_at = date("Y-m-d H:i:s");
+        $update = \ExtensionsModel\ClientOrderModel::model()->update($model);
+
+        if ($update) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function unsuspend($model)
+    {
+        if (!$model instanceof \RedBeanPHP\OODBBean)
+            return false;
+
+        $model->status = \ExtensionsModel\ClientOrderModel::STATUS_ACTIVE;
+        $model->suspended_at = null;
+        $model->unsuspended_at = date("Y-m-d H:i:s");
+        $model->updated_at = date("Y-m-d H:i:s");
+        $update = \ExtensionsModel\ClientOrderModel::model()->update($model);
+
+        if ($update) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function cancel($model)
+    {
+        if (!$model instanceof \RedBeanPHP\OODBBean)
+            return false;
+
+        $model->status = \ExtensionsModel\ClientOrderModel::STATUS_CANCELED;
+        $model->canceled_at = date("Y-m-d H:i:s");
+        $model->updated_at = date("Y-m-d H:i:s");
+        $update = \ExtensionsModel\ClientOrderModel::model()->update($model);
+
+        if ($update) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function set_expiration_date($period = '1Y', $date_start = null)
+    {
+        if (empty($date_start))
+            $date_start = date("Y-m-d H:i:s");
+
+        switch ($period) {
+            case '1W':
+                $date_end = date("Y-m-d H:i:s", strtotime("+1 week", strtotime($date_start)));
+                break;
+            case '2W':
+                $date_end = date("Y-m-d H:i:s", strtotime("+2 week", strtotime($date_start)));
+                break;
+            case '1M':
+                    $date_end = date("Y-m-d H:i:s", strtotime("+1 month", strtotime($date_start)));
+                break;
+            case '3M':
+                $date_end = date("Y-m-d H:i:s", strtotime("+3 month", strtotime($date_start)));
+                break;
+            case '6M':
+                $date_end = date("Y-m-d H:i:s", strtotime("+6 month", strtotime($date_start)));
+                break;
+            case '1Y':
+                $date_end = date("Y-m-d H:i:s", strtotime("+1 year", strtotime($date_start)));
+                break;
+            case '2Y':
+                $date_end = date("Y-m-d H:i:s", strtotime("+2 year", strtotime($date_start)));
+                break;
+            case '3Y':
+                $date_end = date("Y-m-d H:i:s", strtotime("+3 year", strtotime($date_start)));
+                break;
+        }
+
+        return $date_end;
     }
 }

@@ -16,6 +16,10 @@ class AdminOrderController extends BaseController
         $app->map(['GET'], '/view', [$this, 'view']);
         $app->map(['GET'], '/update/[{id}]', [$this, 'update']);
         $app->map(['POST'], '/delete/[{id}]', [$this, 'delete']);
+        $app->map(['POST'], '/activate/[{id}]', [$this, 'activate']);
+        $app->map(['POST'], '/suspend/[{id}]', [$this, 'suspend']);
+        $app->map(['POST'], '/unsuspend/[{id}]', [$this, 'unsuspend']);
+        $app->map(['POST'], '/cancel/[{id}]', [$this, 'cancel']);
     }
 
     public function view($request, $response, $args)
@@ -61,5 +65,77 @@ class AdminOrderController extends BaseController
         if ($delete) {
             echo true;
         }
+    }
+
+    public function activate($request, $response, $args)
+    {
+        if ($this->_user->isGuest()){
+            return $response->withRedirect($this->_login_url);
+        }
+
+        if (!isset($args['id'])) {
+            return false;
+        }
+
+        $model = \ExtensionsModel\ClientOrderModel::model()->findByPk($args['id']);
+
+        $service = new \Extensions\OrderService();
+        $activate = $service->activate($model);
+        var_dump($activate); exit;
+        return $model;
+    }
+
+    public function suspend($request, $response, $args)
+    {
+        if ($this->_user->isGuest()){
+            return $response->withRedirect($this->_login_url);
+        }
+
+        if (!isset($args['id'])) {
+            return false;
+        }
+
+        $model = \ExtensionsModel\ClientOrderModel::model()->findByPk($args['id']);
+
+        $service = new \Extensions\OrderService();
+        $suspend = $service->suspend($model);
+
+        echo $suspend;
+    }
+
+    public function unsuspend($request, $response, $args)
+    {
+        if ($this->_user->isGuest()){
+            return $response->withRedirect($this->_login_url);
+        }
+
+        if (!isset($args['id'])) {
+            return false;
+        }
+
+        $model = \ExtensionsModel\ClientOrderModel::model()->findByPk($args['id']);
+
+        $service = new \Extensions\OrderService();
+        $unsuspend = $service->unsuspend($model);
+
+        echo $unsuspend;
+    }
+
+    public function cancel($request, $response, $args)
+    {
+        if ($this->_user->isGuest()){
+            return $response->withRedirect($this->_login_url);
+        }
+
+        if (!isset($args['id'])) {
+            return false;
+        }
+
+        $model = \ExtensionsModel\ClientOrderModel::model()->findByPk($args['id']);
+
+        $service = new \Extensions\OrderService();
+        $cancel = $service->cancel($model);
+
+        echo $cancel;
     }
 }
