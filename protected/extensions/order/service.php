@@ -7,6 +7,7 @@ class OrderService
     protected $themeName;
     protected $adminPath;
     protected $tablePrefix;
+    protected $_settings;
 
     public function __construct($settings = null)
     {
@@ -14,6 +15,7 @@ class OrderService
         $this->themeName = (is_object($settings))? $settings['theme']['name'] : $settings['settings']['theme']['name'];
         $this->adminPath = (is_object($settings))? $settings['admin']['path'] : $settings['settings']['admin']['path'];
         $this->tablePrefix = (is_object($settings))? $settings['db']['tablePrefix'] : $settings['settings']['db']['tablePrefix'];
+        $this->_settings = $settings;
     }
     
     public function install()
@@ -82,6 +84,10 @@ class OrderService
         if (!$model instanceof \RedBeanPHP\OODBBean)
             return false;
 
+        $plugin = $this->get_plugin($model);
+
+        var_dump($plugin->create()); exit;
+
         $model->status = \ExtensionsModel\ClientOrderModel::STATUS_ACTIVE;
         $model->expires_at = $this->set_expiration_date($model->period, $model->expires_at);
         $model->activated_at = date("Y-m-d H:i:s");
@@ -93,6 +99,17 @@ class OrderService
         }
 
         return false;
+    }
+
+    private function get_plugin($model)
+    {
+        switch ($model->service_type) {
+            case 'website':
+                $plugin = new \Extensions\Components\Website($model, $this->_settings);
+                break;
+        }
+
+        return $plugin;
     }
 
     public function suspend($model)

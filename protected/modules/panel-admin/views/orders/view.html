@@ -38,13 +38,13 @@ Daftar Order - {{ App.name }}
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for i, order in orders %}
+                                    {% for order in orders %}
                                     <tr>
-                                        <td>{{ i }}</td>
+                                        <td>{{ order.id }}</td>
                                         <td>{{ order.title }}</td>
-                                        <td>{{ order.product_id }}</td>
+                                        <td>{{ order.product_title }}</td>
                                         <td>{{ order.period }}</td>
-                                        <td><center>{{ order.status }}</center></td>
+                                        <td><center>{{ model.get_status(order.status) }}</center></td>
                                         <td><center>{{ order.created_at | date("Y-m-d H:i:s") }}</center></td>
                                         <td>
                                             <a href="{{ 'order/admin/update' | link }}/{{ order.id }}">

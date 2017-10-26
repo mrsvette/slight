@@ -39,8 +39,16 @@
 									<td>{{ model.period }}</td>
 								</tr>
 								<tr>
+									<td>Product</td>
+									<td>
+										<a href="{{ 'product/admin/manage' | link }}/{{ model.product_id }}" target="_blank">
+										{{ product.title }}
+										</a>
+									</td>
+								</tr>
+								<tr>
 									<td>Status</td>
-									<td>{{ model.status }}</td>
+									<td>{{ omodel.get_status(model.status) }}</td>
 								</tr>
 								<tr>
 									<td>Catatan</td>

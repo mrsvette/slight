@@ -28,10 +28,12 @@ class AdminOrderController extends BaseController
             return $response->withRedirect($this->_login_url);
         }
 
-        $orders = \ExtensionsModel\ClientOrderModel::model()->findAll();
+        $model = new \ExtensionsModel\ClientOrderModel();
+        $orders = \ExtensionsModel\ClientOrderModel::model()->get_list();
 
 
         return $this->_container->module->render($response, 'orders/view.html', [
+            'model' => $model,
             'orders' => $orders
         ]);
     }
@@ -42,11 +44,16 @@ class AdminOrderController extends BaseController
             return $response->withRedirect($this->_login_url);
         }
 
+        $omodel = new \ExtensionsModel\ClientOrderModel();
         $model = \ExtensionsModel\ClientOrderModel::model()->findByPk($args['id']);
 
+        if (!empty($model->product_id) )
+            $product = \ExtensionsModel\ProductModel::model()->findByPk($model->product_id);
 
         return $this->_container->module->render($response, 'orders/update.html', [
-            'model' => $model
+            'omodel' => $omodel,
+            'model' => $model,
+            'product' => $product,
         ]);
     }
 
@@ -79,7 +86,7 @@ class AdminOrderController extends BaseController
 
         $model = \ExtensionsModel\ClientOrderModel::model()->findByPk($args['id']);
 
-        $service = new \Extensions\OrderService();
+        $service = new \Extensions\OrderService($this->_settings);
         $activate = $service->activate($model);
         var_dump($activate); exit;
         return $model;

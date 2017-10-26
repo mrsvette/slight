@@ -58,6 +58,27 @@
             "value":"Tagihan tidak dibayar",
             "type":"string",
             "form_type":"input"
+        },
+        {
+            "title":"Website server IP",
+            "name":"server_ip",
+            "value":"",
+            "type":"string",
+            "form_type":"input"
+        },
+        {
+            "title":"Website server username",
+            "name":"server_username",
+            "value":"",
+            "type":"string",
+            "form_type":"input"
+        },
+        {
+            "title":"Website server password",
+            "name":"server_password",
+            "value":"",
+            "type":"password",
+            "form_type":"input"
         }
     ]
 }
