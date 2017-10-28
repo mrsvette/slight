@@ -152,10 +152,10 @@ class ConfigureController extends ClientBaseController
         }
 
         if (isset($_GET['p']) && isset($_GET['t']) && isset($_GET['s']) && isset($_GET['h'])) {
+            $product = \ExtensionsModel\ProductModel::model()->findByAttributes( ['slug'=>$_GET['p']] );
             $hash = md5($_GET['p'].$_GET['t'].$_GET['s']);
-            //$_SESSION['h'] = $_GET['h'];
+
             if ($_GET['h'] == $hash && isset($_SESSION['h'])) {
-                $product = \ExtensionsModel\ProductModel::model()->findByAttributes( ['slug'=>$_GET['p']] );
 
                 $model = new \ExtensionsModel\ClientOrderModel('create');
                 $model->client_id = $this->_user->id;
@@ -203,6 +203,28 @@ class ConfigureController extends ClientBaseController
                     'product' => $product,
                     'preview_url' => $preview_url
                 ]);
+            } else { // just if we got an accidance on installation
+                $omodel = new \ExtensionsModel\ClientOrderModel();
+                $model = $omodel->find_order_by_hash($_GET['h']);
+
+                if ($model instanceof \RedBeanPHP\OODBBean) {
+                    $service = $omodel->get_service( $model->id );
+                    if (!empty($service['domain']))
+                        $preview_url = 'http://'.$service['domain'];
+
+                    if (empty($preview_url)) {
+                        return $this->_container->response
+                            ->withStatus(500)
+                            ->withHeader('Content-Type', 'text/html')
+                            ->write('Preview url not found. Please resignup!');
+                    }
+
+                    return $this->_container->view->render($response, 'order/build.phtml', [
+                        'model' => $model,
+                        'product' => $product,
+                        'preview_url' => $preview_url
+                    ]);
+                }
             }
         }
 
