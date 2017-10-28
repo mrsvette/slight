@@ -82,4 +82,23 @@ class ClientOrderModel extends \Model\BaseModel
 
         return $row;
     }
+
+    public function find_order_by_hash($hash)
+    {
+        $sql = "SELECT t.id        
+            FROM {tableName} t 
+            WHERE t.config LIKE '%{hash}%'";
+
+        $sql = str_replace(['{tableName}', '{hash}'], [$this->tableName, '"h":"'.$hash.'"'], $sql);
+
+        $row = \Model\R::getRow( $sql, ['id'=>$order->service_id] );
+
+        if (is_array($row) && !empty($row['id'])) {
+            $model = $this->model()->findByPk($row['id']);
+
+            return $model;
+        }
+
+        return false;
+    }
 }
