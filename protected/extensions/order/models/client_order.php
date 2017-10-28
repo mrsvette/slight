@@ -65,4 +65,21 @@ class ClientOrderModel extends \Model\BaseModel
         else
             return $status_list[$status];
     }
+
+    public function get_service($id)
+    {
+        $order = $this->model()->findByPk($id);
+        if (empty($order->service_type) || empty($order->service_id))
+            return false;
+
+        $sql = "SELECT t.*       
+            FROM {tablePrefix}ext_service_{service_type} t 
+            WHERE t.id = :id";
+
+        $sql = str_replace(['{tablePrefix}', '{service_type}'], [$this->_tbl_prefix, $order->service_type], $sql);
+
+        $row = \Model\R::getRow( $sql, ['id'=>$order->service_id] );
+
+        return $row;
+    }
 }

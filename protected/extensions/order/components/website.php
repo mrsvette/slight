@@ -19,9 +19,22 @@ class Website
 
     public function create()
     {
-        $params = ['domain' => 'test.slightsite.com'];
+        $configs = json_decode($this->_order->config, true);
+        if (empty($configs['domain_name']))
+            throw new \Exception( 'Nama domain tidak ditemukan.' );
 
-        return $this->_request('v-list-web-domain', $params);
+        $params = ['domain' => $configs['domain_name']];
+
+        try {
+            $info = $this->_request('v-list-web-domain', $params);
+            if (empty($info)) {
+                $this->_request('v-add-domain', $params);
+            }
+        } catch (\Exception $e) {
+            throw new \Exception( $e->getMessage() );
+        }
+
+        return true;
     }
 
     private function _request($command = 'v-list-web-domain', $params = null)
@@ -29,12 +42,17 @@ class Website
         $postvars = array(
             'user' => $this->_ext_order['server_username'],
             'password' => $this->_ext_order['server_password'],
-            'cmd' => $command,
-            'arg3' => 'json'
+            'cmd' => $command
         );
 
         switch ($command) {
             case 'v-list-web-domain':
+                $postvars['arg1'] = $this->_ext_order['server_username'];
+                $postvars['arg2'] = $params['domain'];
+                $postvars['arg3'] = 'json';
+                break;
+            case 'v-add-domain':
+                $postvars['returncode'] = true;
                 $postvars['arg1'] = $this->_ext_order['server_username'];
                 $postvars['arg2'] = $params['domain'];
                 break;

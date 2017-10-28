@@ -55,6 +55,15 @@ class OrderService
           KEY `promo_id_idx` (`promo_id`)
         ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
 
+        $sql .= "CREATE TABLE IF NOT EXISTS `{tablePrefix}ext_service_website` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `client_id` int(11) NOT NULL,
+          `domain` varchar(128) NOT NULL,
+          `created_at` datetime NOT NULL,
+          `updated_at` datetime DEFAULT NULL,
+          PRIMARY KEY (`id`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+
         $sql = str_replace(['{tablePrefix}'], [$this->tablePrefix], $sql);
 
         $model = new \Model\OptionsModel();
@@ -84,17 +93,44 @@ class OrderService
         if (!$model instanceof \RedBeanPHP\OODBBean)
             return false;
 
-        $plugin = $this->get_plugin($model);
+        // build a subdomain name
+        $configs = json_decode($model->config, true);
+        if (!empty($configs['s'])) {
+            $configs['s'] = trim(strtolower($configs['s']));
+            if (preg_match('/\s/',$configs['s']))
+                $configs['s'] = preg_replace( '/\s+/', '', $configs['s'] );
+            $prefiks = substr($configs['s'], 0, 4);
+            $ext_order = json_decode($this->_settings['params']['ext_order'], true);
+            if (!is_array($ext_order) || empty($ext_order['server_domain_name'])) {
+                throw new \Exception( 'Server domain name tidak ditemukan.' );
+            }
 
-        var_dump($plugin->create()); exit;
+            $configs['domain_name'] = $this->_generateUsername($prefiks, 4).'.'.$ext_order['server_domain_name'];
+            $model->config = json_encode( $configs );
+        }
 
-        $model->status = \ExtensionsModel\ClientOrderModel::STATUS_ACTIVE;
-        $model->expires_at = $this->set_expiration_date($model->period, $model->expires_at);
-        $model->activated_at = date("Y-m-d H:i:s");
         $model->updated_at = date("Y-m-d H:i:s");
-        $update = \ExtensionsModel\ClientOrderModel::model()->update($model);
+        $update = \ExtensionsModel\ClientOrderModel::model()->update(@$model);
 
         if ($update) {
+            $plugin = $this->get_plugin($model);
+            $create = $plugin->create();
+            if ($create) {
+                $model2 = new \ExtensionsModel\ServiceWebsiteModel();
+                $model2->client_id = $model->client_id;
+                $model2->domain = $configs['domain_name'];
+                $model2->created_at = date("Y-m-d H:i:s");
+                $model2->updated_at = date("Y-m-d H:i:s");
+                $save = \ExtensionsModel\ServiceWebsiteModel::model()->save( @$model2 );
+                if ($save) {
+                    $model->service_id = $model2->id;
+                    $model->status = \ExtensionsModel\ClientOrderModel::STATUS_ACTIVE;
+                    $model->expires_at = $this->set_expiration_date($model->period, $model->expires_at);
+                    $model->activated_at = date("Y-m-d H:i:s");
+                    $update = \ExtensionsModel\ClientOrderModel::model()->update(@$model);
+                }
+            }
+            
             return true;
         }
 
@@ -197,5 +233,15 @@ class OrderService
         }
 
         return $date_end;
+    }
+
+    private function _generateUsername( $prefix = null, $length = 8 )
+    {
+        $num1 = rand(10000, 99999);
+        $num2 = rand(10000, 99999);
+        $username = $num1 . $num2;
+        $username = substr($username, 0, $length);
+
+        return $prefix.$username;
     }
 }

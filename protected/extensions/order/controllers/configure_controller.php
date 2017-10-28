@@ -153,7 +153,7 @@ class ConfigureController extends ClientBaseController
 
         if (isset($_GET['p']) && isset($_GET['t']) && isset($_GET['s']) && isset($_GET['h'])) {
             $hash = md5($_GET['p'].$_GET['t'].$_GET['s']);
-            $_SESSION['h'] = $_GET['h'];
+            //$_SESSION['h'] = $_GET['h'];
             if ($_GET['h'] == $hash && isset($_SESSION['h'])) {
                 $product = \ExtensionsModel\ProductModel::model()->findByAttributes( ['slug'=>$_GET['p']] );
 
@@ -179,12 +179,29 @@ class ConfigureController extends ClientBaseController
                 if ($save) {
                     $_SESSION['h'] = null;
                     // start to build
+                    $service = new \Extensions\OrderService($this->_settings);
+                    if (isset($model->id) && !$model instanceof \RedBeanPHP\OODBBean) {
+                        $model = \ExtensionsModel\ClientOrderModel::model()->findByPk( $model->id );
+                    }
 
+                    if (empty($model->service_id)) {
+                        $activate = $service->activate($model);
+                        if ($activate) {
+                            $omodel = new \ExtensionsModel\ClientOrderModel();
+                            $service = $omodel->get_service( $model->id );
+                        }
+                    } else {
+                        $service = $omodel->get_service( $model->id );
+                    }
+
+                    if (!empty($service['domain']))
+                        $preview_url = 'http://'.$service['domain'];
                 }
 
                 return $this->_container->view->render($response, 'order/build.phtml', [
                     'model' => $model,
-                    'product' => $product
+                    'product' => $product,
+                    'preview_url' => $preview_url
                 ]);
             }
         }

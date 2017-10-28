@@ -60,6 +60,13 @@
             "form_type":"input"
         },
         {
+            "title":"Website server Domain Name",
+            "name":"server_domain_name",
+            "value":"",
+            "type":"string",
+            "form_type":"input"
+        },
+        {
             "title":"Website server IP",
             "name":"server_ip",
             "value":"",

@@ -88,8 +88,8 @@ class AdminOrderController extends BaseController
 
         $service = new \Extensions\OrderService($this->_settings);
         $activate = $service->activate($model);
-        var_dump($activate); exit;
-        return $model;
+
+        echo $activate;
     }
 
     public function suspend($request, $response, $args)

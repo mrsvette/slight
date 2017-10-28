@@ -41,7 +41,9 @@ Daftar Order - {{ App.name }}
                                     {% for order in orders %}
                                     <tr>
                                         <td>{{ order.id }}</td>
-                                        <td>{{ order.title }}</td>
+                                        <td>
+                                            <a href="{{ 'order/admin/update' | link }}/{{ order.id }}">{{ order.title }}</a>
+                                        </td>
                                         <td>{{ order.product_title }}</td>
                                         <td>{{ order.period }}</td>
                                         <td><center>{{ model.get_status(order.status) }}</center></td>

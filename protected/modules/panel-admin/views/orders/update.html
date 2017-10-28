@@ -83,6 +83,30 @@
 						</div>
                     </div>
                 </div>
+				{% if model.service_id %}
+				{% set service = omodel.get_service(model.id) %}
+				<div class="col-lg-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							Service
+						</div>
+						<div class="panel-body">
+							<table class="table table-hover">
+								<tr>
+									<td>Nama Domain</td>
+									<td>
+										<a href="http://{{ service.domain }}" target="_blank">{{ service.domain }}</a>
+									</td>
+								</tr>
+								<tr>
+									<td>Tanggal Dibuat</td>
+									<td>{{ service.created_at | date("Y-m-d H:i:s") }}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				{% endif %}
             </div>
         </div>
     </div>
