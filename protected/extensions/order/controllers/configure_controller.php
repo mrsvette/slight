@@ -195,7 +195,12 @@ class ConfigureController extends ClientBaseController
                     }
 
                     if (!empty($service['domain'])) {
-                        $preview_url = $this->preview_url( $service['domain'] );
+                        $preview_params = [
+                            'domain' => $service['domain'],
+                            'site_name' => $_GET['s'],
+                            'theme' => $_GET['t']
+                        ];
+                        $preview_url = $this->preview_url( $preview_params );
                     }
                 }
 
@@ -211,7 +216,12 @@ class ConfigureController extends ClientBaseController
                 if ($model instanceof \RedBeanPHP\OODBBean) {
                     $service = $omodel->get_service( $model->id );
                     if (!empty($service['domain'])) {
-                        $preview_url = $this->preview_url( $service['domain'] );
+                        $preview_params = [
+                            'domain' => $service['domain'],
+                            'site_name' => $_GET['s'],
+                            'theme' => $_GET['t']
+                        ];
+                        $preview_url = $this->preview_url( $preview_params );
                     }
 
                     if (empty($preview_url)) {
@@ -256,14 +266,21 @@ class ConfigureController extends ClientBaseController
         return $response->success;
     }
 
-    private function preview_url($domain)
+    private function preview_url($data)
     {
+        $domain = $data['domain'];
         $pecah = explode( ".", $domain );
         $params = [
             'd' => 'admin_'.$pecah[0].'d',
             'u' => 'admin_'.$pecah[0].'u',
             'p' => $pecah[0].'123'
         ];
+        if (!empty($data['site_name']))
+            $params['s'] = $data['site_name'];
+
+        if (!empty($data['theme']))
+            $params['t'] = $data['theme'];
+
         $params['h'] = md5($params['d'].''.$params['u'].''.$params['p']);
 
         $query = http_build_query( $params );
