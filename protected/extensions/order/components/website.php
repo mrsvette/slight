@@ -29,10 +29,28 @@ class Website
             $info = $this->_request('v-list-web-domain', $params);
             if (empty($info)) {
                 $this->_request('v-add-domain', $params);
+                $this->createDb($configs);
             }
         } catch (\Exception $e) {
             throw new \Exception( $e->getMessage() );
         }
+
+        return true;
+    }
+
+    private function createDb($configs)
+    {
+        if (empty($configs['domain_name']))
+            return false;
+
+        $pecah = explode( ".", $configs['domain_name'] );
+        $params = [
+            'db_name' => $pecah[0].'db',
+            'db_user' => $pecah[0].'u',
+            'db_pass' => $pecah[0].'123'
+        ];
+
+        $add = $this->_request('v-add-database', $params);
 
         return true;
     }
@@ -55,6 +73,13 @@ class Website
                 $postvars['returncode'] = true;
                 $postvars['arg1'] = $this->_ext_order['server_username'];
                 $postvars['arg2'] = $params['domain'];
+                break;
+            case 'v-add-database':
+                $postvars['returncode'] = true;
+                $postvars['arg1'] = $this->_ext_order['server_username'];
+                $postvars['arg2'] = $params['db_name'];
+                $postvars['arg3'] = $params['db_user'];
+                $postvars['arg4'] = $params['db_pass'];
                 break;
         }
 
