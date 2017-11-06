@@ -194,8 +194,9 @@ class ConfigureController extends ClientBaseController
                         $service = $omodel->get_service( $model->id );
                     }
 
-                    if (!empty($service['domain']))
-                        $preview_url = 'http://'.$service['domain'];
+                    if (!empty($service['domain'])) {
+                        $preview_url = $this->preview_url( $service['domain'] );
+                    }
                 }
 
                 return $this->_container->view->render($response, 'order/build.phtml', [
@@ -209,8 +210,9 @@ class ConfigureController extends ClientBaseController
 
                 if ($model instanceof \RedBeanPHP\OODBBean) {
                     $service = $omodel->get_service( $model->id );
-                    if (!empty($service['domain']))
-                        $preview_url = 'http://'.$service['domain'];
+                    if (!empty($service['domain'])) {
+                        $preview_url = $this->preview_url( $service['domain'] );
+                    }
 
                     if (empty($preview_url)) {
                         return $this->_container->response
@@ -252,5 +254,21 @@ class ConfigureController extends ClientBaseController
         $response = json_decode($response);
 
         return $response->success;
+    }
+
+    private function preview_url($domain)
+    {
+        $pecah = explode( ".", $domain );
+        $params = [
+            'd' => 'admin_'.$pecah[0].'d',
+            'u' => 'admin_'.$pecah[0].'u',
+            'p' => $pecah[0].'123'
+        ];
+        $params['h'] = md5($params['d'].''.$params['u'].''.$params['p']);
+
+        $query = http_build_query( $params );
+
+        $preview_url = 'http://'.$domain.'/install.php?'.$query;
+        return $preview_url;
     }
 }
