@@ -45,7 +45,7 @@ class Website
 
         $pecah = explode( ".", $configs['domain_name'] );
         $params = [
-            'db_name' => $pecah[0].'db',
+            'db_name' => $pecah[0].'d',
             'db_user' => $pecah[0].'u',
             'db_pass' => $pecah[0].'123'
         ];
