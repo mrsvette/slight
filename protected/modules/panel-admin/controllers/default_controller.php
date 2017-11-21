@@ -34,7 +34,10 @@ class DefaultController extends BaseController
                 if ($model->password == $has_password){
                     $login = $this->_user->login($model);
                     if ($login){
-                        return $response->withRedirect('/panel-admin');
+                        if (isset($_GET['r']))
+                            return $response->withRedirect( $_GET['r'] );
+                        else
+                            return $response->withRedirect('/panel-admin');
                     }
                 } else {
                     $args['error']['message'] = 'Password yang Anda masukkan salah.';

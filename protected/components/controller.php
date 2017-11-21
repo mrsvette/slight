@@ -47,8 +47,14 @@ class BaseController
                 }
                 if ($rules[0] == 'deny'){
                     if (!empty($rules['users'][0])){
-                        if ($rules['users'][0] == '*' && $this->_user->isGuest())
-                            return $response->withRedirect($this->_login_url);
+                        if ($rules['users'][0] == '*' && $this->_user->isGuest()) {
+                            $login_url = $this->_login_url;
+                            if (!empty($request->getUri()->getPath())) {
+                                $login_url .= '?r='.$request->getUri()->getPath();
+                            }
+
+                            return $response->withRedirect( $login_url );
+                        }
                     }
                 }
             }
