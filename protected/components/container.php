@@ -120,6 +120,15 @@ function addFilter($env, $c)
         new \Twig_SimpleFilter('json_decode', function ($string) {
             return json_decode($string, true);
         }),
+        new \Twig_SimpleFilter('truncate', function ($string, $length = 30) {
+            if (strlen($string) > $length) {
+                if (false !== ($breakpoint = strpos($string, ' ', $length))) {
+                    $length = $breakpoint;
+                }
+
+                return substr($string, 0, $length) . ' ...';
+            }
+        }),
     ];
 
     $uri_path = $c->get('request')->getUri()->getPath();
