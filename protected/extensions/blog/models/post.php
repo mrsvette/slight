@@ -60,8 +60,13 @@ class PostModel extends \Model\BaseModel
         $sql = "SELECT t.status, c.post_id, c.title, c.content, c.slug, l.id, l.language_name, t.created_at     
         FROM {tablePrefix}ext_post t 
         LEFT JOIN {tablePrefix}ext_post_content c ON c.post_id = t.id 
-        LEFT JOIN {tablePrefix}ext_post_language l ON l.id = c.language  
-        WHERE 1";
+        LEFT JOIN {tablePrefix}ext_post_language l ON l.id = c.language";
+
+        if (isset($data['category_id'])) {
+            $sql .= " LEFT JOIN {tablePrefix}ext_post_in_category ct ON ct.post_id = t.id";
+        }
+
+        $sql .= " WHERE 1";
 
         $params = array();
         if (isset($data['just_default'])) {
@@ -71,6 +76,11 @@ class PostModel extends \Model\BaseModel
         if (isset($data['status'])) {
             $sql .= ' AND t.status =:status';
             $params['status'] = $data['status'];
+        }
+
+        if (isset($data['category_id'])) {
+            $sql .= " AND ct.category_id = :category_id";
+            $params['category_id'] = $data['category_id'];
         }
 
         if (isset($data['order'])) {
@@ -197,15 +207,28 @@ class PostModel extends \Model\BaseModel
         return $items;
     }
 
-    public function getCategories()
+    public function getCategories($data = null)
     {
         $sql = "SELECT t.id, t.category_name AS title, t.slug, t.description     
-        FROM {tablePrefix}ext_post_category t 
-        WHERE 1 ORDER BY t.id ASC";
+        FROM {tablePrefix}ext_post_category t";
+
+        if (is_array($data) && isset($data['post_id'])) {
+            $sql .= " LEFT JOIN {tablePrefix}ext_post_in_category pc ON pc.category_id = t.id";
+        }
+
+        $sql .= " WHERE 1";
+
+        $params = [];
+        if (is_array($data) && isset($data['post_id'])) {
+            $sql .= " AND pc.post_id =:post_id";
+            $params['post_id'] = $data['post_id'];
+        }
+
+        $sql .= " ORDER BY t.id ASC";
 
         $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
 
-        $rows = \Model\R::getAll( $sql );
+        $rows = \Model\R::getAll( $sql, $params );
         return $rows;
     }
 
@@ -232,5 +255,32 @@ class PostModel extends \Model\BaseModel
 
         $rows = \Model\R::getAll( $sql, $params );
         return $rows;
+    }
+
+    /**
+     * @param $data: slug, or id
+     * @return array
+     */
+    public function getCategory($data)
+    {
+        $sql = "SELECT t.id, t.category_name AS title, t.slug, t.description     
+        FROM {tablePrefix}ext_post_category t 
+        WHERE 1";
+
+        $params = [];
+        if (isset($data['slug'])) {
+            $sql .= " AND t.slug =:slug";
+            $params['slug'] = $data['slug'];
+        }
+
+        if (isset($data['id'])) {
+            $sql .= " AND t.id =:id";
+            $params['id'] = $data['id'];
+        }
+
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
+
+        $row = \Model\R::getRow( $sql, $params );
+        return $row;
     }
 }
