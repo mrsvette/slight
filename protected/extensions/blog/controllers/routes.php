@@ -19,6 +19,15 @@ $app->get('/blog/[{name}]', function ($request, $response, $args) {
         $data = $model->getPost($args['name']);
 
         if (empty($data['id'])) {
+            $category = $model->getCategory(['slug' => $args['name']]);
+            if (is_array($category) && !empty($category['id'])) {
+
+                return $this->view->render($response, 'blog.phtml', [
+                    'category' => $category,
+                    'mpost' => $model
+                ]);
+            }
+            
             return $this->response
                 ->withStatus(500)
                 ->withHeader('Content-Type', 'text/html')
