@@ -448,11 +448,13 @@
                 "wysiwyg-color-blue" : 1,
                 "wysiwyg-color-teal" : 1,
                 "wysiwyg-color-aqua" : 1,
-                "wysiwyg-color-orange" : 1
+                "wysiwyg-color-orange" : 1,
+                "fa" : 1,
+                "fa-share" : 1
             },
             tags: {
                 "b":  {},
-                "i":  {},
+                "i":  1,
                 "br": {},
                 "ol": {},
                 "ul": {},
@@ -463,7 +465,7 @@
                 "h4": {},
                 "h5": {},
                 "h6": {},
-                "blockquote": {},
+                "blockquote": 1,
                 "u": 1,
                 "img": {
                     "check_attributes": {
