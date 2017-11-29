@@ -162,6 +162,9 @@ function addGlobal($env, $c, $user = null)
     $base_url = $uri->getScheme().'://'.$uri->getHost().$uri->getBasePath();
     if (!empty($uri->getPort()))
         $base_url .= ':'.$uri->getPort();
+    $base_path = $uri->getScheme().'://'.$uri->getHost().$uri->getPath();
+    if (!empty($uri->getPort()))
+        $base_path = $base_url.$uri->getPath();
 
     $globals = [
         'name' => $setting['name'],
@@ -171,6 +174,8 @@ function addGlobal($env, $c, $user = null)
         'user' => $user,
         'params' => $setting['params'],
         'optionModel' => new \Model\OptionsModel(),
+        'request' => $c['request'],
+        'currentPath' => $base_path
     ];
 
     $env->addGlobal('App', $globals);
