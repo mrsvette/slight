@@ -44,7 +44,9 @@ img::-moz-selection{color:#fff;background:0 0}
   #mainNav.navbar-shrink .navbar-nav>li.nav-item>a.nav-link:focus:hover,#mainNav.navbar-shrink .navbar-nav>li.nav-item>a.nav-link:hover{color:#f05f40}
 }
 header.masthead{position:relative;width:100%;min-height:auto;text-align:center;color:#fff;background-color:#293f44;background-image:url(../img/header.png);background-position:center;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover}
+header.sectionhead{position:relative;width:100%;min-height:auto;text-align:center;color:#fff;background-color:#293f44;background-image:url(../img/header.png);background-position:center;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover}
 header.masthead .header-content{position:relative;width:100%;padding:150px 15px 100px;text-align:center}
+header.sectionhead .header-content{position:relative;width:100%;padding:120px 15px 50px;text-align:center}
 header.masthead .header-content .header-content-inner h1{font-size:30px;font-weight:700;margin-top:0;margin-bottom:0;text-transform:uppercase}
 header.masthead .header-content .header-content-inner hr{margin:30px auto}
 header.masthead .header-content .header-content-inner p{font-size:18px;font-weight:300;margin-bottom:50px;color:rgba(255,255,255,.7)}
