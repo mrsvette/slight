@@ -26,6 +26,12 @@ $app->get('/[{name}]', function ($request, $response, $args) {
             ->write('Page not found!');
     }
 
+    $exts = json_decode( $settings['params']['extensions'], true );
+    $mpost = null;
+    if (in_array( 'blog', $exts )) {
+        $mpost = new \ExtensionsModel\PostModel();
+    }
+
     if (isset($_GET['e']) && $_GET['e'] > 0) { // editing procedure
         $view_path = $settings['theme']['path'] . '/' . $settings['theme']['name'] . '/views';
         if (file_exists($view_path.'/'.$args['name'] . '.phtml')) {
@@ -42,7 +48,7 @@ $app->get('/[{name}]', function ($request, $response, $args) {
 
             return $this->view->render($response, 'staging/' . $args['name'] . '.ehtml', [
                 'name' => $args['name'],
-                'mpost' => $model,
+                'mpost' => $mpost,
                 'request' => $_GET
             ]);
         }
@@ -50,7 +56,8 @@ $app->get('/[{name}]', function ($request, $response, $args) {
 
     return $this->view->render($response, $args['name'] . '.phtml', [
         'name' => $args['name'],
-        'request' => $_GET
+        'request' => $_GET,
+        'mpost' => $mpost
     ]);
 });
 
