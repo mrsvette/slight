@@ -26,6 +26,12 @@ $app->get('/[{name}]', function ($request, $response, $args) {
             ->write('Page not found!');
     }
 
+    $exts = json_decode( $settings['params']['extensions'], true );
+    $mpost = null;
+    if (in_array( 'blog', $exts )) {
+        $mpost = new \ExtensionsModel\PostModel();
+    }
+
     if (isset($_GET['e']) && $_GET['e'] > 0) { // editing procedure
         $view_path = $settings['theme']['path'] . '/' . $settings['theme']['name'] . '/views';
         if (file_exists($view_path.'/'.$args['name'] . '.phtml')) {
@@ -42,7 +48,7 @@ $app->get('/[{name}]', function ($request, $response, $args) {
 
             return $this->view->render($response, 'staging/' . $args['name'] . '.ehtml', [
                 'name' => $args['name'],
-                'mpost' => $model,
+                'mpost' => $mpost,
                 'request' => $_GET
             ]);
         }
@@ -50,14 +56,33 @@ $app->get('/[{name}]', function ($request, $response, $args) {
 
     return $this->view->render($response, $args['name'] . '.phtml', [
         'name' => $args['name'],
-        'request' => $_GET
+        'request' => $_GET,
+        'mpost' => $mpost
     ]);
 });
 
 $app->post('/kontak-kami', function ($request, $response, $args) {
     $message = 'Pesan Anda gagal dikirimkan.';
+    $settings = $this->get('settings');
     if (isset($_POST['Contact'])){
         //send mail to admin
+        $to      = $settings['params']['admin_email'];
+        $subject = 'slightSite - Kontak Kami';
+        $headers = 'From: '.$settings['params']['admin_email']. '' . "\r\n" .
+            'Reply-To: '.$_POST['Contact']['email']. '' . "\r\n" .
+            'X-Mailer: PHP/' . phpversion();
+
+        $msg = "Halo Admin, 
+            Ada pesan baru dari pengunjung dengan data berikut:
+            
+            Judul pesan : ".$_POST['Contact']['subject']." 
+            Nama pengunjung : ".$_POST['Contact']['name']." 
+            Alamat Email : ".$_POST['Contact']['email']."  
+            
+            Isi Pesan : ".$_POST['Contact']['message']."";
+
+        mail($to, $subject, $msg, $headers);
+
         $message = 'Pesan Anda berhasil dikirim. Kami akan segera merespon pesan Anda.';
     }
 
