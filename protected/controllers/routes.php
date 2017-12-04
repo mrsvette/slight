@@ -68,11 +68,12 @@ $app->post('/kontak-kami', function ($request, $response, $args) {
         //send mail to admin
         $to      = $settings['params']['admin_email'];
         $subject = 'slightSite - Kontak Kami';
-        $headers = 'From: '.$settings['params']['admin_email']. '' . "\r\n" .
+        $headers = 'From: admin@slightsite.com' . "\r\n" .
             'Reply-To: '.$_POST['Contact']['email']. '' . "\r\n" .
             'X-Mailer: PHP/' . phpversion();
 
         $msg = "Halo Admin, 
+	
             Ada pesan baru dari pengunjung dengan data berikut:
             
             Judul pesan : ".$_POST['Contact']['subject']." 
