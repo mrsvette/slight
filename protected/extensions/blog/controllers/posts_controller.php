@@ -22,10 +22,27 @@ class PostsController extends BaseController
         $app->map(['POST'], '/delete-image/[{id}]', [$this, 'delete_image']);
     }
 
+    public function accessRules()
+    {
+        return [
+            ['allow',
+                'actions' => ['view', 'create', 'update', 'delete'],
+                'users'=> ['@'],
+            ],
+            ['deny',
+                'users' => ['*'],
+            ],
+        ];
+    }
+
     public function view($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $model = new \ExtensionsModel\PostModel();
@@ -38,8 +55,12 @@ class PostsController extends BaseController
 
     public function create($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         $languages = \ExtensionsModel\PostLanguageModel::model()->findAll();
@@ -113,8 +134,12 @@ class PostsController extends BaseController
 
     public function update($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         if (empty($args['id']))
@@ -218,8 +243,12 @@ class PostsController extends BaseController
 
     public function delete($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         if (!isset($args['id'])) {
@@ -284,8 +313,12 @@ class PostsController extends BaseController
 
     public function delete_image($request, $response, $args)
     {
-        if ($this->_user->isGuest()){
-            return $response->withRedirect($this->_login_url);
+        $isAllowed = $this->isAllowed($request, $response);
+        if ($isAllowed instanceof \Slim\Http\Response)
+            return $isAllowed;
+
+        if(!$isAllowed){
+            return $this->notAllowedAction();
         }
 
         if (!isset($_POST['id'])) {
