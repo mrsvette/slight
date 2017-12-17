@@ -171,12 +171,14 @@ class PostsController extends BaseController
                         }
                         $model2->post_id = $model->id;
                         $model2->title = $title;
-                        if (!empty($_POST['PostContent']['slug'][$lang]) && $_POST['PostContent']['slug'][$lang] != $model2->slug){
-                            $cek_slug = $post_content->findByAttributes(['slug'=>$_POST['PostContent']['slug'][$lang]]);
-                            if ($cek_slug instanceof \RedBeanPHP\OODBBean) {
-                                $model2->slug = $_POST['PostContent']['slug'][$lang].'2';
-                            } else {
-                                $model2->slug = $_POST['PostContent']['slug'][$lang];
+                        if (!empty($_POST['PostContent']['slug'][$lang])){
+                            if ($_POST['PostContent']['slug'][$lang] != $model2->slug) {
+                                $cek_slug = $post_content->findByAttributes(['slug'=>$_POST['PostContent']['slug'][$lang]]);
+                                if ($cek_slug instanceof \RedBeanPHP\OODBBean) {
+                                    $model2->slug = $_POST['PostContent']['slug'][$lang].'2';
+                                } else {
+                                    $model2->slug = $_POST['PostContent']['slug'][$lang];
+                                }
                             }
                         } else
                             $model2->slug = $post->createSlug($title);
