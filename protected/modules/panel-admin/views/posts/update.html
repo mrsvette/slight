@@ -44,7 +44,7 @@ Perbarui Postingan - {{ App.name }}
 									<div id="language-{{ language.code }}" class="tab-pane {% if language.is_default %}active{% endif %}">
 										<div class="form-group col-sm-6">
 											<label>Title <span class="red">*</span></label>
-											<input type="text" name="PostContent[title][{{ language.id }}]" class="form-control" value="{{ post.content[language.id].title}}" lang="{{ language.id }}" onchange="getSlug(this)">
+											<input type="text" name="PostContent[title][{{ language.id }}]" class="form-control" value="{{ post.content[language.id].title}}" lang="{{ language.id }}">
 										</div>
 										<div class="form-group col-sm-6">
 											<label>Permalink <span class="red">*</span></label>
