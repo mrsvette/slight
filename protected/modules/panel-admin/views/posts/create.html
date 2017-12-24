@@ -119,8 +119,8 @@ $(function(){
 	var success_message = "{{ message }}";
 	if (success_message && success_message.length > 0) {
 		setTimeout(function () {
-			window.location.href = "{{ 'blog/posts/create' | link }}";
-		}, 3000);
+			window.location.href = "{{ 'blog/posts/update' | link }}/{{ post_id }}";
+		}, 2000);
 	}
 });
 function getSlug(data){
