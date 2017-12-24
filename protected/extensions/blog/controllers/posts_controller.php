@@ -66,6 +66,7 @@ class PostsController extends BaseController
         $languages = \ExtensionsModel\PostLanguageModel::model()->findAll();
         $model = new \ExtensionsModel\PostModel('create');
         $categories = \ExtensionsModel\PostCategoryModel::model()->findAll();
+        $post_id = 0;
 
         if (isset($_POST['Post'])){
             $model->status = $_POST['Post']['status'];
@@ -117,6 +118,7 @@ class PostsController extends BaseController
                 
                 $message = 'Your post is successfully created.';
                 $success = true;
+                $post_id = $model->id;
             } else {
                 $message = 'Failed to create new post.';
                 $success = false;
@@ -128,7 +130,8 @@ class PostsController extends BaseController
             'status_list' => $model->getListStatus(),
             'categories' => $categories,
             'message' => ($message) ? $message : null,
-            'success' => $success
+            'success' => $success,
+            'post_id' => $post_id
         ]);
     }
 
