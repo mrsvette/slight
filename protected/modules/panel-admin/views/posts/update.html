@@ -214,6 +214,7 @@ Perbarui Postingan - {{ App.name }}
 <script type="text/javascript">
 	$(function(){
 		$('.editor').wysihtml5({
+			"stylesheets": false
 		});
 		var success_message = "{{ message }}";
 		if (success_message && success_message.length > 0) {
