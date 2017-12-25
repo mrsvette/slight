@@ -358,19 +358,15 @@ class PostsController extends BaseController
         if (isset($_FILES['file']['name'])) {
             $path_info = pathinfo($_FILES['file']['name']);
             if (!in_array($path_info['extension'], ['jpg','JPG','jpeg','JPEG','png','PNG'])) {
-                echo json_encode(['Tipe dokumen yang diperbolehkan hanya jpg, jpeg, dan png']); exit;
+                return $response->withJson('Tipe dokumen yang diperbolehkan hanya jpg, jpeg, dan png');
             }
 
             $uploadfile = 'uploads/posts/' . time().'.'.$path_info['extension'];
             move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile);
 
-            //return $response->withJson(['location' => $this->getBaseUrl().'/'.$uploadfile]);
-            return $response->withJson(['location' => '../'.$uploadfile]);
-        }
-        if (isset($_GET['dump'])) {
-            var_dump($this->getBaseUrl()); exit;
+            return $response->withJson(['location' => $this->getBaseUrl($request).'/'.$uploadfile]);
         }
 
-        echo json_encode(['Terjadi kegagalan saat mengunggah dokumen.']); exit;
+        return $response->withJson('Terjadi kegagalan saat mengunggah dokumen.');
     }
 }
