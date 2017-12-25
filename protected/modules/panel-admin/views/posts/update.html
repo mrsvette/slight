@@ -244,7 +244,7 @@ Perbarui Postingan - {{ App.name }}
 						return;
 					}
 
-					json = JSON.parse(xhr.responseText);
+					var json = $.parseJSON(xhr.responseText);
 
 					if (!json || typeof json.location != 'string') {
 						failure('Invalid JSON: ' + xhr.responseText);
