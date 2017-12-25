@@ -20,6 +20,7 @@ class PostsController extends BaseController
         $app->map(['POST'], '/get-slug', [$this, 'get_slug']);
         $app->map(['POST'], '/upload-images', [$this, 'get_upload_images']);
         $app->map(['POST'], '/delete-image/[{id}]', [$this, 'delete_image']);
+        $app->map(['POST'], '/upload', [$this, 'get_upload']);
     }
 
     public function accessRules()
@@ -338,6 +339,29 @@ class PostsController extends BaseController
                 unlink($path);
             echo true;
         }
+        exit;
+    }
+
+    public function get_upload($request, $response, $args)
+    {
+        if ($this->_user->isGuest()){
+            return $response->withRedirect($this->_login_url);
+        }
+
+        //var_dump(json_encode($request->getUri()->getPath())); exit;
+        if (isset($_FILES['file']['name'])) {
+            $path_info = pathinfo($_FILES['file']['name']);
+            if (!in_array($path_info['extension'], ['jpg','JPG','jpeg','JPEG','png','PNG'])) {
+                echo json_encode(['status'=>'failed','message'=>'Allowed file type are jpg, png']); exit;
+            }
+
+            $uploadfile = 'uploads/posts/' . time().'.'.$path_info['extension'];
+            move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile);
+
+            echo json_encode(['location' => '../'.$uploadfile]); exit;
+        }
+
+        echo json_encode(['status'=>'failed','message'=>'Unable to upload the files.']); exit;
         exit;
     }
 }

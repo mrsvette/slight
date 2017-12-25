@@ -53,7 +53,7 @@ Perbarui Postingan - {{ App.name }}
 										</div>
 										<div class="form-group col-sm-12">
 											<label>Content <span class="red">*</span></label>
-											<textarea class="form-control editor" name="PostContent[content][{{ language.id }}]" style="min-height:200px;">{{ post.content[language.id].content }}</textarea>
+											<textarea class="form-control editor" name="PostContent[content][{{ language.id }}]">{{ post.content[language.id].content }}</textarea>
 										</div>
 										<input type="hidden" name="PostContent[language][{{ language.id }}]" value="{{ language.id }}">
 										<div class="form-group col-sm-6">
@@ -207,15 +207,60 @@ Perbarui Postingan - {{ App.name }}
 {% include 'partial/right_menu.html' %}
 {% endblock %}
 {% block endbodyjs %}
-<script type="text/javascript" src="{{ 'lib/wysihtml5/wysihtml5.min.js' | admin_asset_url }}"></script>
+{#<script type="text/javascript" src="{{ 'lib/wysihtml5/wysihtml5.min.js' | admin_asset_url }}"></script>
 <script type="text/javascript" src="{{ 'lib/wysihtml5/toolbar.js' | admin_asset_url }}"></script>
+<link rel='stylesheet' type='text/css' href="{{ 'lib/wysihtml5/bootstrap-wysihtml5.css' | admin_asset_url }}">#}
 <script src="{{ 'js/bootstrap-fileupload.min.js' | admin_asset_url }}"></script>
-<link rel='stylesheet' type='text/css' href="{{ 'lib/wysihtml5/bootstrap-wysihtml5.css' | admin_asset_url }}">
+<script type="text/javascript" src="{{ 'lib/tinymce/tinymce.min.js' | admin_asset_url }}"></script>
 <script type="text/javascript">
 	$(function(){
-		$('.editor').wysihtml5({
+		/*$('.editor').wysihtml5({
 			"stylesheets": false
+		});*/
+		tinymce.init({
+			selector : '.editor',
+			remove_linebreaks : false,
+			gecko_spellcheck : false,
+			keep_styles : true,
+			accessibility_focus : true,
+			tabfocus_elements : 'major-publishing-actions',
+			media_strict : false,
+			height: 400,
+			plugins : 'code image imagetools paste',
+			menubar : false,
+			toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | pastetext image code",
+			images_upload_handler: function (blobInfo, success, failure) {
+				var xhr, formData;
+
+				xhr = new XMLHttpRequest();
+				xhr.withCredentials = false;
+				xhr.open('POST', '{{ "blog/posts/upload" | link }}');
+
+				xhr.onload = function() {
+					var json;
+
+					if (xhr.status != 200) {
+						failure('HTTP Error: ' + xhr.status);
+						return;
+					}
+
+					json = JSON.parse(xhr.responseText);
+
+					if (!json || typeof json.location != 'string') {
+						failure('Invalid JSON: ' + xhr.responseText);
+						return;
+					}
+
+					success(json.location);
+				};
+
+				formData = new FormData();
+				formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+				xhr.send(formData);
+			}
 		});
+
 		var success_message = "{{ message }}";
 		if (success_message && success_message.length > 0) {
 			setTimeout(function () {
