@@ -364,7 +364,7 @@ class PostsController extends BaseController
             $uploadfile = 'uploads/posts/' . time().'.'.$path_info['extension'];
             move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile);
 
-            echo json_encode(['location' => $this->getBaseUrl().'/'.$uploadfile]); exit;
+            return $response->withJson( ['location' => $this->getBaseUrl().'/'.$uploadfile] );
         }
 
         echo json_encode(['Terjadi kegagalan saat mengunggah dokumen.']); exit;
