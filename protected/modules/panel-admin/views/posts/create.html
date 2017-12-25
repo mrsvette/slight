@@ -125,8 +125,8 @@ $(function(){
 		plugins : 'code image imagetools paste',
 		menubar : false,
 		toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | pastetext image code',
-		//images_upload_url: '{{ "blog/posts/upload" | link }}',
-		images_upload_handler: function (blobInfo, success, failure) {
+		images_upload_url: '{{ "blog/posts/direct-upload" | link }}',
+		/*images_upload_handler: function (blobInfo, success, failure) {
 			var xhr, formData;
 
 			xhr = new XMLHttpRequest();
@@ -156,7 +156,7 @@ $(function(){
 			formData.append('file', blobInfo.blob(), blobInfo.filename());
 
 			xhr.send(formData);
-		}
+		}*/
 	});
 	var success_message = "{{ message }}";
 	if (success_message && success_message.length > 0) {
