@@ -358,7 +358,7 @@ class PostsController extends BaseController
         if (isset($_FILES['file']['name'])) {
             $path_info = pathinfo($_FILES['file']['name']);
             if (!in_array($path_info['extension'], ['jpg','JPG','jpeg','JPEG','png','PNG'])) {
-                echo json_encode('Tipe dokumen yang diperbolehkan hanya jpg, jpeg, dan png'); exit;
+                echo json_encode(['Tipe dokumen yang diperbolehkan hanya jpg, jpeg, dan png']); exit;
             }
 
             $uploadfile = 'uploads/posts/' . time().'.'.$path_info['extension'];
@@ -367,6 +367,6 @@ class PostsController extends BaseController
             echo json_encode(['location' => $this->getBaseUrl().'/'.$uploadfile]); exit;
         }
 
-        echo json_encode('Terjadi kegagalan saat mengunggah dokumen.'); exit;
+        echo json_encode(['Terjadi kegagalan saat mengunggah dokumen.']); exit;
     }
 }
