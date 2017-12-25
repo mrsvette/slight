@@ -131,7 +131,7 @@ $(function(){
 
 			xhr = new XMLHttpRequest();
 			xhr.withCredentials = false;
-			xhr.open('POST', '{{ "blog/posts/upload" | link }}');
+			xhr.open('POST', '{{ "blog/posts/direct-upload" | link }}');
 
 			xhr.onload = function() {
 				var json;
