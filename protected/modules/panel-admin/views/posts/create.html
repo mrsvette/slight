@@ -142,6 +142,7 @@ $(function(){
 				}
 
 				var json = $.parseJSON(xhr.responseText);
+				alert(json.location);
 
 				if (!json || typeof json.location != 'string') {
 					failure('Invalid JSON: ' + xhr.responseText);
