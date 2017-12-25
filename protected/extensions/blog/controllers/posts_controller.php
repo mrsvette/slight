@@ -20,7 +20,7 @@ class PostsController extends BaseController
         $app->map(['POST'], '/get-slug', [$this, 'get_slug']);
         $app->map(['POST'], '/upload-images', [$this, 'get_upload_images']);
         $app->map(['POST'], '/delete-image/[{id}]', [$this, 'delete_image']);
-        $app->map(['POST'], '/direct-upload', [$this, 'get_direct_upload']);
+        $app->map(['GET', 'POST'], '/direct-upload', [$this, 'get_direct_upload']);
     }
 
     public function accessRules()
@@ -366,6 +366,9 @@ class PostsController extends BaseController
 
             //return $response->withJson(['location' => $this->getBaseUrl().'/'.$uploadfile]);
             return $response->withJson(['location' => '../'.$uploadfile]);
+        }
+        if (isset($_GET['dump'])) {
+            var_dump($this->getBaseUrl()); exit;
         }
 
         echo json_encode(['Terjadi kegagalan saat mengunggah dokumen.']); exit;
