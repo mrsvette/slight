@@ -18,6 +18,9 @@ if (!empty($settings['settings']['params']['extensions'])) {
 // Controller
 require __DIR__ . '/controller.php';
 
+// Tool
+require __DIR__ . '/tool.php';
+
 //trailling slash
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -175,7 +178,8 @@ function addGlobal($env, $c, $user = null)
         'params' => $setting['params'],
         'optionModel' => new \Model\OptionsModel(),
         'request' => $c['request'],
-        'currentPath' => $base_path
+        'currentPath' => $base_path,
+        'tool' => new \Components\Tool($setting['theme']['path'].'/'.$setting['theme']['name'].'/')
     ];
 
     $env->addGlobal('App', $globals);
