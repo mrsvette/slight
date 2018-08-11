@@ -116,4 +116,5 @@ $(window).on('scroll', function() {
           }
       });
 
+      $('pre.language-markup').css("max-height", "300px");
   });

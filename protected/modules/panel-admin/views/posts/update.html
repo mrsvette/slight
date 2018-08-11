@@ -226,9 +226,21 @@ Perbarui Postingan - {{ App.name }}
 			tabfocus_elements : 'major-publishing-actions',
 			media_strict : false,
 			height: 400,
-			plugins : 'code image imagetools paste',
+			plugins : 'code image imagetools paste codesample',
 			menubar : false,
-			toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | pastetext image code",
+			toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | pastetext image code codesample",
+            codesample_languages: [
+                {text: 'HTML/XML', value: 'markup'},
+                {text: 'JavaScript', value: 'javascript'},
+                {text: 'CSS', value: 'css'},
+                {text: 'PHP', value: 'php'},
+                {text: 'Ruby', value: 'ruby'},
+                {text: 'Python', value: 'python'},
+                {text: 'Java', value: 'java'},
+                {text: 'C', value: 'c'},
+                {text: 'C#', value: 'csharp'},
+                {text: 'C++', value: 'cpp'}
+            ],
 			images_upload_handler: function (blobInfo, success, failure) {
 				var xhr, formData;
 
