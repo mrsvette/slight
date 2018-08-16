@@ -32,6 +32,8 @@ $app->get('/blog/[{name}]', function ($request, $response, $args) {
                 ->withStatus(500)
                 ->withHeader('Content-Type', 'text/html')
                 ->write('Page not found!');
+        } else {
+            $model->setViewCounter($data);
         }
 
         return $this->view->render($response, 'post.phtml', [
