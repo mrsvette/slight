@@ -178,7 +178,8 @@ class PostModel extends \Model\BaseModel
             'slug' => $row['slug'],
             'content' => $row['content'],
             'meta_keywords' => $row['meta_keywords'],
-            'meta_description' => $row['meta_description']
+            'meta_description' => $row['meta_description'],
+            'language_id' => $row['language_id']
         ];
 
         $sql2 = "SELECT t.category_id    
@@ -282,5 +283,31 @@ class PostModel extends \Model\BaseModel
 
         $row = \Model\R::getRow( $sql, $params );
         return $row;
+    }
+
+    /**
+     * Post viewed counter
+     * @param $data
+     * @return bool
+     */
+    public function setViewCounter($data) {
+        if (isset($data['id'])) {
+            $language_id = 1;
+            if (isset($data['language_id']))
+                $language_id = $data['language_id'];
+            $model = \ExtensionsModel\PostContentModel::model()->findByAttributes(
+                ['post_id' => $data['id'], 'language' => $language_id]
+            );
+            if ($model instanceof \RedBeanPHP\OODBBean) {
+                $model->viewed = $model->viewed + 1;
+                $model->updated_at = date("Y-m-d H:i:s");
+                $update = \ExtensionsModel\PostContentModel::model()->update(@$model);
+                if ($update) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
