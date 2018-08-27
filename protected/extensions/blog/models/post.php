@@ -7,6 +7,10 @@ require_once __DIR__ . '/../../../models/base.php';
 
 class PostModel extends \Model\BaseModel
 {
+    const STATUS_DRAFT = 'draft';
+    const STATUS_PUBLISHED = 'published';
+    const STATUS_ARCHIVED = 'archived';
+
     public static function model($className=__CLASS__)
     {
         return parent::model($className);
@@ -309,5 +313,45 @@ class PostModel extends \Model\BaseModel
         }
 
         return false;
+    }
+
+    public function getSitemaps($data = [])
+    {
+        $sql = "SELECT t.id, c.slug, ct.slug AS category_slug, c.updated_at AS last_update  
+        FROM {tablePrefix}ext_post t
+        LEFT JOIN {tablePrefix}ext_post_content c ON c.post_id = t.id
+        LEFT JOIN {tablePrefix}ext_post_in_category ic ON ic.post_id = t.id
+        LEFT JOIN {tablePrefix}ext_post_category ct ON ct.id = ic.category_id
+        WHERE t.status =:status AND t.post_type =:post_type";
+
+        $params = [ 'status' => self::STATUS_PUBLISHED, 'post_type' => 'post' ];
+
+        $sql .= " ORDER BY t.created_at ASC";
+
+        $sql = str_replace(['{tablePrefix}'], [$this->_tbl_prefix], $sql);
+
+        $rows = \Model\R::getAll( $sql, $params );
+        $items = [];
+        if (count($rows) > 0) {
+            $tool = new \Components\Tool();
+            $url_origin = $tool->url_origin();
+            $categories = [];
+            foreach ($rows as $i => $row) {
+                if (!in_array($row['category_slug'], $categories)) {
+                    $items[] = [
+                        'loc' => $url_origin.'/blog/'.$row['category_slug'],
+                        'lastmod' => date("c"),
+                        'priority' => 0.5
+                    ];
+                    array_push($categories, $row['category_slug']);
+                }
+                $items[] = [
+                    'loc' => $url_origin.'/blog/'.$row['slug'],
+                    'lastmod' => date("c", strtotime($row['last_update'])),
+                    'priority' => 0.5
+                ];
+            }
+        }
+        return $items;
     }
 }
