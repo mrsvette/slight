@@ -1,5 +1,5 @@
 <?php
-$app->get('/website-ranking', function ($request, $response, $args) {
+$app->get('/website-rangking', function ($request, $response, $args) {
     $params = ['need_captcha' => true];
     if (isset($_COOKIE['slightrank'])) {
         $params['need_captcha'] = false;
@@ -9,7 +9,7 @@ $app->get('/website-ranking', function ($request, $response, $args) {
         'params' => $params
     ]);
 });
-$app->post('/website-ranking', function ($request, $response, $args) {
+$app->post('/website-rangking', function ($request, $response, $args) {
     $params = $request->getParams();
     $params['Ranking']['need_captcha'] = true;
     if (isset($_COOKIE['slightrank'])) {
