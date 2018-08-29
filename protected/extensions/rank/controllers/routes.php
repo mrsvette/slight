@@ -5,7 +5,7 @@ $app->get('/website-ranking', function ($request, $response, $args) {
         $params['need_captcha'] = false;
     }
 
-    return $this->view->render($response, 'website-ranking.phtml', [
+    return $this->view->render($response, 'website_ranking.phtml', [
         'params' => $params
     ]);
 });
@@ -34,7 +34,7 @@ $app->post('/website-ranking', function ($request, $response, $args) {
             setcookie('slightrank', time(), time() + (300), "/");
             $params['Ranking']['need_captcha'] = false;
         } else {
-            return $this->view->render($response, 'website-ranking.phtml', [
+            return $this->view->render($response, 'website_ranking.phtml', [
                 'params' => $params['Ranking'],
                 'error' => 'Pastikan captcha sudah dicentang.'
             ]);
@@ -97,7 +97,7 @@ $app->post('/website-ranking', function ($request, $response, $args) {
             $items[$i+1] = $sub_items;
         }
 
-        return $this->view->render($response, 'website-ranking.phtml', [
+        return $this->view->render($response, 'website_ranking.phtml', [
             'params' => $params['Ranking'],
             'results' => $items,
             'positions' => $positions
