@@ -32,6 +32,7 @@ $app->post('/website-ranking', function ($request, $response, $args) {
         if ($verify) {
             // setup cookie
             setcookie('slightrank', time(), time() + (300), "/");
+            $params['Ranking']['need_captcha'] = false;
         } else {
             return $this->view->render($response, 'website-ranking.phtml', [
                 'params' => $params['Ranking'],
