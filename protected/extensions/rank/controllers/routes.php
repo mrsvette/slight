@@ -1,20 +1,64 @@
 <?php
+$app->get('/website-ranking', function ($request, $response, $args) {
+    $params = ['need_captcha' => true];
+    if (isset($_COOKIE['slightrank'])) {
+        $params['need_captcha'] = false;
+    }
+
+    return $this->view->render($response, 'website-ranking.phtml', [
+        'params' => $params
+    ]);
+});
 $app->post('/website-ranking', function ($request, $response, $args) {
     $params = $request->getParams();
+    $params['Ranking']['need_captcha'] = true;
+    if (isset($_COOKIE['slightrank'])) {
+        $params['Ranking']['need_captcha'] = false;
+    }
+
     $rank_tool = new \Extensions\Components\RankTool();
-    if (strpos($params['Ranking']['website'], "www.") === false) {
-        if (strpos($params['Ranking']['website'], "http") === false) {
-            $params['Ranking']['website'] = 'http://www.'.$params['Ranking']['website'];
+    $settings = $this->get('settings');
+    if (($settings['params']['re_captcha_verification'] > 0)
+        && empty($params['g-recaptcha-response'])) {
+
+    }
+
+    if (!isset($_COOKIE['slightrank'])) {
+        $verify = true;
+        if ($settings['params']['re_captcha_verification'] > 0) {
+            $verify = $rank_tool->siteverify($settings['params']['re_captcha_secret'], $params['g-recaptcha-response']);
+        }
+
+        if ($verify) {
+            // setup cookie
+            setcookie('slightrank', time(), time() + (300), "/");
+        } else {
+            return $this->view->render($response, 'website-ranking.phtml', [
+                'params' => $params['Ranking'],
+                'error' => 'Pastikan captcha sudah dicentang.'
+            ]);
         }
     }
-    $website = parse_url(strtolower($params['Ranking']['website']));
+
+    if (!empty($params['Ranking']['website']) && strpos($params['Ranking']['website'], "www.") === false) {
+        if (strpos($params['Ranking']['website'], "http") === false) {
+            $subdomain =explode(".", $params['Ranking']['website']);
+            if (count($subdomain) <= 2)
+                $params['Ranking']['website'] = 'http://www.'.$params['Ranking']['website'];
+            else
+                $params['Ranking']['website'] = 'http://'.$params['Ranking']['website'];
+        }
+    }
+    $website = [];
+    if (!empty($params['Ranking']['website']))
+        $website = parse_url(strtolower($params['Ranking']['website']));
     if (isset($params['Ranking']) && !empty($params['Ranking']['q'])) {
         $base_src = 'https://www.google.co.id/search';
         $q = strtolower($params['Ranking']['q']);
         $qparams = ['q' => $q, 'oq' => $q];
 
         $items = []; $positions = [];
-        for ($i = 0; $i<=7; $i++) {
+        for ($i = 0; $i<=6; $i++) {
             $start = 10 * $i;
             $qparams['start'] = $start;
             $src = $base_src."?".http_build_query($qparams);
