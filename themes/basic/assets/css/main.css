@@ -140,13 +140,13 @@ a:not([href]):not([tabindex]):focus,a:not([href]):not([tabindex]):hover{color:#3
 .pricing-table .plan-list li:first-child{border-top:1px solid #eee}
 .pricing-table .plan-signup{padding:25px 0}
 .pricing-table .plan-signup a{text-transform:uppercase}
-.form-control{width:100%;margin-bottom:20px;color:#fff;padding:18px;border:1px solid #757575;background-color:transparent;font-size:16px;border-radius:4x}
-.form-control:focus{border-color:#fff;color:#fff;outline:0;background-color:transparent}
+.form-control{width:100%;margin-bottom:20px;padding:18px;border:1px solid #757575;background-color:transparent;font-size:16px;border-radius:4x}
+.form-control:focus{outline:0;background-color:transparent}
 #contact{background:#393f43}
 #contact .section-title{color:#fff;text-align:center;font-size:36px;margin:0 0 15px}
 #contact .subtitle{color:#fff;text-align:center}
 #contact #contactForm{margin-top:30px}
-.contact-icon{background:url(../img/contact-bg.jpg) 50% -210px fixed;position:relative}
+.contact-icon{position:relative}
 .contact-icon .overlay{position:absolute;top:0;background:#000}
 .contact-icon .box-icon{color:#fff;text-align:center;padding:20px}
 .contact-icon .box-icon .icon{font-size:44px;margin-bottom:10px}

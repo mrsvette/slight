@@ -61,7 +61,8 @@ class PostModel extends \Model\BaseModel
     
     public function getPosts($data)
     {
-        $sql = "SELECT t.status, c.post_id, c.title, c.meta_description, c.content, c.slug, l.id, l.language_name, t.created_at     
+        $sql = "SELECT t.status, c.post_id, c.title, c.meta_description, c.content, c.slug, l.id, l.language_name, 
+        t.created_at, t.updated_at      
         FROM {tablePrefix}ext_post t 
         LEFT JOIN {tablePrefix}ext_post_content c ON c.post_id = t.id 
         LEFT JOIN {tablePrefix}ext_post_language l ON l.id = c.language";
