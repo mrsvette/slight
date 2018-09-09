@@ -49,6 +49,7 @@ class WebsiteTool
                 $rmodel = \ExtensionsModel\TldRegistrarModel::model()->findByPk($tmodel->registrar_id);
                 $configs = json_decode($rmodel->configs, true);
                 if (is_array($configs) && !empty($rmodel->url)) {
+                    $data['sld'] = strtolower($data['sld']);
                     if (array_key_exists('domain', $configs['postfields'])) {
                         $configs['postfields']['domain'] = $data['sld'].$data['tld'];
                     }
@@ -93,7 +94,7 @@ class WebsiteTool
                         }
                     }
 
-                    if(array_key_exists('regex')
+                    if(array_key_exists('regex', $configs)
                         && preg_match($configs['regex'], $result)) {
                         return true;
                     }
