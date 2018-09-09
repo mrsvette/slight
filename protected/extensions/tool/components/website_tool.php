@@ -106,7 +106,7 @@ class WebsiteTool
     }
 
     public function get_prices($data) {
-        include_once __DIR__ . '/../../rank/simple_html_dom.php';
+        include_once __DIR__ . '/../../rank/components/simple_html_dom.php';
 
         $dmodel = new \ExtensionsModel\DomainResellerModel();
         $resellers = $dmodel->getRows(['enabled' => 1]);
