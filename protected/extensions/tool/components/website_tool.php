@@ -273,7 +273,40 @@ class WebsiteTool
     }
 
     private function dms($data) {
+        $confings = json_decode($data['reseller']['configs'], true);
         $model = new \ExtensionsModel\DomainPriceModel();
+        // alternatif url domain prices
+        if (is_array($confings) && array_key_exists('url_alternatif', $confings)) {
+            $html = file_get_html($confings['url_alternatif']);
+            $items = [];
+            foreach ($html->find('tr td') as $td) {
+                $txt = $td->innertext;
+                $items[] = $td->innertext;
+            }
+            $item_prices = [];
+            foreach ($items as $x => $item) {
+                if (strpos($item, ".") !== false && strpos($item, ".") == 0) {
+                    $val = strip_tags($items[$x+1]);
+                    $needle = [".", ",", " ", "rp", "&nbsp;"];
+                    $replacements   = ["", ".", "", "", ""];
+
+                    $val = str_replace($needle, $replacements, strtolower($val));
+                    if ((int)$val > 0) {
+                        $item_prices[$item] = $val;
+                        $save = $model->save_price([
+                            'tld' => $item,
+                            'reseller_id' => $data['reseller']['id'],
+                            'price' => (int)$val
+                        ]);
+                    }
+                }
+            }
+            if (count($item_prices) > 0 && array_key_exists($data['tld'], $item_prices)) {
+                return [ 'price' => $item_prices[$data['tld']], 'updated_at' => date("Y-m-d H:i:s")];
+            }
+        }
+
+        // main way if the alternatif failed
         $domain_price = $model->get_price([
             'tld' => $data['tld'],
             'reseller_id' => $data['reseller']['id'],
