@@ -2,6 +2,8 @@
 
 namespace Extensions\Components;
 
+use PHPMailer\PHPMailer\Exception;
+
 class WebsiteTool
 {
     protected $_basePath;
@@ -444,7 +446,7 @@ class WebsiteTool
             $price = (int) $result->price;
             if ($price > 0) {
                 $save = $model->save_price([
-                    'tld' => $data['sld'],
+                    'tld' => $data['tld'],
                     'reseller_id' => $data['reseller']['id'],
                     'price' => $price
                 ]);
