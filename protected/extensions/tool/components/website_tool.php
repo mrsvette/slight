@@ -271,4 +271,67 @@ class WebsiteTool
         }
         return $productTLD;
     }
+
+    private function dms($data) {
+        $model = new \ExtensionsModel\DomainPriceModel();
+        $domain_price = $model->get_price([
+            'tld' => $data['tld'],
+            'reseller_id' => $data['reseller']['id'],
+            'hours_different' => 3
+        ]);
+
+        if ((int)$domain_price['price'] > 0) {
+            return ['price' => (int)$domain_price['price'], 'updated_at' => $domain_price['updated_at']];
+        }
+
+        $postfields = [
+            'domain' => $data['sld'].$data['tld']
+        ];
+
+        $url = $data['reseller']['url'];
+        $url .= '?'.http_build_query($postfields);
+        $html = file_get_html($url);
+        $tlds = [];
+        foreach ($html->find('.popular-tld div') as $div) {
+            $img_class = $div->getAttribute('class');
+            if (!empty($img_class) && strpos($img_class, "-") !== false) {
+                $exp = explode("-", $img_class);
+                $tlds[] = '.'.$exp[0];
+            }
+        }
+
+        $results = [];
+        if (count($tlds) > 0 && $tlds[0] == $data['tld']) {
+            $i = 0;
+            foreach ($html->find('.current-price') as $e) {
+                $val = $e->innertext;
+                $needle = [".", ",", " "];
+                $replacements   = ["", ".", ""];
+
+                $val = str_replace($needle, $replacements, strtolower($val));
+                if ((int)$val > 0) {
+                    $results[$tlds[$i]] = (int)$val;
+                    // saving the price
+                    $save = $model->save_price([
+                        'tld' => $tlds[$i],
+                        'reseller_id' => $data['reseller']['id'],
+                        'price' => (int)$val
+                    ]);
+                }
+                $i ++;
+            }
+
+        } else {
+            $price = $html->find('.current-price', 0)->innertext;
+            if (!empty($price)) {
+                $needle = [".", ",", " "];
+                $replacements   = ["", ".", ""];
+
+                $price = str_replace($needle, $replacements, strtolower($price));
+                $results[$data['tld']] = (int)$price;
+            }
+        }
+
+        return [ 'price' => $results[$data['tld']], 'updated_at' => date("Y-m-d H:i:s")];
+    }
 }
