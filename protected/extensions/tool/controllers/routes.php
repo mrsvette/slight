@@ -38,6 +38,8 @@ $app->get('/domain/[{name}]', function ($request, $response, $args) {
         $url = 'https://panel.'.$args['name'].'.co.id/ref/7878?r=orderdomain/searchresults?sld='.$params['sld'].'&tld='.$params['tld'];
     } elseif ($args['name'] == 'domainesia') {
         $url = 'https://www.'.$args['name'].'.com/domain/?domain='.$params['sld'].$params['tld'];
+    } elseif ($args['name'] == 'idwebhost') {
+        $url = 'https://www.'.$args['name'].'.com/domain-murah';
     }
 
     return $response->withRedirect( $url );
