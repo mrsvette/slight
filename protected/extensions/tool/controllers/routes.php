@@ -14,7 +14,8 @@ $app->post('/cek-domain', function ($request, $response, $args) {
     $is_available = $website_tool->check_availability($params);
     $prices = [];
     if ($is_available) {
-        $prices = $website_tool->get_prices($params);
+        //$prices = $website_tool->get_prices($params);
+        $params['t'] = md5($params['sld'].'-'.$params['tld']);
     }
 
     $settings = $this->get('settings');
@@ -26,6 +27,31 @@ $app->post('/cek-domain', function ($request, $response, $args) {
         'tlds' => $tlds,
         'params' => $params,
         'is_available' => $is_available,
+        'prices' => $prices
+    ]);
+});
+
+$app->post('/harga-domain', function ($request, $response, $args) {
+    $params = $request->getParams();
+    if (!isset($params['t'])) {
+        return false;
+    } else {
+        if (md5($params['sld'].'-'.$params['tld']) != $params['t']) {
+            return false;
+        }
+    }
+
+    $website_tool = new \Extensions\Components\WebsiteTool();
+    $prices = $website_tool->get_prices($params);
+
+    $settings = $this->get('settings');
+
+    $tmodel = new \ExtensionsModel\TldModel();
+    $tlds = $tmodel->getRows(['enabled' => 1]);
+
+    return $this->view->render($response, 'harga_domain.phtml', [
+        'tlds' => $tlds,
+        'params' => $params,
         'prices' => $prices
     ]);
 });
