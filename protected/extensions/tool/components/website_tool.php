@@ -107,6 +107,11 @@ class WebsiteTool
                                 return false;
                             return $result->available;
                         }
+                        if($rmodel->id == 5) {
+                            if (!is_object($result) && $result->succees == 0)
+                                return false;
+                            return $result->available;
+                        }
                     }
 
                     if(array_key_exists('regex', $configs)
@@ -450,6 +455,81 @@ class WebsiteTool
                     'reseller_id' => $data['reseller']['id'],
                     'price' => $price
                 ]);
+            }
+        }
+
+        return [ 'price' => $price, 'updated_at' => date("Y-m-d H:i:s")];
+    }
+
+    private function idh($data)
+    {
+        $model = new \ExtensionsModel\DomainPriceModel();
+        $domain_price = $model->get_price([
+            'tld' => $data['tld'],
+            'reseller_id' => $data['reseller']['id'],
+            'hours_different' => 3
+        ]);
+
+        if ((int)$domain_price['price'] > 0) {
+            return ['price' => (int)$domain_price['price'], 'updated_at' => $domain_price['updated_at']];
+        }
+
+        $confings = json_decode($data['reseller']['configs'], true);
+        if (is_array($confings) && array_key_exists("postfields", $confings)) {
+            $postfields = $confings['postfields'];
+            $postfields['q'] = $data['sld'].$data['tld'];
+        } else {
+            $postfields = [
+                'exactSearch' => true,
+                'q' => $data['sld'].$data['tld'],
+                'tldList' => null
+            ];
+        }
+
+        $url = $data['reseller']['url'];
+        //create cURL connection
+        $curl_connection = curl_init($url);
+
+        //set options
+        curl_setopt($curl_connection, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($curl_connection, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl_connection, CURLOPT_SSL_VERIFYPEER, false);
+
+        if($confings['curl_type'] == 'POST') {
+            //set data to be posted
+            curl_setopt($curl_connection, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+            curl_setopt($curl_connection, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($curl_connection, CURLOPT_POSTFIELDS, http_build_query($postfields));
+        }else{
+            curl_setopt($curl_connection, CURLOPT_URL, $url);
+        }
+
+        //perform our request
+        $result = curl_exec($curl_connection);
+
+        //close the connection
+        curl_close($curl_connection);
+
+        if($confings['result_type'] == 'json'){
+            $result = json_decode($result);
+        }
+
+        $price = 0;
+        if (is_array($result)) {
+            foreach ($result as $i => $res) {
+                if (is_object($res)) {
+                    $tld = $res->product->config->tld;
+                    $bprice = $res->product->billing->price;
+                    if (!empty($tld) && $bprice>0) {
+                        if ($tld == $data['tld'])
+                            $price = $bprice;
+                        $save = $model->save_price([
+                            'tld' => $tld,
+                            'reseller_id' => $data['reseller']['id'],
+                            'price' => $bprice
+                        ]);
+                    }
+                }
             }
         }
 

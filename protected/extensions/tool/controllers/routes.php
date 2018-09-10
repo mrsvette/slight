@@ -40,6 +40,8 @@ $app->get('/domain/[{name}]', function ($request, $response, $args) {
         $url = 'https://www.'.$args['name'].'.com/domain/?domain='.$params['sld'].$params['tld'];
     } elseif ($args['name'] == 'idwebhost') {
         $url = 'https://www.'.$args['name'].'.com/domain-murah';
+    } elseif ($args['name'] == 'hostinger') {
+        $url = 'https://www.'.$args['name'].'.co.id/domain-murah';
     }
 
     return $response->withRedirect( $url );
