@@ -100,6 +100,11 @@ class WebsiteTool
                                 return false;
                             return $result->ExactMatchDomain->IsAvailable;
                         }
+                        if($rmodel->id == 4) {
+                            if (!is_object($result))
+                                return false;
+                            return $result->available;
+                        }
                     }
 
                     if(array_key_exists('regex', $configs)
