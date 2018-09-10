@@ -56,6 +56,14 @@ class WebsiteTool
                     if (array_key_exists('q', $configs['postfields'])) {
                         $configs['postfields']['q'] = $data['sld'].$data['tld'];
                     }
+                    if (array_key_exists('sld', $configs['postfields'])
+                        && array_key_exists('tld', $configs['postfields'])) {
+                        $configs['postfields']['sld'] = $data['sld'];
+                        $configs['postfields']['tld'] = $data['tld'];
+                    }
+                    if (array_key_exists('unicode_sld', $configs['postfields'])) {
+                        $configs['postfields']['unicode_sld'] = $data['sld'];
+                    }
                     $url = $rmodel->url;
                     if ($configs['curl_type'] == 'GET') {
                         $url .= '?'.http_build_query($configs['postfields']);
