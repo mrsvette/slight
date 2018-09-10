@@ -281,8 +281,19 @@ class WebsiteTool
     }
 
     private function dms($data) {
-        $confings = json_decode($data['reseller']['configs'], true);
         $model = new \ExtensionsModel\DomainPriceModel();
+        $domain_price = $model->get_price([
+            'tld' => $data['tld'],
+            'reseller_id' => $data['reseller']['id'],
+            'hours_different' => 3
+        ]);
+
+        if ((int)$domain_price['price'] > 0) {
+            return ['price' => (int)$domain_price['price'], 'updated_at' => $domain_price['updated_at']];
+        }
+
+        $confings = json_decode($data['reseller']['configs'], true);
+
         // alternatif url domain prices
         if (is_array($confings) && array_key_exists('url_alternatif', $confings)) {
             $html = file_get_html($confings['url_alternatif']);
@@ -315,16 +326,6 @@ class WebsiteTool
         }
 
         // main way if the alternatif failed
-        $domain_price = $model->get_price([
-            'tld' => $data['tld'],
-            'reseller_id' => $data['reseller']['id'],
-            'hours_different' => 3
-        ]);
-
-        if ((int)$domain_price['price'] > 0) {
-            return ['price' => (int)$domain_price['price'], 'updated_at' => $domain_price['updated_at']];
-        }
-
         $postfields = [
             'domain' => $data['sld'].$data['tld']
         ];
@@ -374,5 +375,77 @@ class WebsiteTool
         }
 
         return [ 'price' => $results[$data['tld']], 'updated_at' => date("Y-m-d H:i:s")];
+    }
+
+    private function idw($data)
+    {
+        $model = new \ExtensionsModel\DomainPriceModel();
+        $domain_price = $model->get_price([
+            'tld' => $data['tld'],
+            'reseller_id' => $data['reseller']['id'],
+            'hours_different' => 3
+        ]);
+
+        if ((int)$domain_price['price'] > 0) {
+            return ['price' => (int)$domain_price['price'], 'updated_at' => $domain_price['updated_at']];
+        }
+
+        $confings = json_decode($data['reseller']['configs'], true);
+        if (is_array($confings) && array_key_exists("postfields", $confings)) {
+            $postfields = $confings['postfields'];
+            $postfields['domain'] = $data['sld'].$data['tld'];
+        } else {
+            $postfields = [
+                'domain' => $data['sld'].$data['tld'],
+                'action' => 'whois.getwhois'
+            ];
+        }
+
+        $url = $data['reseller']['url'];
+        $url .= '?'.http_build_query($postfields);
+        //create cURL connection
+        $curl_connection = curl_init($url);
+
+        //set options
+        curl_setopt($curl_connection, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($curl_connection, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl_connection, CURLOPT_SSL_VERIFYPEER, false);
+
+        if($confings['curl_type'] == 'POST') {
+            //set data to be posted
+            curl_setopt($curl_connection, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+            curl_setopt($curl_connection, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($curl_connection, CURLOPT_POSTFIELDS, http_build_query($postfields));
+        }else{
+            curl_setopt($curl_connection, CURLOPT_URL, $url);
+        }
+
+        //perform our request
+        $result = curl_exec($curl_connection);
+
+        //close the connection
+        curl_close($curl_connection);
+
+        if($confings['result_type'] == 'json'){
+            $result = json_decode($result);
+        }
+
+        $price = 0;
+        if (is_object($result) && $result->available == 1 && !empty($result->price)) {
+            $needle = [".", ",", " ", "rp"];
+            $replacements   = ["", ".", "", ""];
+
+            $result->price = str_replace($needle, $replacements, strtolower($result->price));
+            $price = (int) $result->price;
+            if ($price > 0) {
+                $save = $model->save_price([
+                    'tld' => $data['sld'],
+                    'reseller_id' => $data['reseller']['id'],
+                    'price' => $price
+                ]);
+            }
+        }
+
+        return [ 'price' => $price, 'updated_at' => date("Y-m-d H:i:s")];
     }
 }
