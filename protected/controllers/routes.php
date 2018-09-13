@@ -30,10 +30,7 @@ $app->get('/[{name}]', function ($request, $response, $args) {
 
     $settings = $this->get('settings');
     if (!file_exists($settings['theme']['path'].'/'.$settings['theme']['name'].'/views/'.$args['name'].'.phtml')) {
-        return $this->response
-            ->withStatus(500)
-            ->withHeader('Content-Type', 'text/html')
-            ->write('Page not found!');
+        return $this->view->render($response, '404.phtml');
     }
 
     $exts = json_decode( $settings['params']['extensions'], true );

@@ -93,6 +93,12 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
+$container['notFoundHandler'] = function ($c) {
+    return function ($request, $response) use ($c) {
+        return $c->view->render($response, '404.phtml');
+    };
+};
+
 // filter
 function addFilter($env, $c)
 {
