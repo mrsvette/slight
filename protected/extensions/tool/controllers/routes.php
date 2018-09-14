@@ -3,7 +3,7 @@ $app->get('/cek-domain', function ($request, $response, $args) {
     $tmodel = new \ExtensionsModel\TldModel();
     $tlds = $tmodel->getRows(['enabled' => 1]);
 
-    return $this->view->render($response, 'cek_domain.phtml', [
+    return $this->view->render($response, 'cek-domain.phtml', [
         'tlds' => $tlds
     ]);
 });
@@ -23,7 +23,7 @@ $app->post('/cek-domain', function ($request, $response, $args) {
     $tmodel = new \ExtensionsModel\TldModel();
     $tlds = $tmodel->getRows(['enabled' => 1]);
 
-    return $this->view->render($response, 'cek_domain.phtml', [
+    return $this->view->render($response, 'cek-domain.phtml', [
         'tlds' => $tlds,
         'params' => $params,
         'is_available' => $is_available,
