@@ -21,6 +21,9 @@ require __DIR__ . '/controller.php';
 // Tool
 require __DIR__ . '/tool.php';
 
+// Static
+require __DIR__ . '/static.php';
+
 //trailling slash
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
