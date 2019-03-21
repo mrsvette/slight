@@ -17,7 +17,7 @@ class BaseModel extends \RedBeanPHP\SimpleModel
     protected $_tbl_prefix;
 
     private static $_models = array(); // class name => model
-    
+
     public function __construct($configs = null)
     {
         if (!is_array($configs)) {
@@ -37,7 +37,7 @@ class BaseModel extends \RedBeanPHP\SimpleModel
             $this->setup();
         }
     }
-    
+
     public function setup()
     {
         if (!R::testConnection())
@@ -112,12 +112,17 @@ class BaseModel extends \RedBeanPHP\SimpleModel
 
         if (count($field) > 0)
             $sql .= ' AND '.implode(" AND ", $field);
-        
+
         return R::getAll($sql, $params);
     }
 
     public function save($bean)
     {
+        $exclude_attributes = $this->exclude_attributes;
+        if (empty($exclude_attributes)) {
+            $exclude_attributes = [];
+        }
+
         $validate = $this->validate($bean);
         if ( is_array($validate) ){
             $this->_errors = $validate;
@@ -132,7 +137,9 @@ class BaseModel extends \RedBeanPHP\SimpleModel
         $dispense = R::xdispense($this->tableName);
         $attributes = get_object_vars($bean->bean);
         foreach ($attributes as $attribute => $value){
-            $dispense->{$attribute} = $value;
+            if (!in_array($attribute, $exclude_attributes)) {
+                $dispense->{$attribute} = $value;
+            }
         }
 
         $save = R::store($dispense);
@@ -164,7 +171,7 @@ class BaseModel extends \RedBeanPHP\SimpleModel
     {
         if (!is_object($bean))
             return false;
-        
+
         $delete = R::trash($bean);
         return true;
     }
@@ -230,6 +237,26 @@ class BaseModel extends \RedBeanPHP\SimpleModel
     public function getScenario()
     {
         return $this->_scenario;
+    }
+
+    public function getAttributeLabels()
+    {
+        return (method_exists($this, 'attributeLabels'))? $this->attributeLabels() : [];
+    }
+
+    public function getAttributeLabel($attr)
+    {
+        $attributeLabels = $this->getAttributeLabels();
+        if (array_key_exists($attr, $attributeLabels)) {
+            return $attributeLabels[$attr];
+        }
+
+        if( strpos( $attr, "_" ) !== false) {
+            $explode = explode("_", $attr);
+            return ucwords(implode(" ", $explode));
+        } else {
+            return ucfirst($attr);
+        }
     }
 }
 

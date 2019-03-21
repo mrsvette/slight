@@ -31,7 +31,8 @@ Kelola User - {{ App.name }}
                                     <thead>
                                     <tr>
                                         <th>id</th>
-                                        <th>Nama</th>
+                                        <th>Username</th>
+                                        <th>Nama Lengkap</th>
                                         <th>Email</th>
                                         <th>Hak Akses</th>
                                         <th>Status</th>
@@ -43,10 +44,11 @@ Kelola User - {{ App.name }}
                                     <tr>
                                         <td><center>{{ i + 1 }}</center></td>
                                         <td>{{ model.username }}</td>
+                                        <td>{{ model.name }}</td>
                                         <td>{{ model.email }}</td>
                                         <td>
                                             <center>
-                                            <a href="{{ 'users/group/priviledge' | alink }}/{{ model.group_id }}">{{ cmodel.getGroup(model.group_id) }}</a>
+                                                <a href="{{ 'users/group/priviledge' | alink }}/{{ model.group_id }}">{{ cmodel.getGroup(model.group_id) }}</a>
                                             </center>
                                         </td>
                                         <td><center>{{ cmodel.getStatus(model.status) }}</center></td>
@@ -86,24 +88,24 @@ Kelola User - {{ App.name }}
 <script src="{{ 'lib/DataTables/media/js/jquery.dataTables.min.js' | admin_asset_url }}"></script>
 <script src="{{ 'lib/DataTables/media/js/dataTables.bootstrap.js' | admin_asset_url }}"></script>
 <script type="text/javascript">
-function hapus(data) {
-	if (confirm('Are you sure to delete ?')) {
-		var $this =  $(data);
-		var url = $this.attr('href');
-		$.ajax({
-			//'beforeSend': function() { Loading.show(); },
-			//'complete': function() { Loading.hide(); },
-			'url': url,
-			'type':'post',
-			'dataType': 'json',
-			'success': function(data) {
-				if (data) {
-					$this.parent().parent().remove();
-				}
-			}
-		});
-	}
-	return false;
-}
+    function hapus(data) {
+        if (confirm('Are you sure to delete ?')) {
+            var $this =  $(data);
+            var url = $this.attr('href');
+            $.ajax({
+                //'beforeSend': function() { Loading.show(); },
+                //'complete': function() { Loading.hide(); },
+                'url': url,
+                'type':'post',
+                'dataType': 'json',
+                'success': function(data) {
+                    if (data) {
+                        $this.parent().parent().remove();
+                    }
+                }
+            });
+        }
+        return false;
+    }
 </script>
 {% endblock %}
