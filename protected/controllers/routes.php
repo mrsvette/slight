@@ -10,6 +10,11 @@ foreach(glob($settings['settings']['basePath'] . '/extensions/*/controllers/rout
 }
 
 $app->get('/niagahoster', function ($request, $response, $args) {
+    $params = $request->getParams();
+    if (isset($params['r'])) {
+        return $response->withRedirect( 'https://panel.niagahoster.co.id/ref/7878?r='. $params['r'] );
+    }
+
     return $response->withRedirect( 'https://goo.gl/V3dpJU' );
 });
 
