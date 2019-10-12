@@ -10,24 +10,40 @@ $app->get('/cek-domain', function ($request, $response, $args) {
 $app->post('/cek-domain', function ($request, $response, $args) {
     $params = $request->getParams();
 
-    $website_tool = new \Extensions\Components\WebsiteTool();
-    $is_available = $website_tool->check_availability($params);
-    $prices = [];
-    if ($is_available) {
-        //$prices = $website_tool->get_prices($params);
-        $params['t'] = md5($params['sld'].'-'.$params['tld']);
+    $tools = new \Components\Tool();
+    $hashed = $tools->rpHash($_POST['captcha']);
+    $errors = [];
+    if (empty($params['sld'])) {
+        $message = 'Anda belum memasukkan nama domain.';
+        array_push($errors, $message);
+    }
+    if ($hashed != $_POST['captchaHash']) {
+        $message = 'Kode verifikasi yang Anda masukkan salah.';
+        array_push($errors, $message);
     }
 
-    $settings = $this->get('settings');
+    if (count($errors) == 0) {
 
-    $tmodel = new \ExtensionsModel\TldModel();
-    $tlds = $tmodel->getRows(['enabled' => 1]);
+        $website_tool = new \Extensions\Components\WebsiteTool();
+        $is_available = $website_tool->check_availability($params);
+        $prices = [];
+        if ($is_available) {
+            //$prices = $website_tool->get_prices($params);
+            $params['t'] = md5($params['sld'] . '-' . $params['tld']);
+        }
+
+        $settings = $this->get('settings');
+
+        $tmodel = new \ExtensionsModel\TldModel();
+        $tlds = $tmodel->getRows(['enabled' => 1]);
+    }
 
     return $this->view->render($response, 'cek-domain.phtml', [
         'tlds' => $tlds,
         'params' => $params,
         'is_available' => $is_available,
-        'prices' => $prices
+        'prices' => $prices,
+        'errors' => $errors
     ]);
 });
 
