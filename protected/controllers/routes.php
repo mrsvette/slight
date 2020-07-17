@@ -10,6 +10,11 @@ foreach(glob($settings['settings']['basePath'] . '/extensions/*/controllers/rout
 }
 
 $app->get('/niagahoster', function ($request, $response, $args) {
+    $params = $request->getParams();
+    if (isset($params['r'])) {
+        return $response->withRedirect( 'https://panel.niagahoster.co.id/ref/7878?r='. $params['r'] );
+    }
+
     return $response->withRedirect( 'https://goo.gl/V3dpJU' );
 });
 
@@ -30,10 +35,7 @@ $app->get('/[{name}]', function ($request, $response, $args) {
 
     $settings = $this->get('settings');
     if (!file_exists($settings['theme']['path'].'/'.$settings['theme']['name'].'/views/'.$args['name'].'.phtml')) {
-        return $this->response
-            ->withStatus(500)
-            ->withHeader('Content-Type', 'text/html')
-            ->write('Page not found!');
+        return $this->view->render($response, '404.phtml');
     }
 
     $exts = json_decode( $settings['params']['extensions'], true );
@@ -71,7 +73,7 @@ $app->get('/[{name}]', function ($request, $response, $args) {
     ]);
 });
 
-$app->post('/kontak-kami', function ($request, $response, $args) {
+/*$app->post('/kontak-kami', function ($request, $response, $args) {
     $message = 'Pesan Anda gagal dikirimkan.';
     $settings = $this->get('settings');
     if (isset($_POST['Contact'])){
@@ -117,7 +119,7 @@ $app->post('/kontak-kami', function ($request, $response, $args) {
     }
 
     echo $message; exit;
-});
+});*/
 
 $app->post('/tracking', function ($request, $response, $args) {
     if (isset($_POST['s'])){
