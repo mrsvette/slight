@@ -293,8 +293,8 @@ class PostsController extends BaseController
 
         if (isset($_POST['PostImages'])) {
             $path_info = pathinfo($_FILES['PostImages']['name']['file_name']);
-            if (!in_array($path_info['extension'], ['jpg','JPG','jpeg','JPEG','png','PNG'])) {
-                echo json_encode(['status'=>'failed','message'=>'Allowed file type are jpg, png']); exit;
+            if (!in_array($path_info['extension'], ['jpg','JPG','jpeg','JPEG','png','PNG','webp'])) {
+                echo json_encode(['status'=>'failed','message'=>'Allowed file type are jpg, png, and webp']); exit;
                 exit;
             }
             $model = new \ExtensionsModel\PostImagesModel();
@@ -357,8 +357,8 @@ class PostsController extends BaseController
 
         if (isset($_FILES['file']['name'])) {
             $path_info = pathinfo($_FILES['file']['name']);
-            if (!in_array($path_info['extension'], ['jpg','JPG','jpeg','JPEG','png','PNG'])) {
-                return $response->withJson('Tipe dokumen yang diperbolehkan hanya jpg, jpeg, dan png');
+            if (!in_array($path_info['extension'], ['jpg','JPG','jpeg','JPEG','png','PNG','webp'])) {
+                return $response->withJson('Tipe dokumen yang diperbolehkan hanya jpg, jpeg, png dan webp');
             }
 
             $uploadfile = 'uploads/posts/' . time().'.'.$path_info['extension'];

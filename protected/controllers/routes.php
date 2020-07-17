@@ -73,7 +73,7 @@ $app->get('/[{name}]', function ($request, $response, $args) {
     ]);
 });
 
-$app->post('/kontak-kami', function ($request, $response, $args) {
+/*$app->post('/kontak-kami', function ($request, $response, $args) {
     $message = 'Pesan Anda gagal dikirimkan.';
     $settings = $this->get('settings');
     if (isset($_POST['Contact'])){
@@ -119,7 +119,7 @@ $app->post('/kontak-kami', function ($request, $response, $args) {
     }
 
     echo $message; exit;
-});
+});*/
 
 $app->post('/tracking', function ($request, $response, $args) {
     if (isset($_POST['s'])){
