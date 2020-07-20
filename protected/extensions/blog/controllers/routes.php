@@ -1,5 +1,12 @@
 <?php
 // frontend url
+$app->get('/search', function ($request, $response, $args) {
+    $model = new \ExtensionsModel\PostModel();
+
+    return $this->view->render($response, 'search.phtml', [
+        'name' => $args['name'],
+    ]);
+});
 $app->get('/blog', function ($request, $response, $args) {
     $model = new \ExtensionsModel\PostModel();
 

@@ -11,15 +11,22 @@ $app->post('/cek-domain', function ($request, $response, $args) {
     $params = $request->getParams();
 
     $tools = new \Components\Tool();
-    $hashed = $tools->rpHash($_POST['captcha']);
     $errors = [];
     if (empty($params['sld'])) {
         $message = 'Anda belum memasukkan nama domain.';
         array_push($errors, $message);
     }
-    if ($hashed != $_POST['captchaHash']) {
-        $message = 'Kode verifikasi yang Anda masukkan salah.';
-        array_push($errors, $message);
+
+    if (isset($_POST['verification_code'])) {
+        if (!empty($_POST['c_hash']) && !empty($_POST['verification_code'])) {
+            if (md5($_POST['verification_code']) != $_POST['c_hash']) {
+                $msg = 'Kode verifikasi yang Anda masukkan salah';
+                array_push($errors, $msg);
+            }
+        }
+    } else {
+        $msg = 'Mohon cek kode verifikasi Anda';
+        array_push($errors, $msg);
     }
 
     if (count($errors) == 0) {
@@ -28,7 +35,6 @@ $app->post('/cek-domain', function ($request, $response, $args) {
         $is_available = $website_tool->check_availability($params);
         $prices = [];
         if ($is_available) {
-            //$prices = $website_tool->get_prices($params);
             $params['t'] = md5($params['sld'] . '-' . $params['tld']);
         }
 

@@ -141,6 +141,9 @@ function addFilter($env, $c)
                 return substr($string, 0, $length) . ' ...';
             }
         }),
+        new \Twig_SimpleFilter('link2', function ($string) use ($base_url) {
+            return $base_url . $string;
+        }),
     ];
 
     $uri_path = $c->get('request')->getUri()->getPath();
